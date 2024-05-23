@@ -22,7 +22,6 @@ local nmappings = {
   { from = '`',           to = '~<left>' },
   { from = '`',           to = '~',                                                              mode = v },
   { from = '<M-q>',       to = '<ESC>',                                                          mode = ivc },
-  { from = 'ii',          to = '<ESC>',                                                          mode = ic },
   { from = '<leader>l',   to = '<cmd>noh<CR>' },
 
   -- Movement
@@ -83,6 +82,9 @@ local nmappings = {
 
   -- Buffer
   { from = '<leader>bd',  to = '<cmd>bd<CR>' },
+
+  -- Other
+  { from = '<leader>tb',  to = '<cmd>TB<CR>' },   -- toggle background [dark | light]
 }
 
 for _, mapping in ipairs(nmappings) do
