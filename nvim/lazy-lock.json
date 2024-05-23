@@ -1,0 +1,12 @@
+{
+  "gruvbox.nvim": { "branch": "main", "commit": "96a8ec336fb48a11cefbd57508888361431aac26" },
+  "indent-blankline.nvim": { "branch": "master", "commit": "d98f537c3492e87b6dc6c2e3f66ac517528f406f" },
+  "lazy.nvim": { "branch": "main", "commit": "8f19915175395680808de529e4220da8dafc0759" },
+  "mini.indentscope": { "branch": "main", "commit": "a8274b6ea2d868198d27bd91a31ed5ea3a6a5744" },
+  "mini.starter": { "branch": "main", "commit": "f0c491032dcda485ee740716217cd4d5c25b6014" },
+  "nightfox.nvim": { "branch": "main", "commit": "df75a6a94910ae47854341d6b5a6fd483192c0eb" },
+  "nvim-numbertoggle": { "branch": "main", "commit": "c5827153f8a955886f1b38eaea6998c067d2992f" },
+  "nvim-treesitter": { "branch": "master", "commit": "73fb37ed77b18ac357ca8e6e35835a8db6602332" },
+  "nvim-treesitter-textobjects": { "branch": "master", "commit": "5f9bf4b1ead7707e4e74e5319ee56bdc81fb73db" },
+  "solarized.nvim": { "branch": "main", "commit": "b3a976585551d93370fbac3c662ae254724ba103" }
+}
