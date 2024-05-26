@@ -1,4 +1,4 @@
 /*
 !.gitignore
-!.config/nvim
-!.config/wezterm
+!nvim/
+!wezterm/
