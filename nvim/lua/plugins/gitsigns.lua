@@ -1,8 +1,7 @@
 return {
   {
     'lewis6991/gitsigns.nvim',
-    -- event = 'User FileOpened',
-    lazy = false,
+    event = 'User FileOpened',
     keys = {
       { '<leader>gl', '<cmd>Gitsigns toggle_linehl<CR>', mode = 'n' }
     },
