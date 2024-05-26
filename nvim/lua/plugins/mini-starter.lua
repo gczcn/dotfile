@@ -24,10 +24,10 @@ return {
       end
 
       local footer = function()
-        return version() .. '\n' .. date()
+        return version() .. '\n' .. date() .. '\n'
       end
 
-      local recent_files = function(n, current_dir, show_path)
+      local recent_files = function(n, index, current_dir, show_path)
         n = n or 5
         if current_dir == nil then current_dir = false end
 
@@ -36,6 +36,7 @@ return {
         if show_path == true then
           show_path = function(path) return string.format(' (%s)', vim.fn.fnamemodify(path, ':~:.')) end
         end
+
 
         return function()
           local section = string.format('Recent files%s', current_dir and ' ' .. current_dir or '')
@@ -60,9 +61,11 @@ return {
           end
 
           -- Create items
+          i = index or ''
           local items = {}
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
-            local name = vim.fn.fnamemodify(f, ':t') .. show_path(f)
+            local name = (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
+            i = i == '' and '' or i + 1
             table.insert(items, { action = 'edit ' .. f, name = name, section = section })
           end
 
@@ -71,20 +74,21 @@ return {
       end
 
       local opts = {
+        evaluate_single = true,
         items = {
           -- Recent files (Current directory)
-          recent_files(8, vim.fn.getcwd()),
+          recent_files(5, 1, vim.fn.getcwd()),
 
           -- Recent files
-          recent_files(8),
+          recent_files(5, 6),
 
           -- Builtin actions
-          { name = 'Edit new buffer', action = ':ene', section = 'Builtin actions' },
+          { name = 'New buffer', action = ':ene', section = 'Builtin actions' },
           { name = 'Quit Neovim', action = ':q', section = 'Builtin actions' },
 
           -- Plugins actions
           { name = 'Sync Plugins', action = ':Lazy sync', section = 'Plugins actions' },
-          { name = 'Lazy', action = ':Lazy', section = 'Plugins actions' },
+          { name = 'Plugins', action = ':Lazy', section = 'Plugins actions' },
           { name = 'Mason', action = ':Mason', section = 'Plugins actions' },
 
           -- Telescope
@@ -93,6 +97,7 @@ return {
           { name = 'Find files', action = ':Telescope find_files', section = 'Telescope' },
           { name = 'Live grep', action = ':Telescope live_grep', section = 'Telescope' },
           { name = 'Grep string', action = ':Telescope grep_string', section = 'Telescope' },
+          { name = 'Help tags', action = ':Telescope help_tags', section = 'Telescope' },
           { name = 'Recent files', action = ':Telescope oldfiles', section = 'Telescope' },
           { name = 'Bookmarks', action = ':Telescope bookmarks list', section = 'Telescope' },
           { name = 'Options', action = ':Telescope find_files cwd=' .. vim.fn.stdpath('config'), section = 'Telescope' },
@@ -101,19 +106,47 @@ return {
           starter.gen_hook.adding_bullet('│ '),
           starter.gen_hook.aligning('center', 'center'),
         },
-        footer = footer(),
+        footer = function()
+          return footer()
+        end,
       }
 
       starter.setup(opts)
 
       vim.api.nvim_create_user_command('MiniStarterToggle', function()
         if vim.o.filetype == 'starter' then
-          vim.cmd('bd')
+          require('mini.starter').close()
         else
           require('mini.starter').open()
         end
       end, {})
       vim.keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'LazyVimStarted',
+        callback = function()
+          local stats = require('lazy').stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+
+          ft = function()
+            -- stylua: ignore
+            return footer()
+            .. 'loaded '
+            .. stats.loaded
+            .. '/'
+            .. stats.count
+            .. ' plugins in '
+            .. ms
+            .. 'ms'
+          end
+
+          starter.config.footer = ft
+
+          if vim.o.filetype == 'starter' then
+            starter.refresh()
+          end
+        end
+      })
 
       -- Disable folding on Starter buffer
       vim.cmd([[ autocmd FileType Starter setlocal nofoldenable ]])

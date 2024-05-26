@@ -1,7 +1,7 @@
 return {
   {
     'lukas-reineke/indent-blankline.nvim',
-    event = 'User FilePost',
+    event = 'User FileOpened',
     config = function()
       require('ibl').setup({
         indent = {
@@ -13,7 +13,7 @@ return {
   },
   {
     'echasnovski/mini.indentscope',
-    event = 'User FilePost',
+    event = 'User FileOpened',
     init = function()
       vim.api.nvim_create_autocmd('FileType', {
         pattern = {

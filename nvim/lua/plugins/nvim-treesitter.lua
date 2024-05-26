@@ -1,7 +1,7 @@
 return {
   {
     'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPost', 'BufNewFile', 'VeryLazy' },
+    event = { 'User FileOpened', 'BufAdd' },
     cmd = {
       'TSBufDisable',
       'TSBufEnable',
@@ -16,6 +16,11 @@ return {
       'TSUninstall',
       'TSUpdate',
       'TSUpdateSync',
+    },
+    keys = {
+      ':',
+      '/',
+      '?',
     },
     build = ':TSUpdate',
     dependencies = {
