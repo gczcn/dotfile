@@ -1,3 +1,17 @@
+local set_hl = vim.api.nvim_set_hl
+local get_hl = vim.api.nvim_get_hl
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    if vim.g.colors_name == 'gruvbox' then
+      set_hl(0, 'NoiceCmdlinePopupBorder', get_hl(0, { name = 'Normal' }))
+      set_hl(0, 'NoiceCmdlinePopupTitle', get_hl(0, { name = 'Normal' }))
+      set_hl(0, 'NoiceCmdlineIcon', get_hl(0, { name = 'GruvboxOrange' }))
+      set_hl(0, 'TelescopePromptBorder', get_hl(0, { name = 'GruvboxOrange' }))
+    end
+  end
+})
 return {
   {
     'ellisonleao/gruvbox.nvim',
