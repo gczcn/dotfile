@@ -9,6 +9,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
       set_hl(0, 'NoiceCmdlinePopupTitle', get_hl(0, { name = 'Normal' }))
       set_hl(0, 'NoiceCmdlineIcon', get_hl(0, { name = 'GruvboxOrange' }))
       set_hl(0, 'TelescopePromptBorder', get_hl(0, { name = 'GruvboxOrange' }))
+      set_hl(0, 'GitSignsCurrentLineBlame', get_hl(0, { name = 'Comment' }))
     end
   end
 })
