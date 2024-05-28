@@ -21,10 +21,14 @@ return {
       ':',
       '/',
       '?',
+      -- context
+      { '[c', function() require('treesitter-context').go_to_context() end, mode = 'n' },
     },
     build = ':TSUpdate',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/nvim-treesitter-context',
+      'HiPhish/rainbow-delimiters.nvim',
     },
     config = function()
       require('nvim-treesitter.configs').setup({
@@ -82,7 +86,13 @@ return {
           },
         },
       })
+
+      -- context
+      require('treesitter-context').setup({
+        mode = 'topline',
+      })
       vim.wo.foldmethod = 'expr'
+
       vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
       vim.wo.foldlevel = 90
     end,
