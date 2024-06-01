@@ -5,6 +5,7 @@ local colors = {}
 -- Fonts
 config.font = wezterm.font_with_fallback({
   'JetBrainsMono Nerd Font Mono',
+  -- 'Hack Nerd Font Mono',
   -- 'Maple Mono NF'
   -- 'FiraCode Nerd Font Mono',
   -- 'Mononoki Nerd Font Mono',
@@ -13,7 +14,7 @@ config.font = wezterm.font_with_fallback({
   -- 'Unifont',
 })
 
-config.font_size = 10
+config.font_size = 11
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
