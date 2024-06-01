@@ -11,6 +11,7 @@ local i   = { 'i' }
 local ic  = { 'i', 'c' }
 local ivc = { 'i', 'v', 'c' }
 local c   = { 'c' }
+local t   = { 't' }
 
 local nmappings = {
   { from = 'Q',           to = '<cmd>q<CR>' },
@@ -22,6 +23,7 @@ local nmappings = {
   { from = '`',           to = '~<left>' },
   { from = '`',           to = '~',                                                              mode = v },
   { from = '<M-q>',       to = '<ESC>',                                                          mode = ivc },
+  { from = '<M-q>',       to = '<C-\\><C-n>',                                                    mode = t },
   { from = '<leader>l',   to = '<cmd>noh<CR>' },
 
   -- Movement
@@ -84,7 +86,7 @@ local nmappings = {
   { from = '<leader>bd',  to = '<cmd>bd<CR>' },
 
   -- Other
-  { from = '<leader>tb',  to = '<cmd>TB<CR>' },   -- toggle background [dark | light]
+  { from = '<leader>ob',  to = '<cmd>TB<CR>' },   -- toggle background [dark | light]
 }
 
 for _, mapping in ipairs(nmappings) do
