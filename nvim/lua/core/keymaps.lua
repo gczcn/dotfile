@@ -45,9 +45,9 @@ local nmappings = {
   { from = '<M-I>',       to = '<cmd>normal! $<CR><right>',                                      mode = i },
   { from = '<M-N>',       to = '<left><left><left><left><left>',                                 mode = c },
   { from = '<M-I>',       to = '<right><right><right><right><right>',                            mode = c },
-  { from = 'h',           to = 'e',                                                              mode = nv },
-  { from = 'W',           to = '5w',                                                             mode = nv },
-  { from = 'B',           to = '5b',                                                             mode = nv },
+  { from = 'h',           to = 'e',                                                              mode = nvo },
+  { from = 'W',           to = '5w',                                                             mode = nvo },
+  { from = 'B',           to = '5b',                                                             mode = nvo },
 
   -- Actions
   { from = 'j',           to = 'n',                                                              mode = nvo },
@@ -58,8 +58,8 @@ local nmappings = {
   { from = 'K',           to = 'I',                                                              mode = nvo },
 
   -- Move block
-  { from = '+',           to = ":m '>+1<CR>gv=gv",                                               mode = v },
-  { from = '-',           to = ":m '<-2<CR>gv=gv",                                               mode = v },
+  { from = '+',           to = ":m '>+1<CR>gv=gv",                                               mode = v, slient = true },
+  { from = '-',           to = ":m '<-2<CR>gv=gv",                                               mode = v, slient = true },
 
   -- Window & splits
   { from = '<leader>ww',  to = '<C-w>w' },
@@ -90,5 +90,5 @@ local nmappings = {
 }
 
 for _, mapping in ipairs(nmappings) do
-  vim.keymap.set(mapping.mode or 'n', mapping.from, mapping.to, mapping.opts or { noremap = true })
+  vim.keymap.set(mapping.mode or 'n', mapping.from, mapping.to, { noremap = true, slient = nmappings.slient or nil })
 end
