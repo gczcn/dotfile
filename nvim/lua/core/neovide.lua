@@ -1,5 +1,5 @@
-local font = 'FiraCode Nerd Font Mono'
-local symbol = 'FiraCode Nerd Font Mono'
+local font = 'JetBrainsMono Nerd Font Mono'
+local symbol = 'JetBrainsMono Nerd Font Mono'
 local font_size = 11
 
 vim.o.guifont = font .. ',' .. symbol .. ':h' .. font_size
