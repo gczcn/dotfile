@@ -1,6 +1,7 @@
 return {
   {
     'nvim-telescope/telescope.nvim',
+    branch = 'master',
     -- event = 'VeryLazy',
     cmd = 'Telescope',
     keys = {
@@ -21,10 +22,16 @@ return {
       -- { '<leader>ta', '<cmd>Telescope aerial<CR>' },
       { '<leader>tz', '<cmd>Telescope z<CR>' },
       { '<leader>th', '<cmd>Telescope help_tags<CR>' },
-      { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' }
+      { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' },
+      { '<leader>tt', '<cmd>Telescope buffers<CR>' },
+      { '<leader>tw', function()
+        vim.api.nvim_exec_autocmds('User', { pattern = 'LoadColors' })
+        vim.cmd('Telescope colorscheme')
+      end },
     },
     branch = '0.1.x',
     dependencies = {
+      'MunifTanjim/nui.nvim',
       { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
       'nvim-lua/plenary.nvim',
       -- 'nvim-tree/nvim-web-devicons',

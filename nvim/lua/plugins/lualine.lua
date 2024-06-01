@@ -27,7 +27,7 @@ return {
         },
         sections = {
           lualine_a = { 'mode' },
-          lualine_b = { 'filename', 'branch', 'diffdiff' },
+          lualine_b = { 'filename', 'branch', 'diff', 'searchcount', 'selectioncount' },
           lualine_c = { 'filesize', 'filetype', 'encoding', {
             'diagnostics',
             symbols = {
@@ -40,6 +40,7 @@ return {
           },
 
           lualine_x = {
+            { 'filename', path = 3 },
             -- stylua: ignore
             {
               function() return require('noice').api.status.command.get() end,

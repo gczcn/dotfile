@@ -120,7 +120,7 @@ return {
           require('mini.starter').open()
         end
       end, {})
-      vim.keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
+      vim.keymap.set('n', '<leader>os', '<cmd>MiniStarterToggle<CR>')
 
       vim.api.nvim_create_autocmd('User', {
         pattern = 'LazyVimStarted',

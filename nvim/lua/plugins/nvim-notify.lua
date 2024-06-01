@@ -82,7 +82,6 @@ return {
             }
           end,
         },
-
         level = 1,
         timeout = 1000,
         fps = 60,
