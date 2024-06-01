@@ -3,7 +3,7 @@ return {
     'gczcn/antonym.nvim',
     cmd = 'AntonymWord',
     keys = {
-      { '<leader>ta', '<cmd>AntonymWord<CR>' },
+      { '<leader>oa', '<cmd>AntonymWord<CR>' },
     },
     config = function()
       require('antonym').setup()

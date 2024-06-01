@@ -22,11 +22,18 @@ return {
         italic = {
           strings = false,
         },
+        overrides = {
+          Visual = { bold = true },
+        },
       })
       vim.cmd.colorscheme('gruvbox')
     end
   },
 
-  { 'EdenEast/nightfox.nvim', lazy = true },
-  { 'maxmx03/solarized.nvim', lazy = true },
+  -- Alternative color scheme, will be loaded when pressing '<leader>tt'
+  { 'EdenEast/nightfox.nvim', event = 'User LoadColors' },
+  { 'maxmx03/solarized.nvim', event = 'User LoadColors' },
+  { 'sainnhe/everforest', event = 'User LoadColors' },
+  { 'catppuccin/nvim', name = 'catppuccin', event = 'User LoadColors' },
+  { 'projekt0n/github-nvim-theme', event = 'User LoadColors' },
 }
