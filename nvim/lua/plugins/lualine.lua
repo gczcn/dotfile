@@ -74,12 +74,32 @@ return {
               cond = require('lazy.status').has_updates,
               color = { fg = Utils.get_hl('Special', 'fg') },
             },
-            lsp_clients, 'tabnine', 'encoding', 'hostname', 'fileformat' },
+            lsp_clients, 'tabnine', 'hostname', 'fileformat' },
           lualine_y = {
             { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
             { 'location', padding = { left = 0, right = 1 } },
           },
           lualine_z = { get_date },
+        },
+
+        inactive_sections = {
+          lualine_a = { 'filename', 'filesize', 'filetype', 'encoding', {
+            'diagnostics',
+            symbols = {
+              error = 'E',
+              warn = 'W',
+              hint = 'H',
+              info = 'I',
+            },
+          } },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = {
+            { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
+            { 'location', padding = { left = 0, right = 1 } },
+          }
         },
       })
     end
