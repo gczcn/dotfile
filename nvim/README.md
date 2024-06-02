@@ -1,6 +1,6 @@
 # My Neovim Configuration
 
-**English** | [中文](https://github.com/gczcn/dotfile/tree/main/nvim/README_CN.md)
+**English** | [中文](README_CN.md)
 
 This is my neovim configuration file  
 I use colemak keyboard layout, the key bindings in this configuration may only work with colemak layout

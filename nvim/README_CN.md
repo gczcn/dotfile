@@ -1,6 +1,6 @@
 # 我的 Neovim 配置
 
-[English](https://github.com/gczcn/dotfile/tree/main/nvim/) | **中文**
+[English](README.md) | **中文**
 
 这是我的 neovim 配置文件  
 我使用 colemak 键盘布局，所以此配置文件中的键位设置可能只适用于 colemak键盘布局
