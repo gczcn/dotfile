@@ -14,6 +14,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end
 })
 return {
+
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
@@ -31,9 +32,9 @@ return {
   },
 
   -- Alternative color scheme, will be loaded when pressing '<leader>tt'
+  { 'catppuccin/nvim', name = 'catppuccin', event = 'User LoadColors' },
   { 'EdenEast/nightfox.nvim', event = 'User LoadColors' },
   { 'maxmx03/solarized.nvim', event = 'User LoadColors' },
   { 'sainnhe/everforest', event = 'User LoadColors' },
-  { 'catppuccin/nvim', name = 'catppuccin', event = 'User LoadColors' },
   { 'projekt0n/github-nvim-theme', event = 'User LoadColors' },
 }
