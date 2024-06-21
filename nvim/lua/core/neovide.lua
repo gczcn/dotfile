@@ -18,15 +18,6 @@ local neovide_options = {
   cursor_vfx_mode = 'pixiedust',
   remember_window_size = true,
   input_macos_alt_is_meta = true,
-  scroll_animation_length = 0.15,
-  hide_mouse_when_typing = true,
-  unlink_border_highlights = true,
-  confirm_quit = true,
-  cursor_animate_command_line = true,
-  cursor_unfocused_outline_width = 0.1,
-  cursor_vfx_mode = 'pixiedust',
-  remember_window_size = true,
-  input_macos_alt_is_meta = true,
 }
 
 for key, value in pairs(neovide_options) do
