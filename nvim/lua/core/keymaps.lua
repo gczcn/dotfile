@@ -14,11 +14,14 @@ local c   = { 'c' }
 local t   = { 't' }
 
 local nmappings = {
+  { from = '<ESC>',       to = '<ESC>' },
   { from = 'Q',           to = '<cmd>q<CR>' },
   { from = '<M-y>',       to = '"+y',                                                            mode = nv },
   { from = '<M-Y>',       to = '"+Y',                                                            mode = nv },
   { from = '<M-p>',       to = '"+p',                                                            mode = nv },
   { from = '<M-P>',       to = '"+P',                                                            mode = nv },
+  { from = '<M-d>',       to = '"+d',                                                            mode = nv },
+  { from = '<M-D>',       to = '"+D',                                                            mode = nv },
   { from = 'kr',          to = '`[`]',                                                           mode = v },
   { from = '`',           to = '~<left>' },
   { from = '`',           to = '~',                                                              mode = v },
@@ -27,8 +30,8 @@ local nmappings = {
   { from = '<leader>l',   to = '<cmd>noh<CR>' },
 
   -- Movement
-  { from = 'u',           to = 'k',                                                              mode = nvo },
-  { from = 'e',           to = 'j',                                                              mode = nvo },
+  { from = 'u',           to = 'gk',                                                             mode = nvo },
+  { from = 'e',           to = 'gj',                                                             mode = nvo },
   { from = 'n',           to = 'h',                                                              mode = nvo },
   { from = 'i',           to = 'l',                                                              mode = nvo },
   { from = 'U',           to = '5k',                                                             mode = nvo },
