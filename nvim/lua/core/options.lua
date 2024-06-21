@@ -44,11 +44,12 @@ local options = {
   winminwidth    = 5,                                   -- minimum window width
   smoothscroll   = true,
   pumblend       = 15,                                  -- set popup menu transparency
+  winblend       = 15,
   fillchars      = { foldopen = '', foldclose = '' },
   laststatus     = 0,                                   -- Don't show status line until status line plugin is loaded
   spell          = false,
   spelllang      = { 'en_us' },
-  cmdheight      = 0                                    -- Use noise.nvim plug-in, no need to display cmdline
+  cmdheight      = 0,                                   -- Use noise.nvim plug-in, no need to display cmdline
 }
 
 local global = {
