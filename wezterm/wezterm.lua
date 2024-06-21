@@ -4,6 +4,7 @@ local colors = {}
 
 -- Fonts
 config.font = wezterm.font_with_fallback({
+  -- 'Consolas',
   'JetBrainsMono Nerd Font Mono',
   -- 'Hack Nerd Font Mono',
   -- 'Maple Mono NF'
@@ -66,6 +67,7 @@ config.window_padding = {
 -- Color Scheme
 config.color_scheme = 'GruvboxDark'
 config.colors = colors
+-- config.color_scheme = 'Catppuccin Mocha'
 config.front_end = 'WebGpu'
 
 return config
