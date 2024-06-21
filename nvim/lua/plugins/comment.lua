@@ -2,43 +2,42 @@ return {
   {
     'numToStr/Comment.nvim',
     keys = {
-      { 'gc', mode = { 'n', 'v' } },
-      { 'gv', mode = { 'n', 'v' } },
+      { 'mc', mode = { 'n', 'v' } },
+      { 'mv', mode = { 'n', 'v' } },
 
       -- normal mode
-      { 'gcc', mode = 'n' },
-      { 'gbc', mode = 'n' },
-      { 'gco', mode = 'n' },
-      { 'gcO', mode = 'n' },
-      { 'gcA', mode = 'n' },
+      { 'mcc', mode = 'n' },
+      { 'mbc', mode = 'n' },
+      { 'mco', mode = 'n' },
+      { 'mcO', mode = 'n' },
+      { 'mcA', mode = 'n' },
     },
     config = function()
       require('Comment').setup({
         ---LHS of toggle mappings in NORMAL mode
         toggler = {
           ---Line-comment toggle keymap
-          line = 'gcc',
+          line = 'mcc',
           ---Block-comment toggle keymap
-          block = 'gbc',
+          block = 'mbc',
         },
         ---LHS of operator-pending mappings in NORMAL and VISUAL mode
         opleader = {
           ---Line-comment keymap
-          line = 'gc',
+          line = 'mc',
           ---Block-comment keymap
-          block = 'gb',
+          block = 'mb',
         },
         ---LHS of extra mappings
         extra = {
           ---Add comment on the line above
-          above = 'gcO',
+          above = 'mcO',
           ---Add comment on the line below
-          below = 'gco',
+          below = 'mco',
           ---Add comment at the end of line
-          eol = 'gcA',
+          eol = 'mcA',
         },
       })
     end
-
   }
 }

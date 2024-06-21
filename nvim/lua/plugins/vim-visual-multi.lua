@@ -16,6 +16,9 @@ return {
         let g:VM_maps['Remove Region']      = 'q'
         let g:VM_maps["Undo"]               = 'l'
         let g:VM_maps["Redo"]               = '<C-r>'
+
+        nmap <M-U> <C-Up>
+        nmap <M-E> <C-Down>
       ]])
     end
   }

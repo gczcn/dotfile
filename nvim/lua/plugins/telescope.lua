@@ -16,14 +16,13 @@ return {
       { '<leader>te', '<cmd>Telescope file_browser<CR>' },
       { '<leader>tE', '<cmd>Telescope file_browser path=%:p:h<CR>' },
       { '<leader>tj', '<cmd>Telescope emoji<CR>' },
-      { '<leader>tG', '<cmd>Telescope glyph<CR>' },
-      { '<leader>tb', '<cmd>Telescope bookmarks list<CR>' },
-      { '<leader>tg', '<cmd>Telescope nerdy<CR>' },
+      { '<leader>tg', '<cmd>Telescope glyph<CR>' },
+      { '<leader>tG', '<cmd>Telescope nerdy<CR>' },
       -- { '<leader>ta', '<cmd>Telescope aerial<CR>' },
       { '<leader>tz', '<cmd>Telescope z<CR>' },
       { '<leader>th', '<cmd>Telescope help_tags<CR>' },
       { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' },
-      { '<leader>tt', '<cmd>Telescope buffers<CR>' },
+      { '<leader>tb', '<cmd>Telescope buffers<CR>' },
       { '<leader>tw', function()
         vim.api.nvim_exec_autocmds('User', { pattern = 'LoadColors' })
         vim.cmd('Telescope colorscheme')
@@ -41,7 +40,6 @@ return {
       'nvim-telescope/telescope-file-browser.nvim',
       'xiyaowong/telescope-emoji.nvim',
       'ghassan0/telescope-glyph.nvim',
-      'tomasky/bookmarks.nvim',
       '2kabhishek/nerdy.nvim',
       'stevearc/dressing.nvim',
       -- 'stevearc/aerial.nvim',
@@ -72,6 +70,7 @@ return {
               ['<M-e>'] = actions.move_selection_next,
             },
           },
+          winblend = 15,
         },
         extensions = {
           file_browser = {
@@ -84,7 +83,7 @@ return {
       if vim.g.neovide then
         telescope.setup({
           defaults = {
-            winblend = 70,
+            winblend = 30,
           },
         })
       end
@@ -114,7 +113,6 @@ return {
       telescope.load_extension('file_browser')
       telescope.load_extension('emoji')
       telescope.load_extension('glyph')
-      telescope.load_extension('bookmarks')
       telescope.load_extension('nerdy')
       -- telescope.load_extension('aerial')
       telescope.load_extension('z')

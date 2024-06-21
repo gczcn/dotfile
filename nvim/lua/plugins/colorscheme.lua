@@ -1,3 +1,5 @@
+local Utils = require('utils')
+
 local set_hl = vim.api.nvim_set_hl
 local get_hl = vim.api.nvim_get_hl
 
@@ -5,6 +7,26 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   pattern = '*',
   callback = function()
     if vim.g.colors_name == 'gruvbox' then
+      local diagnostic_virtual_text = {
+        dark = {
+          DiagnosticVirtualTextError = '#4c3130',
+          DiagnosticVirtualTextWarn = '#403821',
+          DiagnosticVirtualTextHint = '#364230',
+          DiagnosticVirtualTextInfo = '#304540',
+        },
+        light = {
+          DiagnosticVirtualTextError = '#F5827D',
+          DiagnosticVirtualTextWarn = '#F5D27D',
+          DiagnosticVirtualTextHint = '#7DF5AE',
+          DiagnosticVirtualTextInfo = '#7DF5DA',
+        },
+      }
+
+      local dvt = diagnostic_virtual_text[vim.o.background]
+      for _, d in ipairs({ 'DiagnosticVirtualTextError', 'DiagnosticVirtualTextWarn', 'DiagnosticVirtualTextHint', 'DiagnosticVirtualTextInfo' }) do
+        set_hl(0, d, {bg = dvt[d], fg = Utils.get_hl(d, 'fg')})
+      end
+
       set_hl(0, 'NoiceCmdlinePopupBorder', get_hl(0, { name = 'Normal' }))
       set_hl(0, 'NoiceCmdlinePopupTitle', get_hl(0, { name = 'Normal' }))
       set_hl(0, 'NoiceCmdlineIcon', get_hl(0, { name = 'GruvboxOrange' }))
@@ -14,7 +36,6 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   end
 })
 return {
-
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
@@ -36,5 +57,7 @@ return {
   { 'EdenEast/nightfox.nvim', event = 'User LoadColors' },
   { 'maxmx03/solarized.nvim', event = 'User LoadColors' },
   { 'sainnhe/everforest', event = 'User LoadColors' },
+  { 'sainnhe/gruvbox-material', event = 'User LoadColors' },
   { 'projekt0n/github-nvim-theme', event = 'User LoadColors' },
+  { 'folke/tokyonight.nvim', event = 'User LoadColors' },
 }

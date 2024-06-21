@@ -27,14 +27,14 @@ return {
         },
         sections = {
           lualine_a = { 'mode' },
-          lualine_b = { 'filename', 'branch', 'diff', 'searchcount', 'selectioncount' },
-          lualine_c = { 'filesize', 'filetype', 'encoding', {
+          lualine_b = { 'filename', 'searchcount', 'selectioncount' },
+          lualine_c = { 'branch', 'diff', 'filesize', 'filetype', 'encoding', {
             'diagnostics',
             symbols = {
-              error = 'E',
-              warn = 'W',
-              hint = 'H',
-              info = 'I',
+              error = 'E ',
+              warn = 'W ',
+              hint = 'H ',
+              info = 'I ',
             },
           },
           },
@@ -83,17 +83,17 @@ return {
         },
 
         inactive_sections = {
-          lualine_a = { 'filename', 'filesize', 'filetype', 'encoding', {
+          lualine_a = { 'filename' },
+          lualine_b = {},
+          lualine_c = { 'branch', 'diff', 'searchcount', 'selectioncount', 'filesize', 'filetype', 'encoding', {
             'diagnostics',
             symbols = {
-              error = 'E',
-              warn = 'W',
-              hint = 'H',
-              info = 'I',
+              error = 'E ',
+              warn = 'W ',
+              hint = 'H ',
+              info = 'I ',
             },
           } },
-          lualine_b = {},
-          lualine_c = {},
           lualine_x = {},
           lualine_y = {},
           lualine_z = {

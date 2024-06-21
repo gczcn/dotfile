@@ -27,7 +27,7 @@ return {
         return version() .. '\n' .. date() .. '\n'
       end
 
-      local recent_files = function(n, index, current_dir, show_path)
+      local recent_files = function(n, index_h, index, current_dir, show_path)
         n = n or 5
         if current_dir == nil then current_dir = false end
 
@@ -64,7 +64,7 @@ return {
           i = index or ''
           local items = {}
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
-            local name = (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
+            local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
             i = i == '' and '' or i + 1
             table.insert(items, { action = 'edit ' .. f, name = name, section = section })
           end
@@ -77,10 +77,10 @@ return {
         evaluate_single = true,
         items = {
           -- Recent files (Current directory)
-          recent_files(5, 1, vim.fn.getcwd()),
+          recent_files(10, '', 1, vim.fn.getcwd()),
 
           -- Recent files
-          recent_files(5, 6),
+          recent_files(10, '`', 1),
 
           -- Builtin actions
           { name = 'New buffer', action = ':ene', section = 'Builtin actions' },
@@ -104,11 +104,13 @@ return {
         },
         content_hooks = {
           starter.gen_hook.adding_bullet('│ '),
-          starter.gen_hook.aligning('center', 'center'),
+          starter.gen_hook.padding(7, 3),
+          -- starter.gen_hook.aligning('center', 'center'),
         },
         footer = function()
           return footer()
         end,
+        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.`',
       }
 
       starter.setup(opts)

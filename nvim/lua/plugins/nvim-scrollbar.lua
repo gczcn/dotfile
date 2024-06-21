@@ -6,7 +6,7 @@ return {
       require('scrollbar').setup({
         marks = {
           Cursor = {
-            text = '█'
+            text = '■'
           },
         },
       })

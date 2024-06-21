@@ -7,6 +7,7 @@ return {
     },
     config = function()
       require('gitsigns').setup({
+        sign_priority = 11,
         current_line_blame = true,
         current_line_blame_opts = {
           delay = 0,
