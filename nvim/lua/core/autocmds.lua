@@ -23,6 +23,13 @@ autocmd('FileType', {
   end
 })
 
+autocmd('FileType', {
+  pattern = { 'markdown' },
+  callback = function()
+    vim.o.shiftwidth = 2
+  end
+})
+
 -- Events
 
 autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
