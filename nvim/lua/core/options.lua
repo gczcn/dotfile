@@ -4,7 +4,6 @@ local options = {
   number         = true,                                -- show numbercolumn
   relativenumber = true,                                -- show relative numbercolumn
   completeopt    = { 'menu', 'menuone', 'noselect' },   -- options for insert mode completion
-  signcolumn     = 'yes',                               -- always show the sign column
   cursorline     = true,                                -- highlight the text line of the cursor
   cursorcolumn   = true,                                -- highlight the text column of the cursor
   scrolloff      = 8,                                   -- lines of context
@@ -27,13 +26,8 @@ local options = {
   updatetime     = 100,                                 -- save swap file and trigger CursorHold
   splitbelow     = true,                                -- put new windows below current
   splitright     = true,                                -- put new windows right of current
-  termguicolors  = true,                                -- true color support
   list           = true,
   showmode       = false,                               -- disable showing modes in command line
-  foldenable     = true,                                -- enable fold
-  foldlevel      = 99,                                  -- set high foldlevel
-  foldlevelstart = 99,                                  -- start with all code unfolded
-  foldcolumn     = '1',                                 -- show foldcolumn
   conceallevel   = 2,                                   -- hide * markup for bold and italic, but not markers with substitutions
   confirm        = true,                                -- confirm to save changes before exiting modified buffer
   colorcolumn    = '80,100',                            -- line number reminder
@@ -43,14 +37,25 @@ local options = {
   undofile       = true,
   winminwidth    = 5,                                   -- minimum window width
   smoothscroll   = true,
-  pumblend       = 15,                                  -- set popup menu transparency
-  winblend       = 15,
   fillchars      = { foldopen = '', foldclose = '' },
   laststatus     = 0,                                   -- Don't show status line until status line plugin is loaded
   spell          = false,
   spelllang      = { 'en_us' },
-  cmdheight      = 0,                                   -- Use noise.nvim plug-in, no need to display cmdline
 }
+
+if vim.g.setup_mode ~= 'clean' then
+  vim.opt.pumblend = 15 -- set popup menu transparency
+  vim.opt.winblend = 15 -- set floatwindow menu transparency
+  vim.opt.signcolumn = 'yes' -- always show the sign column
+end
+
+if vim.g.setup_mode == 'default' then
+  vim.opt.foldenable = true -- enable fold
+  vim.opt.foldlevel = 99 -- set high foldlevel
+  vim.opt.foldlevelstart = 99 -- start with all code unfolded
+  vim.opt.foldcolumn = '1' -- show foldcolumn
+  vim.opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
+end
 
 local global = {
   encoding = 'UTF-8',
