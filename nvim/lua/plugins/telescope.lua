@@ -19,7 +19,7 @@ return {
       { '<leader>tg', '<cmd>Telescope glyph<CR>' },
       { '<leader>tG', '<cmd>Telescope nerdy<CR>' },
       -- { '<leader>ta', '<cmd>Telescope aerial<CR>' },
-      { '<leader>tz', '<cmd>Telescope z<CR>' },
+      { '<leader>tz', '<cmd>Telescope zoxide list<CR>' },
       { '<leader>th', '<cmd>Telescope help_tags<CR>' },
       { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' },
       { '<leader>tb', '<cmd>Telescope buffers<CR>' },
@@ -28,22 +28,22 @@ return {
         vim.cmd('Telescope colorscheme')
       end },
     },
-    branch = '0.1.x',
     dependencies = {
-      'MunifTanjim/nui.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      'nvim-lua/popup.nvim',
       'nvim-lua/plenary.nvim',
-      -- 'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
+      'stevearc/dressing.nvim',
       { 'kkharji/sqlite.lua', module = 'sqlite' },
+
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
       'AckslD/nvim-neoclip.lua',
       'debugloop/telescope-undo.nvim',
       'nvim-telescope/telescope-file-browser.nvim',
       'xiyaowong/telescope-emoji.nvim',
       'ghassan0/telescope-glyph.nvim',
       '2kabhishek/nerdy.nvim',
-      'stevearc/dressing.nvim',
       -- 'stevearc/aerial.nvim',
-      'nvim-telescope/telescope-z.nvim',
+      'jvgrootveld/telescope-zoxide',
     },
     init = function()
       if vim.fn.argc(-1) == 1 then
@@ -77,6 +77,18 @@ return {
             hijack_netrw = true,
             hidden = { file_browser = true, folder_browser = true },
           },
+          zoxide = {
+            prompt_title = 'Visited directories from zoxide',
+            mappings = {
+              default = {
+                action = function(selection)
+                  vim.cmd.cd(selection.path)
+                  vim.fn.system({ "zoxide", "add", selection.path })
+                  vim.cmd('Telescope find_files')
+                end,
+              },
+            },
+          },
         },
       })
 
@@ -107,15 +119,17 @@ return {
         },
       })
 
-      telescope.load_extension('fzf')
-      telescope.load_extension('neoclip')
-      telescope.load_extension('undo')
-      telescope.load_extension('file_browser')
-      telescope.load_extension('emoji')
-      telescope.load_extension('glyph')
-      telescope.load_extension('nerdy')
-      -- telescope.load_extension('aerial')
-      telescope.load_extension('z')
+      local load_extension = telescope.load_extension
+
+      load_extension('fzf')
+      load_extension('neoclip')
+      load_extension('undo')
+      load_extension('file_browser')
+      load_extension('emoji')
+      load_extension('glyph')
+      load_extension('nerdy')
+      load_extension('zoxide')
+      -- load_extension('aerial')
     end,
   }
 }

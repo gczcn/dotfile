@@ -21,5 +21,5 @@ This configuration file uses nerd font icons in relatively few places, so you do
 * **Optional:**
   - Clipboard tool ([xclip](https://github.com/astrand/xclip/) ...)
   - [ripgrep](https://github.com/BurntSushi/ripgrep/): telescope.nvim plugin for searching files
-  - [z](https://github.com/rupa/z/): telescope.nvim plugin for file jump
+  - [zoxide](https://github.com/ajeetdsouza/zoxide): telescope.nvim plugin for file jump
   - [Nerd Font](https://www.nerdfonts.com/): Used to display beautiful icons in the terminal

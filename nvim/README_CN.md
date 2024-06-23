@@ -21,5 +21,5 @@
 * **可选依赖：**
   - 剪贴版工具 ([xclip](https://github.com/astrand/xclip/) 等等)
   - [ripgrep](https://github.com/BurntSushi/ripgrep/): telescope.nvim 插件用来搜索文件
-  - [z](https://github.com/rupa/z/): telescope.nvim 插件用来文件跳转
+  - [zoxide](https://github.com/ajeetdsouza/zoxide): telescope.nvim 插件用来文件跳转
   - [Nerd Font](https://www.nerdfonts.com/): 在终端中显示漂亮的图标
