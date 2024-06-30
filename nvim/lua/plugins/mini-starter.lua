@@ -92,7 +92,7 @@ return {
           { name = 'Mason', action = ':Mason', section = 'Plugins actions' },
 
           -- Telescope
-          { name = 'Jump', action = ':Telescope z', section = 'Telescope' },
+          { name = 'Jump', action = ':Telescope zoxide', section = 'Telescope' },
           { name = 'Explore', action = ':Telescope file_browser', section = 'Telescope' },
           { name = 'Find files', action = ':Telescope find_files', section = 'Telescope' },
           { name = 'Live grep', action = ':Telescope live_grep', section = 'Telescope' },
