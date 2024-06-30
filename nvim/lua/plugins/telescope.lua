@@ -19,7 +19,7 @@ return {
       { '<leader>tg', '<cmd>Telescope glyph<CR>' },
       { '<leader>tG', '<cmd>Telescope nerdy<CR>' },
       -- { '<leader>ta', '<cmd>Telescope aerial<CR>' },
-      { '<leader>tz', '<cmd>Telescope zoxide list<CR>' },
+      { '<leader>tz', '<cmd>Telescope zoxide<CR>' },
       { '<leader>th', '<cmd>Telescope help_tags<CR>' },
       { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' },
       { '<leader>tb', '<cmd>Telescope buffers<CR>' },
@@ -43,7 +43,7 @@ return {
       'ghassan0/telescope-glyph.nvim',
       '2kabhishek/nerdy.nvim',
       -- 'stevearc/aerial.nvim',
-      'jvgrootveld/telescope-zoxide',
+      'gczcn/telescope-zoxide',
     },
     init = function()
       if vim.fn.argc(-1) == 1 then
@@ -79,15 +79,6 @@ return {
           },
           zoxide = {
             prompt_title = 'Visited directories from zoxide',
-            mappings = {
-              default = {
-                action = function(selection)
-                  vim.cmd.cd(selection.path)
-                  vim.fn.system({ "zoxide", "add", selection.path })
-                  vim.cmd('Telescope find_files')
-                end,
-              },
-            },
           },
         },
       })

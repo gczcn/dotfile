@@ -92,6 +92,14 @@ local nmappings = {
   { from = '<leader>ob',  to = '<cmd>TB<CR>' },   -- toggle background [dark | light]
 }
 
+if vim.g.setup_mode ~= 'default' then
+  vim.cmd([[
+    nmap mcc gcc
+    nmap mc gc
+    vmap mc gc
+  ]])
+end
+
 for _, mapping in ipairs(nmappings) do
   vim.keymap.set(mapping.mode or 'n', mapping.from, mapping.to, { noremap = true, slient = nmappings.slient or nil })
 end

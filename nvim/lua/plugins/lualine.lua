@@ -31,10 +31,10 @@ return {
           lualine_c = { 'branch', 'diff', 'filesize', 'filetype', 'encoding', {
             'diagnostics',
             symbols = {
-              error = 'E ',
-              warn = 'W ',
-              hint = 'H ',
-              info = 'I ',
+              error = 'E',
+              warn = 'W',
+              hint = 'H',
+              info = 'I',
             },
           },
           },

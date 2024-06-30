@@ -43,24 +43,24 @@ local options = {
   spelllang      = { 'en_us' },
 }
 
-if vim.g.setup_mode ~= 'clean' then
-  vim.opt.pumblend = 15 -- set popup menu transparency
-  vim.opt.winblend = 15 -- set floatwindow menu transparency
-  vim.opt.signcolumn = 'yes' -- always show the sign column
-end
-
-if vim.g.setup_mode == 'default' then
-  vim.opt.foldenable = true -- enable fold
-  vim.opt.foldlevel = 99 -- set high foldlevel
-  vim.opt.foldlevelstart = 99 -- start with all code unfolded
-  vim.opt.foldcolumn = '1' -- show foldcolumn
-  vim.opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
-end
-
 local global = {
   encoding = 'UTF-8',
   enabled_tabnine = true   -- If you don't use tabnine, you can set it to false
 }
+
+if vim.g.setup_mode ~= 'clean' then
+  vim.opt.pumblend = 15      -- set popup menu transparency
+  vim.opt.winblend = 15      -- set floatwindow menu transparency
+  vim.opt.signcolumn = 'yes' -- always show the sign column
+end
+
+if vim.g.setup_mode == 'default' then
+  vim.opt.foldenable = true   -- enable fold
+  vim.opt.foldlevel = 99      -- set high foldlevel
+  vim.opt.foldlevelstart = 99 -- start with all code unfolded
+  vim.opt.foldcolumn = '1'    -- show foldcolumn
+  vim.opt.cmdheight = 0       -- Use noice.nvim plugin, no need to display cmdline
+end
 
 -- settings
 for key, value in pairs(options) do
