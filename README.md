@@ -3,7 +3,7 @@ my dotfile
 
 ## Todoise:
 * **all**
-  - [ ] Use `stow` to manage configuration files
+  - [x] Use `stow` to manage configuration files
 * neovim
   - [ ] Start mode switching function ( and README change )
   - [ ] Replace the text connection part in some plugins with the format string
