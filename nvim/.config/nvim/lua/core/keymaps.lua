@@ -49,8 +49,7 @@ local nmappings = {
   { from = '<M-N>',       to = '<left><left><left><left><left>',                                 mode = c },
   { from = '<M-I>',       to = '<right><right><right><right><right>',                            mode = c },
   { from = 'h',           to = 'e',                                                              mode = nvo },
-  { from = 'W',           to = '5w',                                                             mode = nvo },
-  { from = 'B',           to = '5b',                                                             mode = nvo },
+  { from = 'H',           to = 'E',                                                              mode = nvo },
 
   -- Actions
   { from = 'j',           to = 'n',                                                              mode = nvo },
