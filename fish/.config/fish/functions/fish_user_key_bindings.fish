@@ -1,4 +1,4 @@
-function fish_vi_colemak_key_bindings
+function fish_user_key_bindings
   fish_vi_key_bindings
 
   bind -s --preset -m insert k repaint-mode
