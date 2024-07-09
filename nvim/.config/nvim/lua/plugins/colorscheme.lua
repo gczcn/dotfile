@@ -41,6 +41,7 @@ return {
     priority = 1000,
     config = function()
       require('gruvbox').setup({
+        ---@diagnostic disable-next-line: missing-fields
         italic = {
           strings = false,
         },

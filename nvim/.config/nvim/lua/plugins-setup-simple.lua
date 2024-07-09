@@ -12,9 +12,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
-  { import = 'plugins' },
-  { import = 'plugins.lsp' },
-  -- { import = 'plugins.dap' },
+  { import = 'plugins.just_simple' },
+  require('plugins.lualine'),
 }, {
   install = {
     colorscheme = { 'gruvbox', 'habamax' },
