@@ -13,7 +13,16 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
   { import = 'plugins.just_simple' },
+  { import = 'plugins.just_simple.lsp' },
+  require('plugins.lsp.mason-lspconfig'),
+
   require('plugins.lualine'),
+  require('plugins.code-runner'),
+  require('plugins.flash'),
+  require('plugins.indent'),
+  require('plugins.markdown-preview'),
+  require('plugins.mason'),
+  require('plugins.nvim-autopairs'),
 }, {
   install = {
     colorscheme = { 'gruvbox', 'habamax' },
