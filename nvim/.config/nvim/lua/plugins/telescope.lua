@@ -18,7 +18,7 @@ return {
       { '<leader>tj', '<cmd>Telescope emoji<CR>' },
       { '<leader>tg', '<cmd>Telescope glyph<CR>' },
       { '<leader>tG', '<cmd>Telescope nerdy<CR>' },
-      -- { '<leader>ta', '<cmd>Telescope aerial<CR>' },
+      { '<leader>ta', '<cmd>Telescope aerial<CR>' },
       { '<leader>tz', '<cmd>Telescope zoxide<CR>' },
       { '<leader>th', '<cmd>Telescope help_tags<CR>' },
       { '<leader>to', '<cmd>Telescope find_files cwd=' .. vim.fn.stdpath 'config' .. '<CR>' },
@@ -42,7 +42,7 @@ return {
       'xiyaowong/telescope-emoji.nvim',
       'ghassan0/telescope-glyph.nvim',
       '2kabhishek/nerdy.nvim',
-      -- 'stevearc/aerial.nvim',
+      'stevearc/aerial.nvim',
       'gczcn/telescope-zoxide',
     },
     init = function()
@@ -118,7 +118,7 @@ return {
       load_extension('glyph')
       load_extension('nerdy')
       load_extension('zoxide')
-      -- load_extension('aerial')
+      load_extension('aerial')
     end,
   }
 }
