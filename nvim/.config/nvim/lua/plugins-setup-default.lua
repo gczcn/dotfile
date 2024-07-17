@@ -11,11 +11,18 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require('lazy').setup({
-  { import = 'plugins' },
-  { import = 'plugins.lsp' },
-  -- { import = 'plugins.dap' },
-}, {
+local get_import = function()
+  local import = {
+    { import = 'plugins' },
+    { import = 'plugins.lsp' }
+  }
+  if vim.g.enabled_game_plugins then
+    table.insert(import, { import = 'plugins.game' })
+  end
+  return import
+end
+
+require('lazy').setup(get_import(), {
   install = {
     colorscheme = { 'gruvbox', 'habamax' },
   },

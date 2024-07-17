@@ -9,5 +9,7 @@ my dotfile
   - [ ] Replace the text connection part in some plugins with the format string
   - [ ] Make color scheme settings more convenient
   - [x] Replace `telescope-z.nvim` with `telescope-zoxide`
+  - [ ] Find or make a better Tetris game
+  - [ ] Added menu for launching games
 * wezterm
   - [ ] Configuration Modularity
