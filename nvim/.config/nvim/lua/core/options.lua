@@ -38,7 +38,7 @@ local options = {
   winminwidth    = 5,                                   -- minimum window width
   smoothscroll   = true,
   fillchars      = { foldopen = '', foldclose = '' },
-  laststatus     = 0,                                   -- Don't show status line until status line plugin is loaded
+  -- laststatus     = 0,                                   -- Don't show status line until status line plugin is loaded
   spell          = false,
   spelllang      = { 'en_us' },
 }
@@ -52,6 +52,7 @@ if vim.g.setup_mode ~= 'clean' then
   vim.opt.pumblend = 15      -- set popup menu transparency
   vim.opt.winblend = 15      -- set floatwindow menu transparency
   vim.opt.signcolumn = 'yes' -- always show the sign column
+  vim.opt.laststatus = 0     -- Don't show status line until status line plugin is loaded
 end
 
 if vim.g.setup_mode == 'default' then
