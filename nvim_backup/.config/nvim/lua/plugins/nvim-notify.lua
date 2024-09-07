@@ -8,6 +8,7 @@ return {
       local direction = top_down and require('notify.stages.util').DIRECTION.TOP_DOWN
       or require('notify.stages.util').DIRECTION.BOTTOM_UP
 
+      ---@diagnostic disable-next-line: missing-fields
       require('notify').setup({
         stages = {
           function(state)

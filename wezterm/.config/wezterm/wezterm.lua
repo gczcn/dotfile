@@ -4,13 +4,13 @@ local colors = {}
 
 -- Fonts
 config.font = wezterm.font_with_fallback({
+  -- 'Terminus (TTF)',
   -- 'Consolas',
   'JetBrainsMono Nerd Font Mono',
   -- 'Hack Nerd Font Mono',
   -- 'Maple Mono NF'
   -- 'FiraCode Nerd Font Mono',
   -- 'Mononoki Nerd Font Mono',
-  -- 'Terminus (TTF)',
   -- 'Terminess Nerd Font Mono',
   -- 'Unifont',
 })
