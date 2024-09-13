@@ -7,3 +7,6 @@ require('core.autocmds')
 if vim.g.neovide then
   require('core.neovide')
 end
+
+-- Plugins
+require('lazy_init')

@@ -1,0 +1,9 @@
+{
+  "antonym.nvim": { "branch": "main", "commit": "ce50b1451297462c2c4594ff924177967a382020" },
+  "catppuccin-nvim": { "branch": "main", "commit": "4fd72a9ab64b393c2c22b168508fd244877fec96" },
+  "flash.nvim": { "branch": "main", "commit": "34c7be146a91fec3555c33fe89c7d643f6ef5cf1" },
+  "lazy.nvim": { "branch": "main", "commit": "077102c5bfc578693f12377846d427f49bc50076" },
+  "nvim-web-devicons": { "branch": "master", "commit": "9154484705968658e9aab2b894d1b2a64bf9f83d" },
+  "plenary.nvim": { "branch": "master", "commit": "ec289423a1693aeae6cd0d503bac2856af74edaa" },
+  "telescope.nvim": { "branch": "master", "commit": "927c10f748e49c543b2d544c321a1245302ff324" }
+}
