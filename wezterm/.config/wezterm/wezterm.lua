@@ -3,12 +3,15 @@ local config = {}
 local colors = {}
 
 -- Fonts
+-- Test: English: Hello
+--       中文：   你好
 config.font = wezterm.font_with_fallback({
+  -- 'MonaspiceXe Nerd Font Mono',
   -- 'Terminus (TTF)',
   -- 'Consolas',
   'JetBrainsMono Nerd Font Mono',
   -- 'Hack Nerd Font Mono',
-  -- 'Maple Mono NF'
+  -- 'Maple Mono',
   -- 'FiraCode Nerd Font Mono',
   -- 'Mononoki Nerd Font Mono',
   -- 'Terminess Nerd Font Mono',
@@ -65,9 +68,9 @@ config.window_padding = {
 }
 
 -- Color Scheme
-config.color_scheme = 'GruvboxDark'
-config.colors = colors
--- config.color_scheme = 'Catppuccin Mocha'
+-- config.color_scheme = 'GruvboxDark'
+-- config.colors = colors
+config.color_scheme = 'Catppuccin Mocha'
 config.front_end = 'WebGpu'
 
 return config
