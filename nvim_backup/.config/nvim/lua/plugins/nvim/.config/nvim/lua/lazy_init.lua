@@ -16,30 +16,13 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.opt.cmdheight = 0
-vim.opt.laststatus = 0
-vim.opt.winblend = 15
-vim.opt.pumblend = 15
-vim.opt.signcolumn = 'yes'
--- vim.o.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevelstart = 99
--- vim.o.foldenable = true
-
-vim.keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>tl', function()
-  if vim.o.filetype == 'lazy' then
-    vim.cmd.q()
-  else
-    vim.cmd.Lazy()
-  end
-end)
 
 -- Setup lazy.nvim
 require('lazy').setup({
   spec = {
     { import = 'plugins' },
   },
-  install = { colorscheme = { 'catppuccin', 'tokyonight', 'gruvbox', 'habamax' } },
+  install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
 
   -- automatically check for plugin updates
   checker = { enabled = true },

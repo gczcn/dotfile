@@ -6,27 +6,23 @@ local colors = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  -- 'MonaspiceXe Nerd Font Mono',
+  'GoMono Nerd Font Mono',
+  { family = 'Noto Serif SC', weight = 'Medium' },
+  -- 'BlexMono Nerd Font Mono',
+  -- 'Sarasa Term SC',
   -- 'Terminus (TTF)',
-  -- 'Consolas',
-  'JetBrainsMono Nerd Font Mono',
-  -- 'Hack Nerd Font Mono',
-  -- 'Maple Mono',
-  -- 'FiraCode Nerd Font Mono',
-  -- 'Mononoki Nerd Font Mono',
+  -- 'JetBrainsMono Nerd Font Mono',
   -- 'Terminess Nerd Font Mono',
-  -- 'Unifont',
 })
 
-config.font_size = 11
+config.font_size = 12
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.tab_max_width = 10000
 
-colors['tab_bar'] = {
-  background = '#3c3836',
+colors['tab_bar'] = { background = '#3c3836',
 
   active_tab = {
     bg_color = '#a89984',
@@ -68,9 +64,11 @@ config.window_padding = {
 }
 
 -- Color Scheme
--- config.color_scheme = 'GruvboxDark'
--- config.colors = colors
-config.color_scheme = 'Catppuccin Mocha'
+config.color_scheme = 'GruvboxDark'
+config.colors = colors
+-- config.color_scheme = 'Catppuccin Mocha'
+-- config.color_scheme = 'Tokyo Night'
+-- config.color_scheme = 'tokyonight_night'
 config.front_end = 'WebGpu'
 
 return config

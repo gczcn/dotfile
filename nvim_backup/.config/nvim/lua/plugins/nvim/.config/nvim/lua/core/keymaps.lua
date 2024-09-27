@@ -31,7 +31,6 @@ map({ 'n', 'v' }, 'l', 'u', opts)
 map({ 'n', 'v' }, 'L', 'U', opts)
 map({ 'n', 'v', 'o' }, 'k', 'i', opts)
 map({ 'n', 'v', 'o' }, 'K', 'I', opts)
-map('i', 'ii', '<ESC>', opts)
 map('t', '<M-q>', '<C-\\><C-n>', opts) -- In terminal change mode to normal
 
 map('v', 'kr', '`[`]', opts)

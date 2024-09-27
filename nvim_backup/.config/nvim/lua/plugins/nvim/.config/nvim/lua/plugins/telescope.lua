@@ -33,7 +33,6 @@ return {
     end,
     config = function()
       local telescope = require('telescope')
-      local load_extension = telescope.load_extension
       local actions = require('telescope.actions')
 
       telescope.setup({
@@ -67,8 +66,6 @@ return {
           },
         })
       end
-
-      load_extension('file_browser')
     end
   }
 }

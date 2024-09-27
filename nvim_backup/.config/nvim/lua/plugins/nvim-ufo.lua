@@ -1,21 +1,24 @@
 return {
   {
     'kevinhwang91/nvim-ufo',
+    enable = false,
     dependencies = {
       'kevinhwang91/promise-async'
     },
     keys = { 'z' },
     event = { 'BufAdd', 'User FileOpened' },
-    config = function()
+    init = function()
+      vim.o.foldcolumn = '1'
       vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
-
+    end
+    config = function()
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
       local handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
-        local suffix = (' 󰁂 fold %d '):format(endLnum - lnum)
+        local suffix = (' < fold %d '):format(endLnum - lnum)
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
