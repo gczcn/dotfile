@@ -6,16 +6,16 @@ local colors = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  'GoMono Nerd Font Mono',
-  { family = 'Noto Serif SC', weight = 'Medium' },
+  -- 'GoMono Nerd Font Mono',
+  -- { family = 'Noto Serif SC', weight = 'Medium' },
   -- 'BlexMono Nerd Font Mono',
   -- 'Sarasa Term SC',
   -- 'Terminus (TTF)',
-  -- 'JetBrainsMono Nerd Font Mono',
+  'JetBrainsMono Nerd Font Mono',
   -- 'Terminess Nerd Font Mono',
 })
 
-config.font_size = 12
+config.font_size = 11
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
