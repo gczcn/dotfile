@@ -5,16 +5,7 @@ return {
     local v = vim.version()
 
     local version = function()
-      return 'NVIM v'
-        .. v.major
-        .. '.'
-        .. v.minor
-        .. '.'
-        .. v.patch
-        .. '-'
-        .. v.prerelease
-        .. '+'
-        .. v.build
+      return 'NVIM v' .. tostring(vim.version())
     end
 
     local header = function()
