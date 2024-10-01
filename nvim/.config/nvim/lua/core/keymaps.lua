@@ -17,13 +17,14 @@ map({ 'n', 'v', 'o' }, 'j', 'n', opts)
 map({ 'n', 'v', 'o' }, 'J', 'N', opts)
 map({ 'n', 'v', 'o' }, 'h', 'e', opts)
 map({ 'n', 'v', 'o' }, 'H', 'E', opts)
+map({ 'n', 'v', 'o' }, '|', '^', opts)
 
-map('i', '<M-u>', '<up>', opts)
-map('i', '<M-e>', '<down>', opts)
-map('i', '<M-n>', '<left>', opts)
-map('i', '<M-i>', '<right>', opts)
-map('i', '<M-N>', '<cmd>normal! 0<CR>', opts)
-map('i', '<M-I>', '<cmd>normal! $<CR><right>', opts)
+map({ 'i', 'c' }, '<M-u>', '<up>', opts)
+map({ 'i', 'c' }, '<M-e>', '<down>', opts)
+map({ 'i', 'c' }, '<M-n>', '<left>', opts)
+map({ 'i', 'c' }, '<M-i>', '<right>', opts)
+map({ 'i', 'c' }, '<M-N>', '<cmd>normal! 0<CR>', opts)
+map({ 'i', 'c' }, '<M-I>', '<cmd>normal! $<CR><right>', opts)
 
 -- Actions
 map({ 'n', 'v' }, 'E', 'J', opts)
@@ -31,7 +32,7 @@ map({ 'n', 'v' }, 'l', 'u', opts)
 map({ 'n', 'v' }, 'L', 'U', opts)
 map({ 'n', 'v', 'o' }, 'k', 'i', opts)
 map({ 'n', 'v', 'o' }, 'K', 'I', opts)
-map('i', 'ii', '<ESC>', opts)
+map({ 'i', 'c' }, 'ii', '<ESC>', opts)
 map('t', '<M-q>', '<C-\\><C-n>', opts) -- In terminal change mode to normal
 
 map('v', 'kr', '`[`]', opts)
@@ -52,8 +53,8 @@ map('n', '<leader>srv', '<C-w>b<C-w>H', opts)
 map('n', '<leader>srh', '<C-w>b<C-w>K', opts)
 
 -- Resize
-map('n', '<M-U>', '<cmd>resize +10<CR>', opts)
-map('n', '<M-E>', '<cmd>resize -10<CR>', opts)
+map('n', '<M-U>', '<cmd>resize +5<CR>', opts)
+map('n', '<M-E>', '<cmd>resize -5<CR>', opts)
 map('n', '<M-N>', '<cmd>vertical resize -10<CR>', opts)
 map('n', '<M-I>', '<cmd>vertical resize +10<CR>', opts)
 

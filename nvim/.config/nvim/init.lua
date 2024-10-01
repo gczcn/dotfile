@@ -9,4 +9,4 @@ if vim.g.neovide then
 end
 
 -- Plugins
-require('lazy_init')
+require('plugins_init')

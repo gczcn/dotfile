@@ -39,8 +39,16 @@ require('lazy').setup({
   spec = {
     { import = 'plugins' },
   },
-  install = { colorscheme = { 'catppuccin', 'tokyonight', 'gruvbox', 'habamax' } },
+  install = { colorscheme = { 'gruvbox', 'gruvbox-material', 'catppuccin', 'tokyonight', 'habamax' } },
+
+  ui = {
+    backdrop = 100,
+    border = 'single',
+  },
 
   -- automatically check for plugin updates
   checker = { enabled = true },
+  change_detection = {
+    notify = false,
+  },
 })

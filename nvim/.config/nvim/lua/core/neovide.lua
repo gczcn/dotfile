@@ -1,8 +1,8 @@
 local g = vim.g
 
-local font = 'Sarasa Term SC'
+local font = 'JetBrainsMono Nerd Font Mono'
 local symbol = 'JetBrainsMono Nerd Font Mono'
-local font_size = 12
+local font_size = 11
 
 vim.o.guifont = font .. ',' .. symbol .. ':h' .. font_size
 vim.o.pumblend = 30

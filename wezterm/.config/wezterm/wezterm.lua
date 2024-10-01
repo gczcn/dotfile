@@ -6,12 +6,13 @@ local colors = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
+  'NotoSansM Nerd Font Mono',
   -- 'GoMono Nerd Font Mono',
   -- { family = 'Noto Serif SC', weight = 'Medium' },
   -- 'BlexMono Nerd Font Mono',
   -- 'Sarasa Term SC',
   -- 'Terminus (TTF)',
-  'JetBrainsMono Nerd Font Mono',
+  -- 'JetBrainsMono Nerd Font Mono',
   -- 'Terminess Nerd Font Mono',
 })
 

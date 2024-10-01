@@ -1,12 +1,15 @@
+if true then return {} end
+
 return {
   { 'nvim-tree/nvim-web-devicons', lazy = true, dependencies = { 'rachartier/tiny-devicons-auto-colors.nvim' } },
   {
     'rachartier/tiny-devicons-auto-colors.nvim',
     lazy = true,
     config = function()
-      local theme_colors = require('gruvbox').palette
+      local palette = require('catppuccin.palettes').get_palette('mocha')
+
       require('tiny-devicons-auto-colors').setup({
-        colors = theme_colors
+        colors = palette
       })
     end
   }

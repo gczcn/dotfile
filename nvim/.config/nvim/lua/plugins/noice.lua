@@ -1,6 +1,5 @@
 return {
-  {
-    'rcarriga/nvim-notify',
+  { 'rcarriga/nvim-notify',
     event = 'VeryLazy',
     dependencies = { 'folke/noice.nvim' },
     config = function()
@@ -106,28 +105,23 @@ return {
     },
     event = 'VeryLazy',
     opts = {
-      views = {
-        cmdline_popup = {
-          border = {
-            style = 'single',
-          },
-        },
-        cmdline_popupmenu = {
-          border = {
-            style = 'single',
-          },
-        },
-      },
       cmdline = {
         format = {
           cmdline = { pattern = '^:', icon = '>', lang = 'vim' },
-          search_down = { kind = "search", pattern = "^/", icon = "Up /", lang = "regex" },
-          search_up = { kind = "search", pattern = "^%?", icon = "Down /", lang = "regex" },
+          search_down = { kind = "search", pattern = "^/", icon = "Up", lang = "regex" },
+          search_up = { kind = "search", pattern = "^%?", icon = "Down", lang = "regex" },
           help = { pattern = "^:%s*he?l?p?%s+", icon = "?" },
         },
       },
+      views = {
+        cmdline_popup = { border = { style = 'single', } },
+        cmdline_input = { border = { style = 'single', } },
+        confirm = { border = { style = 'single', } },
+      },
       presets = {
         bottom_search = true,
+        -- command_palette = true,
+        long_message_to_split = true,
       },
     },
   },

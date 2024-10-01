@@ -24,7 +24,8 @@ return {
         custom_highlights = function(colors)
           return {
             IblScope = { fg = colors.overlay0 },
-            MiniIndentscopeSymbol = { fg = colors.overlay0 },
+            MiniIndentscopeSymbol = { fg = colors.pink },
+            NormalFloat = { link = 'Normal' },
           }
         end,
       })
@@ -51,7 +52,9 @@ return {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
+    enabled = true,
     config = function()
+      local palette = require('gruvbox').palette
       require('gruvbox').setup({
         italic = {
           strings = false,
@@ -64,9 +67,20 @@ return {
           NoiceCmdlineIconLua = { link = 'GruvboxBlue' },
           NoiceCmdlineIconHelp = { link = 'GruvboxRed' },
           MiniIndentscopeSymbol = { link = 'GruvboxOrangeBold', bold = false },
+          LazyNormal = { link = 'Normal' },
+          FloatBorder = { link = 'Normal' },
+          NormalFloat = { link = 'Normal' }
         },
       })
       vim.cmd.colorscheme('gruvbox')
+    end
+  },
+  {
+    'sainnhe/gruvbox-material',
+    priority = 1000,
+    enabled = false,
+    config = function()
+      vim.cmd.colorscheme('gruvbox-material')
     end
   }
 }
