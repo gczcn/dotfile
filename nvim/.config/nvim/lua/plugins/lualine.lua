@@ -31,7 +31,26 @@ return {
         },
         },
 
-        lualine_x = { { 'filename', path = 3 }, 'tabnine', 'hostname', 'fileformat' },
+        lualine_x = {
+          { 'filename', path = 3 },
+          -- stylua: ignore
+          {
+            function() return require('noice').api.status.command.get() end,
+            cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
+            color = function()
+              return { fg = get_hl('Statement', 'fg') }
+            end
+          },
+
+          -- stylua: ignore
+          {
+            function() return require('noice').api.status.mode.get() end,
+            cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
+            color = function()
+              return { fg = get_hl('Constant', 'fg') }
+            end
+          },
+          'tabnine', 'hostname', 'fileformat' },
         lualine_y = {
           { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
           { 'location', padding = { left = 0, right = 1 } },

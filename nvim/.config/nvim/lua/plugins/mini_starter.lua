@@ -3,9 +3,10 @@ return {
   config = function()
     local starter = require('mini.starter')
     local v = vim.version()
+    local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
 
     local version = function()
-      return 'NVIM v' .. tostring(vim.version())
+      return 'NVIM ' .. prerelease .. tostring(vim.version())
     end
 
     local header = function()

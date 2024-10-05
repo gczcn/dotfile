@@ -54,6 +54,7 @@ return {
     priority = 1000,
     enabled = true,
     config = function()
+      local v = vim.version()
       local palette = require('gruvbox').palette
       require('gruvbox').setup({
         italic = {
@@ -69,7 +70,7 @@ return {
           MiniIndentscopeSymbol = { link = 'GruvboxOrangeBold', bold = false },
           LazyNormal = { link = 'Normal' },
           FloatBorder = { link = 'Normal' },
-          NormalFloat = { link = 'Normal' }
+          NormalFloat = { link = 'Normal' },
         },
       })
       vim.cmd.colorscheme('gruvbox')
