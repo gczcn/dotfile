@@ -1,7 +1,8 @@
 return {
   'nvim-lualine/lualine.nvim',
   event = { 'User FileOpened', 'BufAdd' },
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  -- dependencies = { 'nvim-tree/nvim-web-devicons' },
+  dependencies = { 'echasnovski/mini.icons' },
   config = function()
     local simple_mode = require('utils.simple_mode')
     local get_hl = require('utils.get_hl')
