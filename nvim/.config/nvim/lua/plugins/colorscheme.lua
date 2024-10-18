@@ -30,7 +30,7 @@ return {
         end,
       })
       vim.cmd.colorscheme('catppuccin')
-    end
+    end,
   },
   {
     'folke/tokyonight.nvim',
@@ -44,10 +44,10 @@ return {
           highlights.IblScope = { fg = colors.comment }
           highlights.MiniStarterHeader = { link = 'Normal' }
           highlights.MiniStarterSection = { fg = colors.comment }
-        end
+        end,
       })
       vim.cmd.colorscheme('tokyonight')
-    end
+    end,
   },
   {
     'ellisonleao/gruvbox.nvim',
@@ -61,7 +61,7 @@ return {
           strings = false,
         },
         overrides = {
-          Visual = { bold = true },
+          -- Visual = { bold = true },
           NoiceCmdlinePopupBorder = { link = 'Normal' },
           NoiceCmdlinePopupTitle = { link = 'Normal' },
           NoiceCmdlineIcon = { link = 'GruvboxOrange' },
@@ -69,19 +69,20 @@ return {
           NoiceCmdlineIconHelp = { link = 'GruvboxRed' },
           MiniIndentscopeSymbol = { link = 'GruvboxOrangeBold', bold = false },
           LazyNormal = { link = 'Normal' },
+          GitSignsCurrentLineBlame = { link = 'Comment' },
           FloatBorder = { link = 'Normal' },
           NormalFloat = { link = 'Normal' },
         },
       })
       vim.cmd.colorscheme('gruvbox')
-    end
+    end,
   },
   {
-    'sainnhe/gruvbox-material',
+    'EdenEast/nightfox.nvim',
     priority = 1000,
     enabled = false,
     config = function()
-      vim.cmd.colorscheme('gruvbox-material')
-    end
-  }
+      vim.cmd.colorscheme('terafox')
+    end,
+  },
 }

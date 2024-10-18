@@ -6,22 +6,33 @@ local colors = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  'NotoSansM Nerd Font Mono',
-  -- 'GoMono Nerd Font Mono',
-  -- { family = 'Noto Serif SC', weight = 'Medium' },
-  -- 'BlexMono Nerd Font Mono',
-  -- 'Sarasa Term SC',
   -- 'Terminus (TTF)',
-  -- 'JetBrainsMono Nerd Font Mono',
   -- 'Terminess Nerd Font Mono',
+  'JetBrainsMonoMod Nerd Font Mono',
 })
 
-config.font_size = 11
+-- Jetbrains Mono Bold
+config.font_rules = {
+  {
+    intensity = 'Bold',
+    italic = false,
+    font = wezterm.font('JetBrainsMonoMod Nerd Font Mono', { weight = 'Bold', stretch = 'Normal', style = 'Normal' })
+  },
+  {
+    intensity = 'Bold',
+    italic = true,
+    font = wezterm.font('JetBrainsMonoMod Nerd Font Mono', { weight = 'Bold', stretch = 'Normal', style = 'Italic' })
+  },
+}
+
+config.font_size = 13.5
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.tab_max_width = 10000
+
+config.max_fps = 120
 
 colors['tab_bar'] = { background = '#3c3836',
 

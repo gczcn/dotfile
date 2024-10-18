@@ -1,6 +1,12 @@
-if true then return {} end
+if false then return {} end
+
+-- return {
+--   { 'anuvyklack/keymap-amend.nvim' },
+--   { 'anuvyklack/keymap-layer.nvim' },
+-- }
 
 return {
-  { 'anuvyklack/keymap-amend.nvim' },
-  { 'anuvyklack/keymap-layer.nvim' },
+  {
+    dir = '~/Project/nvim-plugins/morse-code.nvim',
+  },
 }
