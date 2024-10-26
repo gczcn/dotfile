@@ -1,8 +1,27 @@
 local g = vim.g
+local map = vim.keymap.set
 
-local font = 'JetBrainsMono Nerd Font Mono'
-local symbol = 'JetBrainsMono Nerd Font Mono'
-local font_size = 11
+local font = 'JetBrainsMonoMod Nerd Font Mono'
+local symbol = 'JetBrainsMonoMod Nerd Font Mono'
+local font_size = 12
+
+local transparency = 1
+
+local change_font_size = function(n)
+  font_size = font_size + n
+  vim.o.guifont = font .. ',' .. symbol .. ':h' .. font_size
+  print(font_size)
+end
+
+local change_transparency = function(n)
+  if transparency + n <= 1 and transparency + n >= 0 then
+    transparency = transparency + n
+    g.neovide_transparency = transparency
+    print(transparency)
+  else
+    print('transparency out of range (' .. transparency .. ')')
+  end
+end
 
 vim.o.guifont = font .. ',' .. symbol .. ':h' .. font_size
 vim.o.pumblend = 30
@@ -18,3 +37,9 @@ g.neovide_cursor_animate_command_line = true
 g.neovide_cursor_unfocused_outline_width = 0.1
 g.neovide_remember_window_size = true
 g.neovide_input_macos_option_key_is_meta = 'only_left'
+
+map('n', '<C-=>', function() change_font_size(1) end)
+map('n', '<C-->', function() change_font_size(-1) end)
+
+map('n', '<C-+>', function() change_transparency(0.1) end)
+map('n', '<C-_>', function() change_transparency(-0.1) end)
