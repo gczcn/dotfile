@@ -1,5 +1,6 @@
 return {
-  { 'rcarriga/nvim-notify',
+  {
+    'rcarriga/nvim-notify',
     event = 'VeryLazy',
     dependencies = { 'folke/noice.nvim' },
     config = function()
