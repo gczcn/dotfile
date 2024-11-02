@@ -6,7 +6,7 @@ import = [
 #            中文：   你好
 
 [font]
-size = 11
+size = 12
 
 # JetBrains Mono
 offset = { x = 0, y = 1 }
