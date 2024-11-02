@@ -1,24 +1,18 @@
-return function(n, color)
-  local run = true
-  local name = n
-  while run do
-    local hl = vim.api.nvim_get_hl(0, {name = name})
-
-    if hl['link'] == nil then
-      run = false
-      if hl[color] ~= nil then
-        local hi = string.format('%x', hl[color])
-        if string.len(hi) ~= 6 then
-          for _ = 1, 6 - string.len(hi), 1 do
-            hi = '0'.. hi
-          end
-        end
-        return '#' .. hi
-      else
-        return '#000000'
-      end
+-- https://github.com/LazyVim/LazyVim/blob/f11890bf99477898f9c003502397786026ba4287/lua/lazyvim/util/ui.lua#L171-L187
+return function(name, bg)
+  ---@type {foreground?:number}?
+  ---@diagnostic disable-next-line: deprecated
+  local hl = vim.api.nvim_get_hl and vim.api.nvim_get_hl(0, { name = name, link = false })
+    or vim.api.nvim_get_hl_by_name(name, true)
+  ---@diagnostic disable-next-line: undefined-field
+  ---@type string?
+  local color = nil
+  if hl then
+    if bg then
+      color = hl.bg or hl.background
+    else
+      color = hl.fg or hl.foreground
     end
-
-    name = hl['link']
   end
+  return color and string.format("#%06x", color) or nil
 end
