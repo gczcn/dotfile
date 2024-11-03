@@ -6,10 +6,10 @@ import = [
 #            中文：   你好
 
 [font]
-size = 12
+size = 11
 
 # JetBrains Mono
-offset = { x = 0, y = 1 }
+# offset = { x = 1, y = 0 }
 [font.bold]
 family = "JetBrainsMonoMod Nerd Font Mono"
 style = "Bold"
@@ -44,3 +44,27 @@ draw_bold_text_with_bright_colors = true
 
 [mouse]
 hide_when_typing = true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

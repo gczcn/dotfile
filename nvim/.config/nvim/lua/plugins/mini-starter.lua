@@ -1,6 +1,5 @@
 return {
-  'echasnovski/mini.starter',
-  config = function()
+  'echasnovski/mini.starter', config = function()
     local starter = require('mini.starter')
     local v = vim.version()
     local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
@@ -101,8 +100,8 @@ return {
       -- items = nil,
       content_hooks = {
         starter.gen_hook.padding(7, 3),
-        -- starter.gen_hook.adding_bullet('│ '),
-        starter.gen_hook.adding_bullet('░ '),
+        starter.gen_hook.adding_bullet('│ '),
+        -- starter.gen_hook.adding_bullet('░ '),
       },
       header = header(),
       footer = footer(),
