@@ -100,9 +100,11 @@ return {
   {
     'folke/noice.nvim',
     dependencies = {
-      -- 'nvim-treesitter/nvim-treesitter',
       'MunifTanjim/nui.nvim',
       'rcarriga/nvim-notify',
+    },
+    keys = {
+      { '<leader>fn', '<cmd>NoiceTelescope<CR>' }
     },
     event = 'VeryLazy',
     opts = {

@@ -1,25 +1,13 @@
 return {
   {
     'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
     event = 'User FileOpened',
-    config = function()
-      require('ibl').setup({
-        indent = {
-          char = '│',
-          tab_char = '>',
-        },
-        -- -- Background color indentation guides
-        -- indent = {
-        --   highlight = { 'CursorColumn', 'Whitespace' },
-        --   char = '',
-        --   tab_char = '>', },
-        -- whitespace = {
-        --   highlight = { 'CursorColumn', 'Whitespace' },
-        --   remove_blankline_trail = false,
-        -- },
-        -- scope = { enabled = false },
-      })
-    end
+    opts = {
+      indent = {
+        char = '│'
+      },
+    },
   },
   {
     'echasnovski/mini.indentscope',
