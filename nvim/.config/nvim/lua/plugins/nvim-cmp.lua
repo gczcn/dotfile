@@ -1,6 +1,11 @@
 return {
   'hrsh7th/nvim-cmp',
   event = 'InsertEnter',
+  keys = {
+    ':',
+    '/',
+    '?',
+  },
   dependencies = {
     {
       'L3MON4D3/LuaSnip',
@@ -11,6 +16,11 @@ return {
     'hrsh7th/cmp-buffer', -- source for text in buffer
     'hrsh7th/cmp-path', -- source for file system paths
     'hrsh7th/cmp-calc', -- nvim-cmp source for math calculation.
+    'hrsh7th/cmp-emoji',
+    'hrsh7th/cmp-nvim-lua', -- nvim-cmp source for neovim Lua API
+    'hrsh7th/cmp-cmdline',
+    -- 'hrsh7th/nvim-lsp',
+    'ray-x/cmp-treesitter',
   },
   config = function()
     local cmp = require('cmp')
@@ -48,9 +58,9 @@ return {
       Operator = '󰆕',
       TabNine = 'A',
       TypeParameter = '',
-      Number = '0'
+      Number = '0',
+      KeywordConditional = ' '
     }
-
     local custom_kind = {
       calc = '󰃬 Calc'
     }
@@ -63,16 +73,16 @@ return {
             vim_item.kind = custom_kind[entry.source.name]
           end
           vim_item.menu = ({
-            -- nvim_lsp = '[LSP]',
+            nvim_lsp = '[LSP]',
             luasnip = '[LuaSnip]',
             path = '[Path]',
             buffer = '[Buffer]',
-            -- nvim_lua = '[Lua]',
-            -- latex_symbols = '[Latex]',
+            nvim_lua = '[Lua]',
+            latex_symbols = '[Latex]',
             calc = '[Calc]',
-            -- emoji = '[Emoji]',
-            -- treesitter = '[Treesitter]',
-            -- cmp_tabnine = '[Tabnine]',
+            emoji = '[Emoji]',
+            treesitter = '[Treesitter]',
+            cmp_tabnine = '[Tabnine]',
           })[entry.source.name]
           return vim_item
         end,
@@ -99,10 +109,36 @@ return {
       }),
       sources = cmp.config.sources({
         { name = 'luasnip' }, -- snippets
+        { name = 'nvim_lua' },
         { name = 'path' },
         { name = 'buffer' },
+        { name = 'treesitter' },
         { name = 'calc' },
+        { name = 'emoji' },
       }),
+    })
+
+    -- `/` cmdline setup.
+    cmp.setup.cmdline('/', {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = {
+        { name = 'buffer' }
+      }
+    })
+
+    -- `:` cmdline setup.
+    cmp.setup.cmdline(':', {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({
+        { name = 'path' }
+      }, {
+        {
+          name = 'cmdline',
+          option = {
+            ignore_cmds = { 'Man', '!' }
+          }
+        }
+      })
     })
   end,
 }

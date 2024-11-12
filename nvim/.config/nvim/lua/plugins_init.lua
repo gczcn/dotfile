@@ -38,6 +38,7 @@ end)
 require('lazy').setup({
   spec = {
     { import = 'plugins' },
+    { import = 'plugins.lsp' },
   },
   install = { colorscheme = { 'gruvbox', 'gruvbox-material', 'catppuccin', 'tokyonight', 'habamax' } },
 
