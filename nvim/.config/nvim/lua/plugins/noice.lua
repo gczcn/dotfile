@@ -120,6 +120,7 @@ return {
         cmdline_popup = { border = { style = 'single', } },
         cmdline_input = { border = { style = 'single', } },
         confirm = { border = { style = 'single', } },
+        popup_menu = { border = { style = 'single', } },
       },
       presets = {
         bottom_search = true,

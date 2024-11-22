@@ -3,7 +3,7 @@ return {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       require('catppuccin').setup({
         integrations = {
@@ -52,7 +52,7 @@ return {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       local v = vim.version()
       local palette = require('gruvbox').palette
