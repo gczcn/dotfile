@@ -19,7 +19,7 @@ return {
     'hrsh7th/cmp-emoji',
     'hrsh7th/cmp-nvim-lua', -- nvim-cmp source for neovim Lua API
     'hrsh7th/cmp-cmdline',
-    -- 'hrsh7th/nvim-lsp',
+    'hrsh7th/cmp-nvim-lsp',
     'ray-x/cmp-treesitter',
   },
   config = function()
@@ -116,6 +116,7 @@ return {
         ['<CR>'] = cmp.mapping.confirm({ select = false }),
       }),
       sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
         { name = 'luasnip' }, -- snippets
         { name = 'nvim_lua' },
         { name = 'path' },
