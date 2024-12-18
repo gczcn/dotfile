@@ -1,4 +1,4 @@
-if false then return {} end
+if true then return {} end
 
 -- return {
 --   { 'anuvyklack/keymap-amend.nvim' },

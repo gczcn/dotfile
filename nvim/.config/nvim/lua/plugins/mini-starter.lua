@@ -88,14 +88,15 @@ return {
 
         -- Telescope
         -- { name = 'Jump', action = ':Telescope zoxide', section = 'Telescope' },
-        { name = 'e File Browser', action = ':Telescope file_browser', section = 'Telescope' },
-        { name = 'f Find files', action = ':Telescope find_files', section = 'Telescope' },
-        { name = 'l Live grep', action = ':Telescope live_grep', section = 'Telescope' },
-        { name = 'g Grep string', action = ':Telescope grep_string', section = 'Telescope' },
-        { name = 'h Help tags', action = ':Telescope help_tags', section = 'Telescope' },
-        { name = 'r Recent files', action = ':Telescope oldfiles', section = 'Telescope' },
+        -- { name = 'e File Browser', action = ':Telescope file_browser', section = 'Telescope' },
+        { name = 'e File Browser (Oil.nvim)', action = ':Oil', section = 'Telescope' },
+        { name = 'f Find files', action = ':FzfLua files', section = 'Telescope' },
+        { name = 'l Live grep', action = ':FzfLua live_grep', section = 'Telescope' },
+        { name = 'g Grep', action = ':FzfLua grep', section = 'Telescope' },
+        { name = 'h Help tags', action = ':FzfLua helptags', section = 'Telescope' },
+        { name = 'r Recent files', action = ':FzfLua oldfiles', section = 'Telescope' },
         -- { name = 'Bookmarks', action = ':Telescope bookmarks list', section = 'Telescope' },
-        { name = 'o Options', action = ':Telescope find_files cwd=' .. vim.fn.stdpath('config'), section = 'Telescope' },
+        { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'Telescope' },
       },
       -- items = nil,
       content_hooks = {
