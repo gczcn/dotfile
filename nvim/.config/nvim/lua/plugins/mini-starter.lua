@@ -11,10 +11,10 @@ return {
     local header = function()
       return version() .. '\n\n' ..
         'Nvim is open source and freely distributable\n' ..
-        'https://neovim.io/#chat\n\n'..
+        'https://neovim.io/#chat'
 
-        'This configuration\n' ..
-        'https://github.com/gczcn/dotfile/tree/main/nvim/.config/nvim'
+        -- 'This configuration\n' ..
+        -- 'https://github.com/gczcn/dotfile/tree/main/nvim/.config/nvim'
     end
 
     local footer = function()
@@ -56,7 +56,7 @@ return {
         end
 
         -- Create items
-        i = index or ''
+        local i = index or ''
         local items = {}
         for _, f in ipairs(vim.list_slice(files, 1, n)) do
           local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
@@ -72,10 +72,10 @@ return {
       evaluate_single = true,
       items = {
         -- Recent files (Current directory)
-        recent_files(10, '', 1, vim.fn.getcwd()),
+        recent_files(5, '', 1, vim.fn.getcwd()),
 
         -- Recent files
-        recent_files(10, '`', 1),
+        recent_files(5, '`', 1),
 
         -- Builtin actions
         { name = 'n New buffer', action = ':ene', section = 'Builtin actions' },
@@ -89,14 +89,14 @@ return {
         -- Telescope
         -- { name = 'Jump', action = ':Telescope zoxide', section = 'Telescope' },
         -- { name = 'e File Browser', action = ':Telescope file_browser', section = 'Telescope' },
-        { name = 'e File Browser (Oil.nvim)', action = ':Oil', section = 'Telescope' },
-        { name = 'f Find files', action = ':FzfLua files', section = 'Telescope' },
-        { name = 'l Live grep', action = ':FzfLua live_grep', section = 'Telescope' },
-        { name = 'g Grep', action = ':FzfLua grep', section = 'Telescope' },
-        { name = 'h Help tags', action = ':FzfLua helptags', section = 'Telescope' },
-        { name = 'r Recent files', action = ':FzfLua oldfiles', section = 'Telescope' },
+        { name = 'e File Browser (Oil.nvim)', action = ':Oil', section = 'Other Plugins' },
+        { name = 'f Find files', action = ':FzfLua files', section = 'FzfLua' },
+        { name = 'l Live grep', action = ':FzfLua live_grep', section = 'FzfLua' },
+        { name = 'g Grep', action = ':FzfLua grep', section = 'FzfLua' },
+        { name = 'h Help tags', action = ':FzfLua helptags', section = 'FzfLua' },
+        { name = 'r Recent files', action = ':FzfLua oldfiles', section = 'FzfLua' },
         -- { name = 'Bookmarks', action = ':Telescope bookmarks list', section = 'Telescope' },
-        { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'Telescope' },
+        { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'FzfLua' },
       },
       -- items = nil,
       content_hooks = {
@@ -140,7 +140,7 @@ return {
             .. 'ms'
         end
 
-        ft = function()
+        local ft = function()
           -- stylua: ignore
           return
           get_startuptime() .. '\n' ..

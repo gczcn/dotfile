@@ -11,7 +11,6 @@ return {
           gitsigns = true,
           nvimtree = true,
           treesitter = true,
-          notify = false,
           mini = {
             enabled = true,
             indentscope_color = "",
@@ -54,7 +53,6 @@ return {
     priority = 1000,
     enabled = true,
     config = function()
-      local v = vim.version()
       local palette = require('gruvbox').palette
       require('gruvbox').setup({
         italic = {
@@ -70,8 +68,9 @@ return {
           MiniIndentscopeSymbol = { link = 'GruvboxOrangeBold', bold = false },
           LazyNormal = { link = 'Normal' },
           GitSignsCurrentLineBlame = { link = 'Comment' },
-          FloatBorder = { link = 'Normal' },
-          NormalFloat = { link = 'Normal' },
+          -- FloatBorder = { link = 'Normal' },
+          -- NormalFloat = { link = 'Normal' },
+          -- Pmenu = { link = 'Normal' }
         },
       })
       vim.cmd.colorscheme('gruvbox')

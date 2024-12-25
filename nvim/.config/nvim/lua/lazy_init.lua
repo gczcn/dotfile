@@ -42,10 +42,10 @@ require('lazy').setup({
   },
   install = { colorscheme = { 'gruvbox', 'gruvbox-material', 'catppuccin', 'tokyonight', 'habamax' } },
 
-  ui = {
-    backdrop = 100,
-    border = 'single',
-  },
+  -- ui = {
+  --   backdrop = 100,
+  --   border = 'single',
+  -- },
 
   -- automatically check for plugin updates
   checker = { enabled = true },

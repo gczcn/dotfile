@@ -1,5 +1,7 @@
 return {
-  'hrsh7th/nvim-cmp',
+  -- 'hrsh7th/nvim-cmp',
+  'iguanacucumber/magazine.nvim',
+  name = 'nvim-cmp',
   event = 'InsertEnter',
   keys = {
     ':',
@@ -11,15 +13,23 @@ return {
       'L3MON4D3/LuaSnip',
       build = 'make install_jsregexp',
     },
+
+    -- magazine.nvim
+    { 'iguanacucumber/mag-nvim-lua', name = 'cmp-nvim-lua' },
+    { 'iguanacucumber/mag-buffer', name = 'cmp-buffer' },
+    { 'iguanacucumber/mag-cmdline', name = 'cmp-cmdline' },
+    { 'iguanacucumber/mag-nvim-lsp', name = 'cmp-nvim-lsp', opts = {} },
+
+    -- 'hrsh7th/cmp-buffer', -- source for text in buffer
+    -- 'hrsh7th/cmp-nvim-lua', -- nvim-cmp source for neovim Lua API
+    -- 'hrsh7th/cmp-cmdline',
+    -- 'hrsh7th/cmp-nvim-lsp',
+
+    { url = 'https://codeberg.org/FelipeLema/cmp-async-path' },
     'rafamadriz/friendly-snippets', -- useful snippets
     'saadparwaiz1/cmp_luasnip', -- for autocompletion
-    'hrsh7th/cmp-buffer', -- source for text in buffer
-    'hrsh7th/cmp-path', -- source for file system paths
     'hrsh7th/cmp-calc', -- nvim-cmp source for math calculation.
     'hrsh7th/cmp-emoji',
-    'hrsh7th/cmp-nvim-lua', -- nvim-cmp source for neovim Lua API
-    'hrsh7th/cmp-cmdline',
-    'hrsh7th/cmp-nvim-lsp',
     'ray-x/cmp-treesitter',
   },
   config = function()
@@ -76,6 +86,7 @@ return {
             nvim_lsp = '[LSP]',
             luasnip = '[LuaSnip]',
             path = '[Path]',
+            async_path = '[AsyncPath]',
             buffer = '[Buffer]',
             nvim_lua = '[Lua]',
             latex_symbols = '[Latex]',
@@ -98,14 +109,15 @@ return {
       view = {
         entries = { name = 'custom', selection_order = 'near_cursor' },
       },
-      window = {
-        documentation = cmp.config.window.bordered({ border = 'single' }),
-        completion = cmp.config.window.bordered({
-          winhighlight = 'Normal:CmpPmenu,CursorLine:PmenuSel,Search:None',
-          border = 'single',
-          col_offset = -1,
-        }),
-      },
+      -- window = {
+      --   documentation = cmp.config.window.bordered({ border = 'single' }),
+      --   completion = cmp.config.window.bordered({
+      --     winhighlight = 'Normal:CmpPmenu,CursorLine:PmenuSel,Search:None',
+      --     border = 'single',
+      --     col_offset = -1,
+      --     scrolloff = 4,
+      --   }),
+      -- },
       mapping = cmp.mapping.preset.insert({
         ['<S-TAB>'] = cmp.mapping.select_prev_item(), -- previous suggestion
         ['<TAB>'] = cmp.mapping.select_next_item(), -- next suggestion
@@ -119,12 +131,16 @@ return {
         { name = 'nvim_lsp' },
         { name = 'luasnip' }, -- snippets
         { name = 'nvim_lua' },
-        { name = 'path' },
+        -- { name = 'path' },
+        { name = 'async_path' },
         { name = 'buffer' },
         { name = 'treesitter' },
         { name = 'calc' },
         { name = 'emoji' },
       }),
+      performance = {
+        debounce = 0,
+      },
     })
 
     -- `/` cmdline setup.

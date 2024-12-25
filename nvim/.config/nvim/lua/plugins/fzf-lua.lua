@@ -17,7 +17,6 @@ return {
   },
   config = function()
     require('fzf-lua').setup({
-      -- 'telescope',
       winopts = {
         border = 'single',
         backdrop = 100,

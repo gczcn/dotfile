@@ -72,6 +72,7 @@ map('n', '<leader>bd', '<cmd>bd<CR>', opts)
 -- Other
 map({ 'n', 'v' }, 'U', 'K', opts) -- Help
 map('n', '\\', '<cmd>w<CR>', opts) -- Save
+map('n', '<leader>hl', '<cmd>noh<CR>', opts)
 map('n', '<F5>', function() -- Toggle background [ dark | light ]
   if vim.o.background == 'light' then
     vim.o.background = 'dark' return
