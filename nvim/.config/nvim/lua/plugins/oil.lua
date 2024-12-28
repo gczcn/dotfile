@@ -6,9 +6,14 @@ return {
         '<leader>te',
         function()
           if vim.o.filetype == 'oil' then
-            vim.cmd([[bd]])
+            require('oil').close()
           else
-            vim.cmd([[Oil]])
+            require('oil').open()
+
+            require('oil.util').run_after_load(0, function()
+              -- require('oil').select({ preview = true })
+              require('oil').open_preview()
+            end)
           end
         end,
         mode = 'n',
@@ -21,6 +26,12 @@ return {
     end,
     config = function()
       require('oil').setup({
+        columns = {
+          "icon",
+          "permissions",
+          "size",
+          -- "mtime",
+        },
         default_file_explorer = true,
         view_options = {
           show_hidden = true,
