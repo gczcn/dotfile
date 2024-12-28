@@ -14,6 +14,7 @@ return {
     { '<leader>fh', '<cmd>FzfLua helptags<CR>' },
     { '<leader>fo', string.format('<cmd>FzfLua files cwd=%s<CR>', vim.fn.stdpath('config')) },
     { '<leader>fb', '<cmd>FzfLua buffers<CR>' },
+    { '<leader>fw', '<cmd>FzfLua colorschemes<CR>' },
   },
   config = function()
     require('fzf-lua').setup({
@@ -25,6 +26,7 @@ return {
           vim.keymap.set('t', '<M-u>', '<up>', { silent = true, buffer = true })
         end,
       },
+      fzf_colors = true,
     })
   end
 }
