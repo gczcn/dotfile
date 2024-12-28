@@ -2,6 +2,7 @@ return {
   {
     'RRethy/vim-illuminate',
     event = 'User FileOpened',
+    enabled = false,
     opts = {
       delay = 100,
       filetypes_denylist = {

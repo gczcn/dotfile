@@ -1,6 +1,7 @@
 return {
   -- 'hrsh7th/nvim-cmp',
   'iguanacucumber/magazine.nvim',
+  enabled = false,
   name = 'nvim-cmp',
   event = 'InsertEnter',
   keys = {
@@ -109,15 +110,18 @@ return {
       view = {
         entries = { name = 'custom', selection_order = 'near_cursor' },
       },
-      -- window = {
-      --   documentation = cmp.config.window.bordered({ border = 'single' }),
-      --   completion = cmp.config.window.bordered({
-      --     winhighlight = 'Normal:CmpPmenu,CursorLine:PmenuSel,Search:None',
-      --     border = 'single',
-      --     col_offset = -1,
-      --     scrolloff = 4,
-      --   }),
-      -- },
+      window = {
+        -- documentation = cmp.config.window.bordered({ border = 'single' }),
+        -- completion = cmp.config.window.bordered({
+        --   winhighlight = 'Normal:CmpPmenu,CursorLine:PmenuSel,Search:None',
+        --   border = 'single',
+        --   col_offset = -1,
+        --   scrolloff = 4,
+        -- }),
+        completion = {
+          scrolloff = 3,
+        },
+      },
       mapping = cmp.mapping.preset.insert({
         ['<S-TAB>'] = cmp.mapping.select_prev_item(), -- previous suggestion
         ['<TAB>'] = cmp.mapping.select_next_item(), -- next suggestion

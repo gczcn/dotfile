@@ -9,9 +9,7 @@ return {
             require('oil').close()
           else
             require('oil').open()
-
             require('oil.util').run_after_load(0, function()
-              -- require('oil').select({ preview = true })
               require('oil').open_preview()
             end)
           end

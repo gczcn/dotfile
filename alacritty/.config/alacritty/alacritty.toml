@@ -43,5 +43,5 @@ hide_when_typing = true
 
 [general]
 import = [
-  "~/.config/alacritty/themes/catppuccin_mocha.toml"
+  "~/.config/alacritty/themes/gruvbox_dark.toml"
 ]

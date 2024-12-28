@@ -1,5 +1,5 @@
 local font = 'JetBrainsMonoMod Nerd Font Mono'
-local font_size = 12
+local font_size = 11
 
 local change_font_size = function(n)
   font_size = font_size + n

@@ -1,7 +1,6 @@
 return {
   'saghen/blink.cmp',
-  -- wait
-  enabled = false,
+  enabled = true,
   event = 'InsertEnter',
   keys = {
     ':',
@@ -10,7 +9,7 @@ return {
   },
   dependencies = {
     'rafamadriz/friendly-snippets',
-    { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' },
+    'L3MON4D3/LuaSnip',
   },
   build = 'rustup run nightly cargo build --release',
   config = function()
@@ -34,18 +33,22 @@ return {
           auto_show = true,
           auto_show_delay_ms = 0,
           window = {
-            border = 'single'
+            -- border = 'single',
+            winblend = 15,
           },
         },
         menu = {
           draw = {
             columns = {
+              -- { 'kind_icon' },
               { 'label', 'label_description', gap = 1 },
               { 'kind_icon', 'kind', gap = 1 },
               { 'source_name' },
             },
           },
-          border = 'single',
+          -- border = 'single',
+          winblend = 15,
+          max_height = 30,
         },
       },
       sources = {

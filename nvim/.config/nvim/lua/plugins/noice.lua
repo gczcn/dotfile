@@ -1,20 +1,24 @@
 return {
   {
     'folke/noice.nvim',
+    enabled = true,
     dependencies = {
       'MunifTanjim/nui.nvim',
     },
     keys = {
-      { '<leader>fn', 'NoiceFzf' },
+      -- { '<leader>fn', '<cmd>NoiceFzf<CR>' },
     },
     event = 'VeryLazy',
     opts = {
       cmdline = {
         format = {
-          cmdline = { pattern = '^:', icon = '>', lang = 'vim' },
-          search_down = { kind = "search", pattern = "^/", icon = "Up", lang = "regex" },
-          search_up = { kind = "search", pattern = "^%?", icon = "Down", lang = "regex" },
-          help = { pattern = "^:%s*he?l?p?%s+", icon = "?" },
+          cmdline = { pattern = '^:', icon = ' >', lang = 'vim' },
+          search_down = { kind = "search", pattern = "^/", icon = " Up", lang = "regex" },
+          search_up = { kind = "search", pattern = "^%?", icon = " Down", lang = "regex" },
+          filter = { pattern = "^:%s*!", icon = " $", lang = "bash" },
+          lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = " ", lang = "lua" },
+          help = { pattern = "^:%s*he?l?p?%s+", icon = " ?" },
+          input = { view = "cmdline_input", icon = " 󰥻 " },
         },
         view = 'cmdline',
       },

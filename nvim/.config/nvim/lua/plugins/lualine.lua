@@ -11,6 +11,21 @@ return {
       return os.date('%D %R:%S')
     end
 
+    local lsp_clients = function()
+      local bufnr = vim.api.nvim_get_current_buf()
+
+      local clients = vim.lsp.get_clients({ buffer = bufnr })
+      if next(clients) == nil then
+        return ''
+      end
+
+      local c = {}
+      for _, client in pairs(clients) do
+        table.insert(c, client.name)
+      end
+      return '\u{f085} ' .. table.concat(c, '|')
+    end
+
     require('lualine').setup({
       options = {
         component_separators = '',
@@ -33,7 +48,7 @@ return {
         },
 
         lualine_x = {
-          { 'filename', path = 3 },
+          -- { 'filename', path = 3 },
           -- stylua: ignore
           {
             function() return require('noice').api.status.command.get() end,
@@ -51,7 +66,7 @@ return {
               return { fg = get_hl('Constant') }
             end
           },
-          'tabnine', 'hostname', 'fileformat' },
+          lsp_clients, 'tabnine', 'hostname', 'fileformat' },
         lualine_y = {
           { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
           { 'location', padding = { left = 0, right = 1 } },
