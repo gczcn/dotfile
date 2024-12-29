@@ -120,17 +120,17 @@ return {
       vim.diagnostic.config({
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = 'E ',
-            [vim.diagnostic.severity.WARN] = 'W ',
-            [vim.diagnostic.severity.HINT] = 'H ',
-            [vim.diagnostic.severity.INFO] = 'I ',
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.HINT] = '',
+            [vim.diagnostic.severity.INFO] = '',
           },
-          -- linehl = {
-          --   [vim.diagnostic.severity.ERROR] = 'ErrorLine',
-          --   [vim.diagnostic.severity.WARN] = 'WarnLine',
-          --   [vim.diagnostic.severity.HINT] = 'HintLine',
-          --   [vim.diagnostic.severity.INFO] = 'InfoLine',
-          -- },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticWarn',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticInfo',
+          },
         },
       })
 

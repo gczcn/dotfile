@@ -2,7 +2,7 @@ return {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       local palette = require('gruvbox').palette
       require('gruvbox').setup({
@@ -105,13 +105,16 @@ return {
   {
     'neanias/everforest-nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       require('everforest').setup({
         on_highlights = function(hl, palette)
           hl.MiniIndentscopeSymbol = { fg = palette.green }
           hl.FzfLuaHeaderText = { fg = palette.red }
           hl.FzfLuaHeaderBind = { fg = palette.yellow }
+          hl.IlluminatedWordText = { underline = true, bold = true }
+          hl.IlluminatedWordRead = { underline = true, bold = true }
+          hl.IlluminatedWordWrite = { underline = true, bold = true }
         end,
       })
       vim.cmd.colorscheme('everforest')

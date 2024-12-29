@@ -34,7 +34,7 @@ return {
           auto_show_delay_ms = 0,
           window = {
             -- border = 'single',
-            winblend = 15,
+            winblend = vim.o.winblend,
           },
         },
         menu = {
@@ -47,7 +47,7 @@ return {
             },
           },
           -- border = 'single',
-          winblend = 15,
+          winblend = vim.o.winblend,
           max_height = 30,
         },
       },
