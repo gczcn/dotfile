@@ -1,4 +1,4 @@
-vim.wo.conceallevel = 0
-vim.o.shiftwidth = 2
-vim.o.softtabstop = 2
-vim.o.smarttab = true
+vim.opt_local.conceallevel = 0
+vim.opt_local.shiftwidth = 2
+vim.opt_local.softtabstop = 2
+vim.opt_local.smarttab = true
