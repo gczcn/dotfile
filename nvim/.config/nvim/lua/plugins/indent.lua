@@ -5,7 +5,8 @@ return {
     event = 'User FileOpened',
     opts = {
       indent = {
-        char = '│'
+        char = '│',
+        tab_char = '│',
       },
       scope = { enabled = false },
     },

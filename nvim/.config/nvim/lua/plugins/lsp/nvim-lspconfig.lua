@@ -9,6 +9,12 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
+      {
+        'smjonas/inc-rename.nvim',
+        config = function()
+          require('inc_rename').setup()
+        end,
+      },
     },
     config = function()
       local lspconfig = require('lspconfig')
@@ -36,7 +42,10 @@ return {
         vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
         opts.desc = 'Smart rename'
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+        -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', '<leader>rn', function()
+          return ':IncRename ' .. vim.fn.expand('<cword>')
+        end, { noremap = true, expr = true })
 
         opts.desc = 'Show buffer diagnostics'
         vim.keymap.set('n', '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', opts) -- show  diagnostics for file
@@ -122,7 +131,7 @@ return {
           text = {
             [vim.diagnostic.severity.ERROR] = '',
             [vim.diagnostic.severity.WARN] = '',
-            [vim.diagnostic.severity.HINT] = '',
+            [vim.diagnostic.severity.HINT] = ' ',
             [vim.diagnostic.severity.INFO] = '',
           },
           numhl = {
@@ -221,6 +230,12 @@ return {
           return vim.loop.cwd() -- current working directory
         end,
       })
+
+      -- configure Go language server
+      lspconfig['gopls'].setup(lsp_default_config())
+
+      -- configure C and C++ language server
+      lspconfig['clangd'].setup(lsp_default_config())
     end
   }
 }

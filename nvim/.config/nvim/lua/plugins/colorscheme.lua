@@ -2,12 +2,13 @@ return {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       local palette = require('gruvbox').palette
       require('gruvbox').setup({
         italic = {
           strings = false,
+          -- comments = false,
         },
         overrides = {
           -- noice.nvim
@@ -19,7 +20,7 @@ return {
 
           MiniIndentscopeSymbol = { fg = palette.bright_orange }, -- mini.indentscope
           LazyNormal = { link = 'Normal' }, -- lazy.nvim
-          GitSignsCurrentLineBlame = { link = 'Comment' }, -- gitsigns
+          GitSignsCurrentLineBlame = { fg = palette.dark4 }, -- gitsigns
 
           -- FzfLua
           FzfLuaHeaderText = { fg = palette.bright_red },
@@ -105,19 +106,68 @@ return {
   {
     'neanias/everforest-nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       require('everforest').setup({
+        background = 'hard',
         on_highlights = function(hl, palette)
-          hl.MiniIndentscopeSymbol = { fg = palette.green }
+          -- fzf-lua
           hl.FzfLuaHeaderText = { fg = palette.red }
           hl.FzfLuaHeaderBind = { fg = palette.yellow }
-          hl.IlluminatedWordText = { underline = true, bold = true }
-          hl.IlluminatedWordRead = { underline = true, bold = true }
-          hl.IlluminatedWordWrite = { underline = true, bold = true }
+
+          -- vim-illuminate
+          hl.IlluminatedWordText = { underline = true }
+          hl.IlluminatedWordRead = { underline = true }
+          hl.IlluminatedWordWrite = { underline = true }
         end,
       })
+      vim.api.nvim_create_autocmd('Colorscheme', {
+        pattern = 'everforest',
+        callback = function()
+          vim.g.terminal_color_0  = '#414b50'
+          vim.g.terminal_color_1  = '#e67e80'
+          vim.g.terminal_color_2  = '#a7c080'
+          vim.g.terminal_color_3  = '#dbbc7f'
+          vim.g.terminal_color_4  = '#7fbbb3'
+          vim.g.terminal_color_5  = '#d699b6'
+          vim.g.terminal_color_6  = '#83c092'
+          vim.g.terminal_color_7  = '#d3c6aa'
+          vim.g.terminal_color_8  = '#475258'
+          vim.g.terminal_color_9  = '#e67e80'
+          vim.g.terminal_color_10 = '#a7c080'
+          vim.g.terminal_color_11 = '#dbbc7f'
+          vim.g.terminal_color_12 = '#7fbbb3'
+          vim.g.terminal_color_13 = '#d699b6'
+          vim.g.terminal_color_14 = '#83c092'
+          vim.g.terminal_color_15 = '#d3c6aa'
+        end
+      })
       vim.cmd.colorscheme('everforest')
+    end
+  },
+  {
+    'sainnhe/gruvbox-material',
+    priority = 1000,
+    enabled = false,
+    config = function()
+      vim.g.gruvbox_material_better_performance = 1
+      -- vim.g.gruvbox_material_background = 'hard'
+      -- vim.g.gruvbox_material_foreground = 'mix'
+
+      vim.api.nvim_create_autocmd('Colorscheme', {
+        group = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
+        pattern = 'gruvbox-material',
+        callback = function()
+          local config = vim.fn['gruvbox_material#get_configuration']()
+          local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
+          local set_hl = vim.fn['gruvbox_material#highlight']
+
+          set_hl('FzfLuaHeaderText', palette.red, palette.none)
+          set_hl('FzfLuaHeaderBind', palette.orange, palette.none)
+        end
+      })
+
+      vim.cmd.colorscheme('gruvbox-material')
     end
   },
 }

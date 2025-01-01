@@ -56,6 +56,7 @@ return {
           'markdown_inline',
           'regex',
           'c_sharp',
+          'go',
         },
         auto_install = true,
         highlight = {

@@ -1,31 +1,42 @@
 local wezterm = require('wezterm')
 local config = {}
-local colors = {}
 
 -- Fonts
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  -- 'Terminus (TTF)',
-  -- 'Terminess Nerd Font Mono',
-  'JetBrainsMonoMod Nerd Font Mono',
+  'SauceCodePro Nerd Font Mono',
+  'Noto Sans SC',
 })
 
--- Jetbrains Mono Bold
+-- config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
+-- config.harfbuzz_features = { 'ss06', 'cv10' }  -- Fira Code
+-- config.harfbuzz_features = { 'ss04' }  -- Source Code Pro
+
+-- Bold
 config.font_rules = {
   {
     intensity = 'Bold',
     italic = false,
-    font = wezterm.font('JetBrainsMonoMod Nerd Font Mono', { weight = 'Bold', stretch = 'Normal', style = 'Normal' })
+    font = wezterm.font_with_fallback({
+      { family = 'SauceCodePro Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+    }),
   },
   {
     intensity = 'Bold',
     italic = true,
-    font = wezterm.font('JetBrainsMonoMod Nerd Font Mono', { weight = 'Bold', stretch = 'Normal', style = 'Italic' })
+    font = wezterm.font_with_fallback({
+      { family = 'SauceCodePro Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+    }),
   },
 }
 
-config.font_size = 13.5
+-- config.font_size = 13.3
+-- config.font_size = 14.4
+-- config.font_size = 11
+config.font_size = 14
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
@@ -33,38 +44,7 @@ config.use_fancy_tab_bar = false
 config.tab_max_width = 10000
 
 config.max_fps = 120
-
-colors['tab_bar'] = { background = '#3c3836',
-
-  active_tab = {
-    bg_color = '#a89984',
-    fg_color = '#282828',
-    intensity = 'Bold',
-  },
-
-  inactive_tab = {
-    bg_color = '#504945',
-    fg_color = '#ebdbb2'
-  },
-
-  inactive_tab_hover = {
-    bg_color = '#665c54',
-    fg_color = '#ebdbb2',
-    intensity = 'Bold',
-  },
-
-  new_tab = {
-    bg_color = '#8ec07c',
-    fg_color = '#282828',
-    intensity = 'Bold',
-  },
-
-  new_tab_hover = {
-    bg_color = '#ebdbb2',
-    fg_color = '#282828',
-    intensity = 'Bold',
-  },
-}
+config.animation_fps = 120
 
 -- Window
 -- config.window_decorations = 'RESIZE'
@@ -77,7 +57,9 @@ config.window_padding = {
 
 -- Color Scheme
 config.color_scheme = 'GruvboxDark'
-config.colors = colors
+config.colors = require('colorscheme.gruvbox_dark_medium')
+-- config.colors = require('colorscheme.everforest-dark-hard')
+-- config.color_scheme = 'Everforest Dark (Hard)'
 -- config.color_scheme = 'Catppuccin Mocha'
 -- config.color_scheme = 'Tokyo Night'
 -- config.color_scheme = 'tokyonight_night'

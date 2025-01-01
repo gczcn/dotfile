@@ -12,6 +12,7 @@ return {
     'L3MON4D3/LuaSnip',
   },
   build = 'rustup run nightly cargo build --release',
+  -- build = 'cargo build --release',
   config = function()
     require('luasnip.loaders.from_vscode').lazy_load()
     require('blink.cmp').setup({
@@ -34,7 +35,7 @@ return {
           auto_show_delay_ms = 0,
           window = {
             -- border = 'single',
-            winblend = vim.o.winblend,
+            winblend = vim.o.pumblend,
           },
         },
         menu = {
@@ -47,7 +48,7 @@ return {
             },
           },
           -- border = 'single',
-          winblend = vim.o.winblend,
+          winblend = vim.o.pumblend,
           max_height = 30,
         },
       },

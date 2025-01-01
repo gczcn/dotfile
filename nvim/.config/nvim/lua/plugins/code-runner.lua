@@ -1,29 +1,4 @@
 vim.g.code_runner_run_args = ''
-local setup = function()
-  require('code_runner').setup({
-    term = {
-      size = 20
-    },
-    filetype = {
-      markdown = function ()
-        vim.cmd [[MarkdownPreviewToggle]]
-      end,
-      java = {
-        'cd $dir &&',
-        'javac $fileName &&',
-        'java $fileNameWithoutExt'
-      },
-      python = 'python3 $file ' .. vim.g.code_runner_run_args,
-      lua = 'lua $file ' .. vim.g.code_runner_run_args,
-      typescript = 'deno run',
-      rust = {
-        'cd $dir &&',
-        'rustc $fileName &&',
-        '$dir/$fileNameWithoutExt'
-      },
-    },
-  })
-end
 
 return {
   'CRAG666/code_runner.nvim',
@@ -40,15 +15,23 @@ return {
   },
   keys = {
     { '<leader>ra', function()
-      vim.ui.input({prompt = 'Input Args:'}, function (args)
+      vim.ui.input({prompt = 'Input Args: '}, function (args)
         if args ~= nil then
           vim.g.code_runner_run_args = args
-          setup()
+        end
+      end)
+    end },
+    { '<leader>rA', function()
+      vim.ui.input({prompt = 'Input Args: '}, function (args)
+        if args ~= nil then
+          vim.g.code_runner_run_args = args
+          vim.cmd.RunCode()
         end
       end)
     end },
     { '<leader>r', '<cmd>RunCode<CR>' },
     { '<leader>rr', '<cmd>RunCode<CR>' },
+    { '<leader>rc', '<cmd>RunCode<CR>' },
     { '<leader>R', '<cmd>RunCode<CR>' },
     { '<leader>rf', '<cmd>RunFile<CR>' },
     { '<leader>rft', '<cmd>RunFile tab<CR>' },
@@ -58,6 +41,46 @@ return {
     { '<leader>crp', '<cmd>CRProjects<CR>' },
   },
   config = function()
-    setup()
+    require('code_runner').setup({
+      term = {
+        size = 20
+      },
+      filetype = {
+        markdown = function ()
+          vim.cmd [[MarkdownPreviewToggle]]
+        end,
+        java = {
+          'cd $dir &&',
+          'javac $fileName &&',
+          'java $fileNameWithoutExt'
+        },
+        python = function() return 'python3 $file ' .. vim.g.code_runner_run_args end,
+        lua = function() return 'lua $file ' .. vim.g.code_runner_run_args end,
+        typescript = 'deno run',
+        rust = {
+          'cd $dir &&',
+          'rustc $fileName &&',
+          '$dir/$fileNameWithoutExt'
+        },
+        c = function(...)
+          local c_base = {
+            'cd $dir &&',
+            'gcc-14 $fileName -o', -- for macOS homebrew
+            -- 'gcc $fileName -o',
+            -- 'clang $fileName -o',
+            '/tmp/$fileNameWithoutExt',
+          }
+          local c_exec = {
+            '&& /tmp/$fileNameWithoutExt &&',
+            'rm /tmp/$fileNameWithoutExt',
+          }
+          vim.ui.input({ prompt = 'Add more args: ' }, function(input)
+            c_base[4] = input
+            vim.print(vim.tbl_extend('force', c_base, c_exec))
+            require('code_runner.commands').run_from_fn(vim.list_extend(c_base, c_exec))
+          end)
+        end,
+      },
+    })
   end
 }

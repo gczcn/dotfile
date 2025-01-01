@@ -89,12 +89,7 @@ return {
         -- Telescope
         -- { name = 'Jump', action = ':Telescope zoxide', section = 'Telescope' },
         -- { name = 'e File Browser', action = ':Telescope file_browser', section = 'Telescope' },
-        { name = 'e File Browser (Oil.nvim)', action = function()
-          require('oil').open()
-          require('oil.util').run_after_load(0, function()
-            require('oil').open_preview()
-          end)
-        end, section = 'Other Plugins' },
+        { name = 'e File Browser (Oil.nvim)', action = ':Oil', section = 'Other Plugins' },
         { name = 'f Find files', action = ':FzfLua files', section = 'FzfLua' },
         { name = 'l Live grep', action = ':FzfLua live_grep', section = 'FzfLua' },
         { name = 'g Grep', action = ':FzfLua grep', section = 'FzfLua' },
@@ -106,8 +101,8 @@ return {
       -- items = nil,
       content_hooks = {
         starter.gen_hook.padding(7, 3),
-        starter.gen_hook.adding_bullet('│ '),
-        -- starter.gen_hook.adding_bullet('░ '),
+        -- starter.gen_hook.adding_bullet('│ '),
+        starter.gen_hook.adding_bullet('░ '),
       },
       header = header(),
       footer = footer(),

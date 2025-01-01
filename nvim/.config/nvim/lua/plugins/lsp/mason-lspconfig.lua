@@ -10,6 +10,7 @@ return {
 
       mason_lspconfig.setup({
         ensure_installed = {
+          'clangd',
           'ts_ls',
           'html',
           'cssls',
@@ -21,6 +22,7 @@ return {
           'prismals',
           'pyright',
           'omnisharp',
+          'gopls',
         },
       })
     end

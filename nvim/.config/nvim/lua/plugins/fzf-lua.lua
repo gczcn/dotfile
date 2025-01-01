@@ -16,8 +16,16 @@ return {
     { '<leader>fb', '<cmd>FzfLua buffers<CR>' },
     { '<leader>fw', '<cmd>FzfLua colorschemes<CR>' },
   },
+  init = function()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.ui.select = function(...)
+      require('lazy').load({ plugins = { 'fzf-lua' } })
+      return vim.ui.select(...)
+    end
+  end,
   config = function()
-    require('fzf-lua').setup({
+    local fzf_lua = require('fzf-lua')
+    fzf_lua.setup({
       winopts = {
         border = 'single',
         backdrop = 100,
@@ -28,5 +36,6 @@ return {
       },
       fzf_colors = true,
     })
+    fzf_lua.register_ui_select()
   end
 }

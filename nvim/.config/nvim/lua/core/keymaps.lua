@@ -73,9 +73,9 @@ map('n', '<leader>bd', '<cmd>bd<CR>', opts)
 map({ 'n', 'v' }, 'U', 'K', opts) -- Help
 map('n', '\\', '<cmd>w<CR>', opts) -- Save
 map('n', '<leader>hl', '<cmd>noh<CR>', opts)
-map('n', '<F5>', function() -- Toggle background [ dark | light ]
-  if vim.o.background == 'light' then
-    vim.o.background = 'dark' return
-  end
-  vim.o.background = 'light'
+map('n', '<leader>aoc', function()
+  vim.o.cursorcolumn = not vim.o.cursorcolumn
+end)
+map({ 'n', 'v' }, '<F5>', function() -- Toggle background [ dark | light ]
+  vim.o.background = vim.o.background == 'dark' and 'light' or 'dark'
 end, opts)

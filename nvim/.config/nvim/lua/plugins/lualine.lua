@@ -8,7 +8,7 @@ return {
     local get_hl = require('utils.get_hl')
 
     local get_date = function()
-      return os.date('%D %R:%S')
+      return os.date('%D %R')
     end
 
     local lsp_clients = function()
@@ -23,7 +23,7 @@ return {
       for _, client in pairs(clients) do
         table.insert(c, client.name)
       end
-      return '\u{f085} ' .. table.concat(c, '|')
+      return ' ' .. table.concat(c, ', ')
     end
 
     require('lualine').setup({
@@ -48,7 +48,7 @@ return {
         },
 
         lualine_x = {
-          -- { 'filename', path = 3 },
+          { 'filename', path = 3 },
           -- stylua: ignore
           {
             function() return require('noice').api.status.command.get() end,
