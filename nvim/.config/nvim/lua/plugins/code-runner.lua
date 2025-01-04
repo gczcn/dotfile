@@ -21,7 +21,7 @@ return {
         end
       end)
     end },
-    { '<leader>rA', function()
+    { '<leader>R', function()
       vim.ui.input({prompt = 'Input Args: '}, function (args)
         if args ~= nil then
           vim.g.code_runner_run_args = args
@@ -31,8 +31,6 @@ return {
     end },
     { '<leader>r', '<cmd>RunCode<CR>' },
     { '<leader>rr', '<cmd>RunCode<CR>' },
-    { '<leader>rc', '<cmd>RunCode<CR>' },
-    { '<leader>R', '<cmd>RunCode<CR>' },
     { '<leader>rf', '<cmd>RunFile<CR>' },
     { '<leader>rft', '<cmd>RunFile tab<CR>' },
     { '<leader>rp', '<cmd>RunProject<CR>' },
@@ -65,7 +63,7 @@ return {
         c = function(...)
           local c_base = {
             'cd $dir &&',
-            'gcc-14 $fileName -o', -- for macOS homebrew
+            'gcc-14 --std=gnu23 $fileName -o', -- for macOS homebrew
             -- 'gcc $fileName -o',
             -- 'clang $fileName -o',
             '/tmp/$fileNameWithoutExt',

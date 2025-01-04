@@ -3,9 +3,6 @@ return {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
@@ -19,7 +16,7 @@ return {
     config = function()
       local lspconfig = require('lspconfig')
       local opts = { noremap = true, silent = true }
-      local on_attach = function(_, bufnr)
+      local on_attach = function(client, bufnr)
         opts.buffer = bufnr
 
         -- set keybinds
@@ -60,7 +57,7 @@ return {
         vim.keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = -1, float = true }) end, opts) -- jump to next diagnostic in buffer
 
         opts.desc = 'Show documentation for what is under cursor'
-        vim.keymap.set('n', '<leader>h', vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+        vim.keymap.set('n', 'U', vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
 
         opts.desc = 'Restart LSP'
         vim.keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', opts) -- mapping to restart lsp if necessary
@@ -131,7 +128,7 @@ return {
           text = {
             [vim.diagnostic.severity.ERROR] = '',
             [vim.diagnostic.severity.WARN] = '',
-            [vim.diagnostic.severity.HINT] = ' ',
+            [vim.diagnostic.severity.HINT] = '',
             [vim.diagnostic.severity.INFO] = '',
           },
           numhl = {
@@ -219,23 +216,24 @@ return {
       })
 
       -- configure C sharp language server
-      lspconfig['omnisharp'].setup({
-        capabilities = capabilities(),
-        on_attach = on_attach,
-        cmd = { "dotnet", vim.fn.stdpath "data" .. "/mason/packages/omnisharp/libexec/OmniSharp.dll" },
-        enable_roslyn_analyzers = true,
-        organize_imports_on_format = true,
-        enable_import_completion = true,
-        root_dir = function ()
-          return vim.loop.cwd() -- current working directory
-        end,
-      })
+      -- lspconfig['omnisharp'].setup({
+      --   capabilities = capabilities(),
+      --   on_attach = on_attach,
+      --   cmd = { "dotnet", vim.fn.stdpath "data" .. "/mason/packages/omnisharp/libexec/OmniSharp.dll" },
+      --   enable_roslyn_analyzers = true,
+      --   organize_imports_on_format = true,
+      --   enable_import_completion = true,
+      --   root_dir = function ()
+      --     return vim.loop.cwd() -- current working directory
+      --   end,
+      -- })
 
       -- configure Go language server
       lspconfig['gopls'].setup(lsp_default_config())
 
       -- configure C and C++ language server
       lspconfig['clangd'].setup(lsp_default_config())
+      -- lspconfig['ccls'].setup(lsp_default_config())
     end
   }
 }

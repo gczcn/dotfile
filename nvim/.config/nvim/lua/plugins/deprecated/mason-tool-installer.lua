@@ -1,6 +1,7 @@
 return {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
+    enabled = false,
     lazy = true,
     config = function()
       local mason = require('mason')
@@ -10,9 +11,9 @@ return {
 
       mason_tool_installer.setup({
         ensure_installed = {
-          'stylua',
-          'shfmt',
-          'black',
+          -- 'stylua',
+          -- 'shfmt',
+          -- 'black',
         },
         auto_update = true,
         -- run_on_start = true,

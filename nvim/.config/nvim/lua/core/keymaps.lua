@@ -72,7 +72,7 @@ map('n', '<leader>bd', '<cmd>bd<CR>', opts)
 -- Other
 map({ 'n', 'v' }, 'U', 'K', opts) -- Help
 map('n', '\\', '<cmd>w<CR>', opts) -- Save
-map('n', '<leader>hl', '<cmd>noh<CR>', opts)
+map('n', '<leader>hh', '<cmd>noh<CR>', opts)
 map('n', '<leader>aoc', function()
   vim.o.cursorcolumn = not vim.o.cursorcolumn
 end)

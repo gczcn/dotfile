@@ -20,10 +20,10 @@ vim.opt.laststatus = 0
 vim.opt.winblend = 15
 vim.opt.pumblend = 15
 vim.opt.signcolumn = 'auto'
--- vim.o.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
--- vim.o.foldlevelstart = 99
--- vim.o.foldenable = true
+vim.o.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 vim.keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>tl', function()

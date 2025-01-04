@@ -8,7 +8,7 @@ return {
       require('gruvbox').setup({
         italic = {
           strings = false,
-          -- comments = false,
+          comments = false,
         },
         overrides = {
           -- noice.nvim

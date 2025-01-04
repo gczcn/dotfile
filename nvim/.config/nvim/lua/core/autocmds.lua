@@ -1,7 +1,8 @@
-local create_autocmd = vim.api.nvim_create_autocmd
+local api = vim.api
+local autocmd = api.nvim_create_autocmd
 
 -- Line breaks are not automatically commented
-create_autocmd('FileType', {
+autocmd('FileType', {
   pattern = '*',
   callback = function()
     vim.cmd('setlocal formatoptions-=c formatoptions-=r formatoptions-=o')
@@ -9,16 +10,28 @@ create_autocmd('FileType', {
 })
 
 -- Highlight when copying
-create_autocmd('TextYankPost', {
+autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   callback = function()
     vim.highlight.on_yank()
   end
 })
 
+autocmd('User', {
+  pattern = 'FileOpened',
+  desc = 'Ghostty comfiguration file commentstring',
+  callback = function()
+    local buf_name = api.nvim_buf_get_name(0)
+    local path = require('utils.split')(buf_name, '/')
+    if path[3] == '.config' and path[4] == 'ghostty' and path[5] == 'config' then
+      vim.bo.commentstring = '#%s'
+    end
+  end
+})
+
 -- Events
 
-create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
+autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
   group = vim.api.nvim_create_augroup('FileOpened', { clear = true }),
   pattern = '*',
   callback = function(args)

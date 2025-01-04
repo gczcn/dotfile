@@ -5,11 +5,11 @@ local config = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  'SauceCodePro Nerd Font Mono',
+  'JetBrainsMono Nerd Font mono',
   'Noto Sans SC',
 })
 
--- config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
+config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
 -- config.harfbuzz_features = { 'ss06', 'cv10' }  -- Fira Code
 -- config.harfbuzz_features = { 'ss04' }  -- Source Code Pro
 
@@ -19,7 +19,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = false,
     font = wezterm.font_with_fallback({
-      { family = 'SauceCodePro Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'JetBrainsMono Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
@@ -27,7 +27,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = true,
     font = wezterm.font_with_fallback({
-      { family = 'SauceCodePro Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'JetBrainsMono Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
@@ -56,11 +56,11 @@ config.window_padding = {
 }
 
 -- Color Scheme
-config.color_scheme = 'GruvboxDark'
-config.colors = require('colorscheme.gruvbox_dark_medium')
+-- config.color_scheme = 'GruvboxDark'
+-- config.colors = require('colorscheme.gruvbox_dark_medium')
 -- config.colors = require('colorscheme.everforest-dark-hard')
 -- config.color_scheme = 'Everforest Dark (Hard)'
--- config.color_scheme = 'Catppuccin Mocha'
+config.color_scheme = 'Catppuccin Mocha'
 -- config.color_scheme = 'Tokyo Night'
 -- config.color_scheme = 'tokyonight_night'
 config.front_end = 'WebGpu'

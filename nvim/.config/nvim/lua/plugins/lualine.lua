@@ -4,6 +4,12 @@ return {
   -- dependencies = { 'nvim-tree/nvim-web-devicons' },
   dependencies = { 'echasnovski/mini.icons' },
   config = function()
+      -- columns = {
+      --   "icon",
+      --   "permissions",
+      --   "size",
+      --   -- "mtime",
+      -- },
     local simple_mode = require('utils.simple_mode')
     local get_hl = require('utils.get_hl')
 
@@ -48,7 +54,7 @@ return {
         },
 
         lualine_x = {
-          { 'filename', path = 3 },
+          -- { 'filename', path = 3 },
           -- stylua: ignore
           {
             function() return require('noice').api.status.command.get() end,

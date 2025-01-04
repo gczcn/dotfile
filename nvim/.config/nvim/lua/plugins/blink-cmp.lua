@@ -1,6 +1,6 @@
 return {
   'saghen/blink.cmp',
-  enabled = true,
+  -- enabled = false,
   event = 'InsertEnter',
   keys = {
     ':',
@@ -21,7 +21,7 @@ return {
       },
       keymap = {
         preset = 'default',
-        ['<M-o>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<M-.>'] = { 'show', 'show_documentation', 'hide_documentation' },
         ['<S-TAB>'] = { 'select_prev', 'fallback' },
         ['<TAB>'] = { 'select_next', 'fallback' },
         ['<M-y>'] = { 'accept' },
@@ -40,11 +40,22 @@ return {
         },
         menu = {
           draw = {
+            -- padding = { 0, 1 },
+            treesitter = { 'lsp' },
             columns = {
               -- { 'kind_icon' },
               { 'label', 'label_description', gap = 1 },
               { 'kind_icon', 'kind', gap = 1 },
               { 'source_name' },
+            },
+            components = {
+              -- kind_icon = {
+              --   ellipsis = false,
+              --   text = function(ctx) return ' ' .. ctx.kind_icon .. ' ' end,
+              --   highlight = function(ctx)
+              --     return require('blink.cmp.completion.windows.render.tailwind').get_hl(ctx) or 'BlinkCmpKind' .. ctx.kind
+              --   end,
+              -- },
             },
           },
           -- border = 'single',

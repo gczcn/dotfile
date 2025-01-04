@@ -1,4 +1,5 @@
 require('core.keymaps')
+require('core.cursor')
 require('core.options')
 require('core.commands')
 require('core.autocmds')

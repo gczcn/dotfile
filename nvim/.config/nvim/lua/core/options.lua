@@ -2,7 +2,7 @@ vim.g.encoding = 'UTF-8'
 
 local opt = vim.opt
 
-opt.autowrite = true -- enable autowrite
+opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 -- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
 opt.colorcolumn = '80,100' -- Line number reminder
@@ -13,11 +13,12 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.ignorecase = true -- Ignore case
 opt.linebreak = true -- Wrap lines at 'breakat'
+opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
-opt.number = true -- Show number column
+opt.number = true
 opt.pumheight = 30
+opt.relativenumber = true
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
 opt.shiftwidth = 4 -- Number of space inserted for indentation

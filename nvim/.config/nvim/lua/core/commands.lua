@@ -1,4 +1,5 @@
--- local create_command = vim.api.nvim_create_user_command
+local api = vim.api
+local create_command = api.nvim_create_user_command
 
 -- Useless
 vim.cmd.cabbrev('W! w!')
@@ -28,3 +29,8 @@ vim.cmd.cabbrev('W w')
 vim.cmd.cabbrev('Q q')
 vim.cmd.cabbrev('Qa qa')
 vim.cmd.cabbrev('Qall qall')
+
+-- Scripts
+create_command('RunScript', function(t)
+  vim.cmd.term('bash -c ' .. vim.fn.stdpath('config') .. '/scripts/' .. t.args .. '.sh')
+end, {nargs = 1})
