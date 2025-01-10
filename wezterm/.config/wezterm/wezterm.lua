@@ -5,6 +5,7 @@ local config = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
+  -- 'JetBrainsMono Nerd Font mono',
   'JetBrainsMono Nerd Font mono',
   'Noto Sans SC',
 })
@@ -33,10 +34,10 @@ config.font_rules = {
   },
 }
 
--- config.font_size = 13.3
+config.font_size = 13.3
 -- config.font_size = 14.4
 -- config.font_size = 11
-config.font_size = 14
+-- config.font_size = 14
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
@@ -56,11 +57,11 @@ config.window_padding = {
 }
 
 -- Color Scheme
--- config.color_scheme = 'GruvboxDark'
--- config.colors = require('colorscheme.gruvbox_dark_medium')
+config.color_scheme = 'GruvboxDark'
+config.colors = require('colorscheme.gruvbox_dark_medium')
 -- config.colors = require('colorscheme.everforest-dark-hard')
 -- config.color_scheme = 'Everforest Dark (Hard)'
-config.color_scheme = 'Catppuccin Mocha'
+-- config.color_scheme = 'Catppuccin Mocha'
 -- config.color_scheme = 'Tokyo Night'
 -- config.color_scheme = 'tokyonight_night'
 config.front_end = 'WebGpu'

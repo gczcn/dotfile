@@ -2,13 +2,20 @@ return {
   'stevearc/oil.nvim',
   keys = {
     {
-      '<leader>te',
+      '<leader>e',
       function()
         if vim.o.filetype == 'oil' then
           require('oil').close()
         else
           require('oil').open()
         end
+      end,
+      mode = 'n',
+    },
+    {
+      '<leader>E',
+      function()
+        require('oil').open(vim.fn.stdpath('config'))
       end,
       mode = 'n',
     },

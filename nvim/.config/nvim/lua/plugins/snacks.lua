@@ -7,6 +7,7 @@ return {
     Snacks.setup({
       bigfile = {},
       notifier = {},
+
       styles = {
         notification = { border = 'single' },
         notification_history = {

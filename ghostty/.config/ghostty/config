@@ -1,0 +1,17 @@
+font-family = FiraCode Nerd Font Mono
+# font-family = SauceCodePro Nerd Font Mono
+# font-family = Hack Nerd Font Mono
+font-feature = onum
+font-feature = cv10
+font-feature = zero
+font-family = Noto Sans SC
+font-size = 14.3
+# theme = nightfox
+theme = GruvboxDark
+# theme = Solarized Dark - Patched
+mouse-hide-while-typing = true
+window-padding-x = 0
+window-padding-y = 0
+window-padding-balance = false
+macos-option-as-alt = true
+bold-is-bright = true

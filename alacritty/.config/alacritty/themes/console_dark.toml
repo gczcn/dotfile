@@ -1,0 +1,28 @@
+# Default colors
+[colors.primary]
+# hard contrast background = = '#1d2021'
+background = '#000000'
+# soft contrast background = = '#32302f'
+foreground = '#AAAAAA'
+
+# Normal colors
+[colors.normal]
+black   = '#000000'
+red     = '#AA0000'
+green   = '#00AA00'
+yellow  = '#AA5500'
+blue    = '#0000AA'
+magenta = '#AA00AA'
+cyan    = '#00AAAA'
+white   = '#AAAAAA'
+
+# Bright colors
+[colors.bright]
+black   = '#555555'
+red     = '#FF5555'
+green   = '#55FF55'
+yellow  = '#FFFF55'
+blue    = '#5555FF'
+magenta = '#FF55FF'
+cyan    = '#55FFFF'
+white   = '#FFFFFF'

@@ -4,12 +4,12 @@ return {
   -- dependencies = { 'nvim-tree/nvim-web-devicons' },
   dependencies = { 'echasnovski/mini.icons' },
   config = function()
-      -- columns = {
-      --   "icon",
-      --   "permissions",
-      --   "size",
-      --   -- "mtime",
-      -- },
+    -- columns = {
+    --   "icon",
+    --   "permissions",
+    --   "size",
+    --   -- "mtime",
+    -- },
     local simple_mode = require('utils.simple_mode')
     local get_hl = require('utils.get_hl')
 
@@ -42,15 +42,21 @@ return {
       sections = {
         lualine_a = { 'mode' },
         lualine_b = { 'filename', 'searchcount', 'selectioncount' },
-        lualine_c = { 'branch', 'diff', 'filesize', 'filetype', 'encoding', {
-          'diagnostics',
-          symbols = {
-            error = 'E',
-            warn = 'W',
-            hint = 'H',
-            info = 'I',
+        lualine_c = {
+          'branch',
+          'diff',
+          'filesize',
+          'filetype',
+          'encoding',
+          {
+            'diagnostics',
+            symbols = {
+              error = 'E',
+              warn = 'W',
+              hint = 'H',
+              info = 'I',
+            },
           },
-        },
         },
 
         lualine_x = {
@@ -72,7 +78,11 @@ return {
               return { fg = get_hl('Constant') }
             end
           },
-          lsp_clients, 'tabnine', 'hostname', 'fileformat' },
+          lsp_clients,
+          'tabnine',
+          'hostname',
+          'fileformat',
+        },
         lualine_y = {
           { 'progress', separator = ' ', padding = { left = 1, right = 0 } },
           { 'location', padding = { left = 0, right = 1 } },
@@ -101,13 +111,14 @@ return {
     local opts = { noremap = true, silent = true }
 
     -- Buffers
-    vim.keymap.set('n', '<leader>0', '<cmd>LualineBuffersJump $<CR>', opts)
+    local keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }
+    vim.keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
     for i = 1, 9 do
-      vim.keymap.set('n', ('<leader>%s'):format(i), ('<cmd>LualineBuffersJump %s<CR>'):format(i), opts)
+      vim.keymap.set('n', (']%s'):format(keyboard[i + 1]), ('<cmd>LualineBuffersJump %s<CR>'):format(i), opts)
     end
 
     -- Tabs
     vim.keymap.set('n', '<TAB>', '<cmd>tabnext<CR>', opts)
     vim.keymap.set('n', '<S-TAB>', '<cmd>tabprev<CR>', opts)
-  end
+  end,
 }

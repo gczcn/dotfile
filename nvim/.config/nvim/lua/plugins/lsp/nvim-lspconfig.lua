@@ -6,6 +6,7 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
+      -- 'ranjithshegde/ccls.nvim',
       {
         'smjonas/inc-rename.nvim',
         config = function()
@@ -15,6 +16,7 @@ return {
     },
     config = function()
       local lspconfig = require('lspconfig')
+      local util = require('lspconfig.util')
       local opts = { noremap = true, silent = true }
       local on_attach = function(client, bufnr)
         opts.buffer = bufnr
@@ -231,9 +233,27 @@ return {
       -- configure Go language server
       lspconfig['gopls'].setup(lsp_default_config())
 
-      -- configure C and C++ language server
-      lspconfig['clangd'].setup(lsp_default_config())
-      -- lspconfig['ccls'].setup(lsp_default_config())
+      -- configure C and C++ ... language server
+      lspconfig['clangd'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+        cmd = {
+          'clangd',
+          '--background-index',
+        }
+      })
+      -- lspconfig['ccls'].setup({
+      --   capabilities = capabilities(),
+      --   on_attach = on_attach,
+      --   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'opencl' },
+      --   root_dir = function(fname)
+      --     return vim.loop.cwd() -- current working directory
+      --   end,
+      --   init_options = { cache = {
+      --     -- directory = vim.env.XDG_CACHE_HOME .. '/ccls/',
+      --     vim.fs.normalize '~/.cache/ccls' -- if on nvim 0.8 or higher
+      --   } },
+      -- })
     end
   }
 }

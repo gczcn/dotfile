@@ -18,6 +18,7 @@ return {
     event = 'VeryLazy',
     opts = {
       cmdline = {
+        -- enabled = false,
         format = {
           cmdline = { pattern = '^:', icon = '>', lang = 'vim' },
           search_down = { kind = "search", pattern = "^/", icon = " Up", lang = "regex" },

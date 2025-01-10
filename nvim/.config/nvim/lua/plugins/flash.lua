@@ -1,10 +1,11 @@
 return {
   'folke/flash.nvim',
+  enabled = true,
   event = 'VeryLazy',
   ---@type Flash.Config
   opts = {
-    -- labels = "asdfghjklqwertyuiopzxcvbnm",
-    labels = "arstdhneiqwfpgjluy;zxcvbkm", -- Colemak
+    -- labels = 'asdfghjklqwertyuiopzxcvbnm',
+    labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
     prompt = {
       prefix = { { " Jump ", "FlashPromptIcon" } },
     },

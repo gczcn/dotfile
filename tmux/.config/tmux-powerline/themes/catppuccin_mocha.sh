@@ -132,7 +132,7 @@ if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 		#"xkb_layout 125 117"
 		# "date_day 235 136"
 		# "date 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
-		"rainbarf"
+		"rainbarf_rgb"
 		"time #a6e3a1 #1e1e2e ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 		#"utc_time 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 	)

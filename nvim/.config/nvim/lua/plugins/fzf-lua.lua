@@ -28,10 +28,13 @@ return {
     fzf_lua.setup({
       winopts = {
         border = 'single',
+        preview = {
+          border = 'single',
+        },
         backdrop = 100,
         on_create = function()
-          vim.keymap.set('t', '<M-e>', '<down>', { silent = true, buffer = true })
-          vim.keymap.set('t', '<M-u>', '<up>', { silent = true, buffer = true })
+          vim.keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })
+          vim.keymap.set('t', '<C-u>', '<up>', { silent = true, buffer = true })
         end,
       },
       fzf_colors = true,

@@ -1,14 +1,15 @@
 return {
   -- 'hrsh7th/nvim-cmp',
   'iguanacucumber/magazine.nvim',
+  -- 'xzbdmw/nvim-cmp',
   enabled = false,
   name = 'nvim-cmp',
-  event = 'InsertEnter',
-  keys = {
-    ':',
-    '/',
-    '?',
-  },
+  event = { 'InsertEnter', 'CmdlineEnter' },
+  -- keys = {
+  --   ':',
+  --   '/',
+  --   '?',
+  -- },
   dependencies = {
     {
       'L3MON4D3/LuaSnip',
@@ -32,6 +33,7 @@ return {
     'hrsh7th/cmp-calc', -- nvim-cmp source for math calculation.
     'hrsh7th/cmp-emoji',
     'ray-x/cmp-treesitter',
+    { 'zbirenbaum/copilot-cmp', config = function() require("copilot_cmp").setup() end },
   },
   config = function()
     local cmp = require('cmp')
@@ -70,7 +72,8 @@ return {
       TabNine = 'A',
       TypeParameter = '',
       Number = '0',
-      KeywordConditional = ' '
+      KeywordConditional = ' ',
+      Copilot = ''
     }
     local custom_kind = {
       calc = '󰃬 Calc'
@@ -95,6 +98,7 @@ return {
             emoji = '[Emoji]',
             treesitter = '[Treesitter]',
             cmp_tabnine = '[Tabnine]',
+            copilot = '[Copilot]',
           })[entry.source.name]
           return vim_item
         end,
@@ -132,6 +136,7 @@ return {
         ['<CR>'] = cmp.mapping.confirm({ select = false }),
       }),
       sources = cmp.config.sources({
+        { name = 'copilot' },
         { name = 'nvim_lsp' },
         { name = 'luasnip' }, -- snippets
         { name = 'nvim_lua' },

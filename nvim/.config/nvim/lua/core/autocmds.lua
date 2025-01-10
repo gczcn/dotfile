@@ -29,6 +29,26 @@ autocmd('User', {
   end
 })
 
+-- https://github.com/sitiom/nvim-numbertoggle/blob/main/plugin/numbertoggle.lua
+autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
+   pattern = "*",
+   callback = function()
+      if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
+         vim.opt.relativenumber = true
+      end
+   end,
+})
+
+autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
+   pattern = "*",
+   callback = function()
+      if vim.o.nu then
+         vim.opt.relativenumber = false
+         vim.cmd "redraw"
+      end
+   end,
+})
+
 -- Events
 
 autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
