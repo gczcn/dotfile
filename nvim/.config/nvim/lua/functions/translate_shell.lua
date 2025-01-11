@@ -5,6 +5,7 @@ local translate = function(t, to)
   local text = t
   text = string.gsub(text, '"', '"' .. "'" .. '"' .. "'" .. '"')
   text = string.gsub(text, '\\', '\\\\')
+  text = string.gsub(text, '#', '\\#')
   vim.cmd.term('trans :' .. to .. ' "' .. text .. '"')
 
   vim.keymap.set('n', 'q', '<cmd>bd<CR>', { buffer = true })
