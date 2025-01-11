@@ -17,6 +17,7 @@ brew install pyright  # Python
 brew install lua-language-server  # Lua
 brew install gopls  # Go
 brew install tailwindcss-language-server
+brew install bash-language-server
 npm install -g vscode-langservers-extracted  # Html, Css...
 npm install -g graphql-language-service-cli
 npm install -g svelte-language-server

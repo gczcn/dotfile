@@ -17,6 +17,7 @@ brew upgrade pyright
 brew upgrade lua-language-server
 brew upgrade gopls
 brew upgrade tailwindcss-language-server
+brew upgrade bash-language-server
 npm update -g vscode-langservers-extracted
 npm update -g svelte-language-server
 npm update -g graphql-language-service-cli
