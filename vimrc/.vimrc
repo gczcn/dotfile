@@ -88,7 +88,7 @@ nnoremap <F5> :call Toggle_background()<CR>
 
 # Options
 syntax enable
-colorscheme habamax
+# colorscheme habamax
 
 g:encoding = 'UTF-8'
 

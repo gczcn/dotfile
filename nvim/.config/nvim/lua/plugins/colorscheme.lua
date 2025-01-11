@@ -30,6 +30,9 @@ return {
           StatusLine = { reverse = false },
           StatusLineNC = { reverse = false },
 
+          -- nvim-scrollbar
+          -- lua/plugins/nvim-scrollbar.lua #15-#22
+
           -- vim-illuminate
           IlluminatedWordText = { underline = true },
           IlluminatedWordRead = { underline = true },
