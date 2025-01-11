@@ -233,6 +233,13 @@ return {
       -- configure Go language server
       lspconfig['gopls'].setup(lsp_default_config())
 
+      -- configure Bash language server
+      lspconfig['bashls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+        cmd = { 'bash-language-server', 'start' },
+      })
+
       -- configure C and C++ ... language server
       lspconfig['clangd'].setup({
         capabilities = capabilities(),
