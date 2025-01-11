@@ -1,16 +1,13 @@
-font-family = FiraCode Nerd Font Mono
-# font-family = GoMono Nerd Font Mono
-# font-family = MonaspiceXe Nerd Font Mono
-# font-feature = ss04
+# Test:
+# hello.
+# 你好。
+font-family = BlexMono Nerd Font Mono
+font-family = IBM Plex Sans SC
 font-feature = onum
-font-feature = cv10
-font-feature = zero
-font-family = Noto Sans SC
 # font-size = 15.3
-font-size = 14.3
-# theme = nightfox
+# font-size = 14.3
+font-size = 13.5
 theme = GruvboxDark
-# theme = Solarized Dark - Patched
 mouse-hide-while-typing = true
 window-padding-x = 0
 window-padding-y = 0
