@@ -5,6 +5,8 @@ require('core.commands')
 require('core.autocmds')
 require('core.gui')
 
+require('functions.translate_shell')
+
 -- Neovide (a neovim GUI client)
 if vim.g.neovide then
   require('core.neovide')

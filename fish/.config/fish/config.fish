@@ -3,6 +3,7 @@ if status is-interactive
 
   # settings
   set fish_greeting
+  set -gx EDITOR nvim
 
   # start
   zoxide init fish | source

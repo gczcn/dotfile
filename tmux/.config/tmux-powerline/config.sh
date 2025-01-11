@@ -92,7 +92,7 @@
 	# Only display information when earthquakes are within this many minutes
 	export TMUX_POWERLINE_SEG_EARTHQUAKE_ALERT_TIME_WINDOW="60"
 	# Display time with this format
-	export TMUX_POWERLINE_SEG_EARTHQUAKE_TIME_FORMAT='(%t)'
+	export TMUX_POWERLINE_SEG_EARTHQUAKE_TIME_FORMAT='(%H:%M)'
 	# Display only if magnitude is greater or equal to this number
 	export TMUX_POWERLINE_SEG_EARTHQUAKE_MIN_MAGNITUDE="3"
 # }
@@ -137,17 +137,17 @@
 
 # ifstat.sh {
 	# Symbol for Download.
-	# export TMUX_POWERLINE_SEG_IFSTAT_DOWN_SYMBOL="⇊"
+	export TMUX_POWERLINE_SEG_IFSTAT_DOWN_SYMBOL="⇊"
 	# Symbol for Upload.
-	# export TMUX_POWERLINE_SEG_IFSTAT_UP_SYMBOL="⇈"
+	export TMUX_POWERLINE_SEG_IFSTAT_UP_SYMBOL="⇈"
 	# Symbol for Ethernet.
-	# export TMUX_POWERLINE_SEG_IFSTAT_ETHERNET_SYMBOL="󰈀"
+	export TMUX_POWERLINE_SEG_IFSTAT_ETHERNET_SYMBOL="󰈀"
 	# Symbol for WLAN.
-	# export TMUX_POWERLINE_SEG_IFSTAT_WLAN_SYMBOL="󱚻"
+	export TMUX_POWERLINE_SEG_IFSTAT_WLAN_SYMBOL="󱚻"
 	# Symbol for WWAN.
-	# export TMUX_POWERLINE_SEG_IFSTAT_WWAN_SYMBOL=""
+	export TMUX_POWERLINE_SEG_IFSTAT_WWAN_SYMBOL=""
 	# Separator for Interfaces.
-	# export TMUX_POWERLINE_SEG_IFSTAT_INTERFACE_SEPARATOR=" | "
+	export TMUX_POWERLINE_SEG_IFSTAT_INTERFACE_SEPARATOR=" | "
 	# Space separated list of interface names to be excluded. substring match, regexp can be used.
 	# Examples:
 	# export TMUX_POWERLINE_SEG_IFSTAT_INTERFACE_EXCLUDES="tun" # will exclude 'tun0', 'utun0', 'itun', 'tun08127387'
@@ -170,7 +170,7 @@
 
 # lan_ip.sh {
 	# Symbol for LAN IP.
-	# export TMUX_POWERLINE_SEG_LAN_IP_SYMBOL="ⓛ "
+	export TMUX_POWERLINE_SEG_LAN_IP_SYMBOL="L "
 	# Symbol colour for LAN IP
 	# export TMUX_POWERLINE_SEG_LAN_IP_SYMBOL_COLOUR="255"
 # }
@@ -305,7 +305,7 @@
 
 # time.sh {
 	# date(1) format for the time. Americans might want to have "%I:%M %p".
-	export TMUX_POWERLINE_SEG_TIME_FORMAT="%D %H:%M"
+	export TMUX_POWERLINE_SEG_TIME_FORMAT="%H:%M"
 	# Change this to display a different timezone than the system default.
 	# Use TZ Identifier like "America/Los_Angeles"
 	# export TMUX_POWERLINE_SEG_TIME_TZ=""
@@ -401,7 +401,7 @@
 
 # wan_ip.sh {
 	# Symbol for WAN IP
-	# export TMUX_POWERLINE_SEG_WAN_IP_SYMBOL="ⓦ "
+	export TMUX_POWERLINE_SEG_WAN_IP_SYMBOL="W "
 	# Symbol colour for WAN IP
 	# export TMUX_POWERLINE_SEG_WAN_IP_SYMBOL_COLOUR="255"
 # }
@@ -426,4 +426,4 @@
 # xkb_layout.sh {
 	# Keyboard icon
 	export TMUX_POWERLINE_SEG_XKB_LAYOUT_ICON="⌨ "
-# fo}
+# }

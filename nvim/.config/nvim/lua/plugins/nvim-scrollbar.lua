@@ -3,6 +3,11 @@ return {
   event = 'VeryLazy',
   config = function()
     require('scrollbar').setup({
+      marks = {
+        Cursor = {
+          text = '█'
+        },
+      },
       excluded_filetypes = {
         'blink-cmp-menu',
       },

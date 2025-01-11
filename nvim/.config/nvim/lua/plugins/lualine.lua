@@ -40,7 +40,7 @@ return {
         globalstatus = true,
       },
       sections = {
-        lualine_a = { 'mode' },
+        lualine_a = { simple_mode },
         lualine_b = { 'filename', 'searchcount', 'selectioncount' },
         lualine_c = {
           'branch',

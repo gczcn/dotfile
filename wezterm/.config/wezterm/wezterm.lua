@@ -6,7 +6,8 @@ local config = {}
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
   -- 'JetBrainsMono Nerd Font mono',
-  'JetBrainsMono Nerd Font mono',
+  'Cascadia Code NF',
+  -- 'JetBrainsMono Nerd Font mono',
   'Noto Sans SC',
 })
 
@@ -20,7 +21,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = false,
     font = wezterm.font_with_fallback({
-      { family = 'JetBrainsMono Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Cascadia Code NF', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
@@ -28,13 +29,13 @@ config.font_rules = {
     intensity = 'Bold',
     italic = true,
     font = wezterm.font_with_fallback({
-      { family = 'JetBrainsMono Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Cascadia Code NF', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
 }
 
-config.font_size = 13.3
+config.font_size = 15.1
 -- config.font_size = 14.4
 -- config.font_size = 11
 -- config.font_size = 14

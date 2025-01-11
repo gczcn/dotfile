@@ -3,8 +3,6 @@ local opts = { noremap = true }
 
 vim.g.mapleader = ' '
 
-vim.o.timeoutlen = 300
-
 -- Movement
 map({ 'n', 'v', 'o' }, 'u', 'gk', opts)
 map({ 'n', 'v', 'o' }, 'e', 'gj', opts)
@@ -53,10 +51,10 @@ map('n', '<leader>srv', '<C-w>b<C-w>H', opts)
 map('n', '<leader>srh', '<C-w>b<C-w>K', opts)
 
 -- Resize
-map('n', '<M-U>', '<cmd>resize +5<CR>', opts)
-map('n', '<M-E>', '<cmd>resize -5<CR>', opts)
-map('n', '<M-N>', '<cmd>vertical resize -10<CR>', opts)
-map('n', '<M-I>', '<cmd>vertical resize +10<CR>', opts)
+map('n', '<M-+>', '<cmd>resize +5<CR>', opts)
+map('n', '<M-_>', '<cmd>resize -5<CR>', opts)
+map('n', '<M-->', '<cmd>vertical resize -10<CR>', opts)
+map('n', '<M-=>', '<cmd>vertical resize +10<CR>', opts)
 
 -- Copy and Paste
 map({ 'n', 'v' }, '<M-y>', '"+y', opts)

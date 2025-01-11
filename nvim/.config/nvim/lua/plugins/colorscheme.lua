@@ -8,7 +8,7 @@ return {
       require('gruvbox').setup({
         italic = {
           strings = false,
-          comments = true,
+          comments = false,
         },
         overrides = {
           CursorLineNr = { bold = true },
