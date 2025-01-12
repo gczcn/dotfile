@@ -19,10 +19,10 @@ autocmd('TextYankPost', {
 
 autocmd('User', {
   pattern = 'FileOpened',
-  desc = 'Ghostty comfiguration file commentstring',
+  desc = 'Ghostty configuration file commentstring',
   callback = function()
     local buf_name = api.nvim_buf_get_name(0)
-    local path = require('utils.split')(buf_name, '/')
+    local path = vim.fn.split(buf_name, '/')
     if path[3] == '.config' and path[4] == 'ghostty' and path[5] == 'config' then
       vim.bo.commentstring = '#%s'
     end
