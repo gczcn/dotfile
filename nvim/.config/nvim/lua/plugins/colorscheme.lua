@@ -42,7 +42,7 @@ return {
           GitSignsCurrentLineBlame = { fg = palette.dark4 },
 
           -- flash.nvim
-          FlashLabel = { bg = palette.bright_purple, fg = palette.dark0 },
+          FlashLabel = { bg = palette.bright_red, fg = palette.dark0 },
 
           -- blink.cmp
           BlinkCmpKindClass = { bg = palette.bright_yellow, fg = palette.dark1 },
