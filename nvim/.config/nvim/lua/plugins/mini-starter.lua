@@ -86,10 +86,11 @@ return {
         { name = 'p Plugins', action = ':Lazy', section = 'Plugins actions' },
         -- { name = 'Mason', action = ':Mason', section = 'Plugins actions' },
 
-        -- Telescope
-        -- { name = 'Jump', action = ':Telescope zoxide', section = 'Telescope' },
-        -- { name = 'e File Browser', action = ':Telescope file_browser', section = 'Telescope' },
-        { name = 'e File Browser (Oil.nvim)', action = ':Oil', section = 'Other Plugins' },
+        -- Oil
+        { name = 'e File Browser', action = ':Oil', section = 'Oil' },
+        { name = 'w File Browser (Options)', action = ':Oil ' .. vim.fn.stdpath('config'), section = 'Oil' },
+
+        -- FzfLua
         { name = 'f Find files', action = ':FzfLua files', section = 'FzfLua' },
         { name = 'l Live grep', action = ':FzfLua live_grep', section = 'FzfLua' },
         { name = 'g Grep', action = ':FzfLua grep', section = 'FzfLua' },

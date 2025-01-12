@@ -5,7 +5,7 @@ return {
     { '-', ':MoveLine(-1)<CR>', mode = 'n', noremap = true, silent = true },
     { '+', ':MoveLine(1)<CR>', mode = 'n', noremap = true, silent = true },
     { '<C-n>', ':MoveHChar(-1)<CR>', mode = 'n', noremap = true, silent = true },
-    { '<C-i>', ':MoveHChar(1)<CR>', mode = 'n', noremap = true, silent = true },
+    { '<C-e>', ':MoveHChar(1)<CR>', mode = 'n', noremap = true, silent = true },
     { '<leader>wf', ':MoveWord(1)<CR>', mode = 'n', noremap = true, silent = true },
     { '<leader>wb', ':MoveWord(-1)<CR>', mode = 'n', noremap = true, silent = true },
 

@@ -11,7 +11,7 @@ local translate = function(t, to)
   vim.keymap.set('n', 'q', '<cmd>bd<CR>', { buffer = true })
 end
 
-vim.api.nvim_create_user_command('Translate', function(opts)
+vim.api.nvim_create_user_command('TranslateRegt', function(opts)
   local text = vim.fn.getreg('t')
   translate(text, opts.args)
 end, {
@@ -19,4 +19,10 @@ end, {
   nargs = 1,
 })
 
-vim.keymap.set('v', '<leader>tr', '"ty<cmd>Translate zh<CR>', { noremap = true })
+vim.api.nvim_create_user_command('TranslateText', function(opts)
+  local arg1 = vim.fn.split(opts.args, ' ')[2]
+  local arg2 = vim.fn.split(opts.args, ' ')[1]
+  translate(arg2, arg1)
+end, { nargs = 1 })
+
+vim.keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true })
