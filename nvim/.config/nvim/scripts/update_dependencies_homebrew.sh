@@ -23,6 +23,7 @@ npm update -g svelte-language-server
 npm update -g graphql-language-service-cli
 npm update -g emmet-ls
 npm update -g @prisma/language-server
+npm update -g vim-language-server
 
 # Tools
 brew upgrade black

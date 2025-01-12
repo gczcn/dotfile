@@ -240,6 +240,8 @@ return {
         cmd = { 'bash-language-server', 'start' },
       })
 
+      lspconfig['vimls'].setup(lsp_default_config())
+
       -- configure C and C++ ... language server
       lspconfig['clangd'].setup({
         capabilities = capabilities(),

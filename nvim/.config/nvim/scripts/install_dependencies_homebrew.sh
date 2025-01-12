@@ -23,6 +23,7 @@ npm install -g graphql-language-service-cli
 npm install -g svelte-language-server
 npm install -g emmet-ls
 npm install -g @prisma/language-server
+npm install -g vim-language-server
 
 # Tools
 brew install black
