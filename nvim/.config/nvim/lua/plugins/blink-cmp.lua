@@ -6,6 +6,7 @@ return {
     'rafamadriz/friendly-snippets',
     'L3MON4D3/LuaSnip',
     'giuxtaposition/blink-cmp-copilot',
+    'zbirenbaum/copilot.lua',
 
     -- nvim-cmp sources
     'Saghen/blink.compat',
