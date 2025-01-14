@@ -32,3 +32,7 @@ sudo npm install -g vim-language-server
 yes | sudo pacman -S python-black
 yes | sudo pacman -S stylua
 yes | sudo pacman -S shfmt
+
+# Rust Nightly (for blink.cmp)
+yes | sudo pacman -S rustup
+rustup install nightly

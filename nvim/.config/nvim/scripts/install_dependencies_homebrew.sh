@@ -29,3 +29,7 @@ npm install -g vim-language-server
 brew install black
 brew install stylua
 brew install shfmt
+
+# Rust Nightly (for blink.cmp)
+brew install rustup
+rustup install nightly

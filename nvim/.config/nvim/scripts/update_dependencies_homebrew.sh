@@ -29,3 +29,7 @@ npm update -g vim-language-server
 brew upgrade black
 brew upgrade stylua
 brew upgrade shfmt
+
+# Rust Nightly (for blink.cmp)
+brew upgrade rustup
+rustup update nightly
