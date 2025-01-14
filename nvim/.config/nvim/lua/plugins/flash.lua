@@ -7,7 +7,7 @@ return {
     -- labels = 'asdfghjklqwertyuiopzxcvbnm',
     labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
     prompt = {
-      prefix = { { " Jump ", "FlashPromptIcon" } },
+      prefix = { { ' Jump ', 'FlashPromptIcon' } },
     },
   },
   -- stylua: ignore

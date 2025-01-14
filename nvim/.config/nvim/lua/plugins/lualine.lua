@@ -5,10 +5,10 @@ return {
   dependencies = { 'echasnovski/mini.icons' },
   config = function()
     -- columns = {
-    --   "icon",
-    --   "permissions",
-    --   "size",
-    --   -- "mtime",
+    --   'icon',
+    --   'permissions',
+    --   'size',
+    --   -- 'mtime',
     -- },
     local simple_mode = require('utils.simple_mode')
     local get_hl = require('utils.get_hl')

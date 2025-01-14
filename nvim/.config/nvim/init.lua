@@ -1,3 +1,5 @@
+vim.g.enabled_copilot = false
+
 require('core.keymaps')
 require('core.cursor')
 require('core.options')

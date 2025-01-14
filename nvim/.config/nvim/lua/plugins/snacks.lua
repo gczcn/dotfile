@@ -7,6 +7,7 @@ return {
     Snacks.setup({
       bigfile = {},
       notifier = {},
+      quickfile = {},
 
       styles = {
         notification = { border = 'single' },
@@ -24,5 +25,6 @@ return {
 
     map('n', '<leader>fn', Snacks.notifier.show_history)
     map('n', '<leader>hn', Snacks.notifier.hide)
+    map('n', '<leader>ar', Snacks.rename.rename_file)
   end
 }

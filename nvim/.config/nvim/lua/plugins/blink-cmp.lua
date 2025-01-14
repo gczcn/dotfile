@@ -5,8 +5,8 @@ return {
   dependencies = {
     'rafamadriz/friendly-snippets',
     'L3MON4D3/LuaSnip',
-    'giuxtaposition/blink-cmp-copilot',
-    'zbirenbaum/copilot.lua',
+    { 'giuxtaposition/blink-cmp-copilot', enabled = vim.g.enabled_copilot },
+    { 'zbirenbaum/copilot.lua', enabled = vim.g.enabled_copilot },
 
     -- nvim-cmp sources
     'Saghen/blink.compat',
@@ -16,9 +16,10 @@ return {
   -- build = 'cargo build --release',
   config = function()
     require('luasnip.loaders.from_vscode').lazy_load()
-    require('blink.cmp').setup({
+
+    local opts = {
       appearance = {
-        -- use_nvim_cmp_as_default = true,
+        use_nvim_cmp_as_default = true,
         kind_icons = {
           Text = '󰉿',
           Method = '󰆧',
@@ -70,7 +71,7 @@ return {
         menu = {
           draw = {
             padding = { 0, 1 },
-            treesitter = { 'lsp' },
+            treesitter = { 'lsp', 'copilot' },
             columns = {
               { 'kind_icon' },
               { 'label', 'label_description', gap = 1 },
@@ -104,28 +105,13 @@ return {
       },
       snippets = { preset = 'luasnip' },
       sources = {
-        default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer', 'copilot', 'emoji' },
+        default = vim.g.enabled_copilot and { 'lazydev', 'lsp', 'path', 'snippets', 'buffer', 'copilot', 'emoji' } or { 'lazydev', 'lsp', 'path', 'snippets', 'buffer', 'emoji' },
         providers = {
           lazydev = {
-            name = 'LazyDev',
+            name = 'lazydev',
             module = 'lazydev.integrations.blink',
             -- make lazydev completions top priority (see `:h blink.cmp`)
             score_offset = 100,
-          },
-          copilot = {
-            name = 'copilot',
-            module = 'blink-cmp-copilot',
-            score_offset = 100,
-            async = true,
-            transform_items = function(_, items)
-              local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
-              local kind_idx = #CompletionItemKind + 1
-              CompletionItemKind[kind_idx] = 'Copilot'
-              for _, item in ipairs(items) do
-                item.kind = kind_idx
-              end
-              return items
-            end,
           },
           emoji = {
             module = 'blink-emoji',
@@ -135,6 +121,28 @@ return {
           },
         },
       },
-    })
+    }
+
+    if vim.g.enabled_copilot then
+      vim.list_extend(opts.sources.providers, {
+        copilot = {
+          name = 'copilot',
+          module = 'blink-cmp-copilot',
+          score_offset = 100,
+          async = true,
+          transform_items = function(_, items)
+            local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
+            local kind_idx = #CompletionItemKind + 1
+            CompletionItemKind[kind_idx] = 'Copilot'
+            for _, item in ipairs(items) do
+              item.kind = kind_idx
+            end
+            return items
+          end,
+        },
+      })
+    end
+
+    require('blink.cmp').setup(opts)
   end,
 }

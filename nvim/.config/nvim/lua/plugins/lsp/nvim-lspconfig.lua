@@ -140,6 +140,7 @@ return {
             [vim.diagnostic.severity.INFO] = 'DiagnosticInfo',
           },
         },
+        severity_sort = true,
       })
 
       local lsp_default_config = function()
