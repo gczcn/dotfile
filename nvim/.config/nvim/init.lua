@@ -1,4 +1,5 @@
 vim.g.enabled_copilot = false
+vim.g.enabled_tabnine = false
 
 require('core.keymaps')
 require('core.cursor')

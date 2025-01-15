@@ -12,7 +12,6 @@ return {
         },
         overrides = {
           CursorLineNr = { bold = true },
-          -- LineNr = { bg = palette.dark1 },
 
           -- noice.nvim
           NoiceCmdlinePopupBorder = { link = 'Normal' },
