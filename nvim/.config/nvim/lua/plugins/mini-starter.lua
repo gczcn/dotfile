@@ -5,7 +5,7 @@ return {
     local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
 
     local version = function()
-      return 'NVIM ' .. prerelease .. tostring(vim.version())
+      return 'Nvim ' .. prerelease .. tostring(vim.version())
     end
 
     local header = function()
