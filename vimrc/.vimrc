@@ -129,9 +129,9 @@ set winminwidth=5
 set nowrap
 
 # Plugins
-" call plug#begin()
-"
-" # List your plugins here
-" Plug 'altercation/vim-colors-solarized'
-"
-" call plug#end()
+# call plug#begin()
+#
+# # List your plugins here
+# Plug 'altercation/vim-colors-solarized'
+#
+# call plug#end()

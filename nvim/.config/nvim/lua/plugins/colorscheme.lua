@@ -11,7 +11,11 @@ return {
           comments = false,
         },
         overrides = {
-          CursorLineNr = { bold = true },
+          -- CursorLineNr = { bold = true },
+          DiagnosticNumHlError = { fg = palette.bright_red, bold = true },
+          DiagnosticNumHlWarn = { fg = palette.bright_yellow, bold = true },
+          DiagnosticNumHlHint = { fg = palette.bright_aqua, bold = true },
+          DiagnosticNumHlInfo = { fg = palette.bright_blue, bold = true },
 
           -- noice.nvim
           NoiceCmdlinePopupBorder = { link = 'Normal' },
