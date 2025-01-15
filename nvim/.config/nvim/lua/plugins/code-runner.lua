@@ -63,7 +63,7 @@ return {
         c = function(...)
           local c_base = {
             'cd $dir &&',
-            'gcc-14 --std=gnu23 $fileName -o', -- for macOS homebrew
+            'gcc-14 --std=gnu23 $fileName -o', -- for homebrew
             -- 'gcc $fileName -o',
             -- 'clang $fileName -o',
             '/tmp/$fileNameWithoutExt',
