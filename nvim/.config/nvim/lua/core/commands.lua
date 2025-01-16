@@ -31,6 +31,6 @@ vim.cmd.cabbrev('Qa qa')
 vim.cmd.cabbrev('Qall qall')
 
 -- Scripts
-create_command('RunScript', function(t)
+create_command('RunShellScript', function(t)
   vim.cmd.term('bash -c ' .. vim.fn.stdpath('config') .. '/scripts/' .. t.args .. '.sh')
 end, {nargs = 1})
