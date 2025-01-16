@@ -6,7 +6,7 @@ run_segment() {
     fi
 
     # Customize via ~/.rainbarf.conf
-    stats=$(rainbarf --rgb --no-battery)
+    stats=$(rainbarf --rgb)
     if [ -n "$stats" ]; then
         echo "$stats";
     fi
