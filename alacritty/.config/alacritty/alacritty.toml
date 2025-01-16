@@ -2,25 +2,25 @@
 #            中文：   你好
 
 [font]
-size = 13.5
+size = 12
 # 1234567890
 # JetBrains Mono
-# offset = { x = 1, y = 0 }
+offset = { x = 0, y = -2 }
 [font.bold]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "BlexMono Nerd Font Mono"
-style = "Regular"
+family = "Terminess Nerd Font Mono"
+style = "Medium"
 
 # Noto Sans Mono
 # [font.bold]
