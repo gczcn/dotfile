@@ -2,11 +2,12 @@ return {
   {
     'rachartier/tiny-inline-diagnostic.nvim',
     lazy = true,
+    enabled = false,
     config = function()
       require('tiny-inline-diagnostic').setup({
         preset = 'powerline',
         signs = {
-          diag = '',
+          diag = '󰝤',
           arrow = ' <  ',
           up_arrow = ' ^   ',
         },
@@ -23,7 +24,7 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
-      'rachartier/tiny-inline-diagnostic.nvim',
+      -- 'rachartier/tiny-inline-diagnostic.nvim',
       -- 'ranjithshegde/ccls.nvim',
       {
         'smjonas/inc-rename.nvim',
@@ -158,7 +159,9 @@ return {
             [vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
           },
         },
-        virtual_text = false,
+        virtual_text = {
+          prefix = '󰝤',
+        },
         severity_sort = true,
       })
 

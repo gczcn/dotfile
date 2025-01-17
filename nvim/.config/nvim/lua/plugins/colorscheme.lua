@@ -108,7 +108,7 @@ return {
             set_hl(0, 'BlinkCmpKindVariable', { bg = colors.orange, fg = colors.bg1 })
             set_hl(0, 'BlinkCmpKindCopilot', { bg = colors.gray, fg = colors.bg1 })
           end
-        end
+        end,
       })
       local palette = require('gruvbox').palette
       require('gruvbox').setup({
@@ -146,5 +146,21 @@ return {
       })
       vim.cmd.colorscheme('gruvbox')
     end,
+  },
+  {
+    'olimorris/onedarkpro.nvim',
+    priority = 1000,
+    enabled = false,
+    config = function()
+      local palette = require('onedarkpro.themes.onedark')['palette']
+
+      require("onedarkpro").setup({
+        highlights = {
+          MiniIndentscopeSymbol = { fg = '#787878' },
+        },
+      })
+
+      vim.cmd.colorscheme('onedark')
+    end
   },
 }

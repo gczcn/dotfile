@@ -25,6 +25,8 @@ vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decr
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
+vim.diagnostic.config({ virtual_text = { prefix = '󰝤' } })
+
 vim.keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>tl', function()
   if vim.o.filetype == 'lazy' then
