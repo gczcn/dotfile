@@ -54,7 +54,7 @@ return {
         vim.keymap.set('n', 'gi', '<cmd>FzfLua lsp_implementations<CR>', opts) -- show lsp implementations
 
         opts.desc = 'Show LSP type definitions'
-        vim.keymap.set('n', 'gt', '<cmd>FzfLua lsp_typedefs<CR>', opts) -- show lsp type definitions
+        vim.keymap.set('n', 'gT', '<cmd>FzfLua lsp_typedefs<CR>', opts) -- show lsp type definitions
 
         opts.desc = 'See available code actions'
         vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection

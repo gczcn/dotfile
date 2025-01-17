@@ -97,40 +97,26 @@ return {
       --   lualine_y = {},
       --   lualine_z = {},
       -- },
-      tabline = {
-        lualine_a = { {
-          'buffers',
-          mode = 2,
-          use_mode_colors = true,
-          filetype_names = {
-            oil = 'Oil',
-          },
-          symbols = {
-            modified = ' *',      -- Text to show when the buffer is modified
-            alternate_file = '#', -- Text to show to identify the alternate file
-            directory =  '',     -- Text to show when the buffer is a directory
-          },
-        } },
-        lualine_b = {},
-        lualine_c = {},
-        lualine_x = {},
-        lualine_y = {},
-        lualine_z = { { 'tabs', mode = 2, use_mode_colors = true } },
-      },
+      -- tabline = {
+      --   lualine_a = { {
+      --     'buffers',
+      --     mode = 2,
+      --     use_mode_colors = true,
+      --     filetype_names = {
+      --       oil = 'Oil',
+      --     },
+      --     symbols = {
+      --       modified = ' *',      -- Text to show when the buffer is modified
+      --       alternate_file = '#', -- Text to show to identify the alternate file
+      --       directory =  '',     -- Text to show when the buffer is a directory
+      --     },
+      --   } },
+      --   lualine_b = {},
+      --   lualine_c = {},
+      --   lualine_x = {},
+      --   lualine_y = {},
+      --   lualine_z = { { 'tabs', mode = 2, use_mode_colors = true } },
+      -- },
     })
-
-    -- Set keymaps
-    local opts = { noremap = true, silent = true }
-
-    -- Buffers
-    local keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }
-    vim.keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
-    for i = 1, 9 do
-      vim.keymap.set('n', (']%s'):format(keyboard[i + 1]), ('<cmd>LualineBuffersJump %s<CR>'):format(i), opts)
-    end
-
-    -- Tabs
-    vim.keymap.set('n', '<TAB>', '<cmd>tabnext<CR>', opts)
-    vim.keymap.set('n', '<S-TAB>', '<cmd>tabprev<CR>', opts)
   end,
 }
