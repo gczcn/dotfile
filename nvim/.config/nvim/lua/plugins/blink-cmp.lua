@@ -86,7 +86,7 @@ return {
         menu = {
           draw = {
             padding = { 0, 1 },
-            treesitter = { 'lsp', 'copilot', 'cmp_tabnine' },
+            treesitter = { 'lsp', 'copilot', 'cmp_tabnine', 'snippets' },
             columns = {
               { 'kind_icon' },
               { 'label', 'label_description', gap = 1 },

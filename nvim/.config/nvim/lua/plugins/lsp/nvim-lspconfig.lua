@@ -1,23 +1,5 @@
 return {
   {
-    'rachartier/tiny-inline-diagnostic.nvim',
-    lazy = true,
-    enabled = false,
-    config = function()
-      require('tiny-inline-diagnostic').setup({
-        preset = 'powerline',
-        signs = {
-          diag = '󰝤',
-          arrow = ' <  ',
-          up_arrow = ' ^   ',
-        },
-        options = {
-          multiple_diag_under_cursor = true,
-        },
-      })
-    end
-  },
-  {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
@@ -35,9 +17,9 @@ return {
     },
     config = function()
       local lspconfig = require('lspconfig')
-      local util = require('lspconfig.util')
+      -- local util = require('lspconfig.util')
       local opts = { noremap = true, silent = true }
-      local on_attach = function(client, bufnr)
+      local on_attach = function(_, bufnr)
         opts.buffer = bufnr
 
         -- set keybinds
@@ -159,9 +141,9 @@ return {
             [vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
           },
         },
-        virtual_text = {
-          prefix = '󰝤',
-        },
+        -- virtual_text = {
+        --   prefix = '󰝤',
+        -- },
         severity_sort = true,
       })
 

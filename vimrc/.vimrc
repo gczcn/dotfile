@@ -1,15 +1,14 @@
-vim9script
 scriptencoding utf-8
 
-# This is my vimrc (Vim version >= 9)
-# Author: @gczcn
+" This is my vimrc (Vim version >= 9)
+" Author: @gczcn
 
-# Keymaps
+" Keymaps
 set timeoutlen=300
 
-g:mapleader = ' '
+let g:mapleader = ' '
 
-## Movement
+"" Movement
 noremap u gk
 noremap e gj
 noremap n h
@@ -30,7 +29,7 @@ inoremap <M-i> <right> | cnoremap <M-i> <right>
 inoremap <slient> <M-N> :normal! 0<CR> | cnoremap <slient> <M-N> :normal! 0<CR>
 inoremap <slient> <M-I> :normal! $<CR> | cnoremap <slient> <M-N> :normal! $<CR>
 
-## Actions
+"" Actions
 noremap E J
 noremap l u
 noremap L U
@@ -40,7 +39,7 @@ inoremap ii <ESC>
 
 vnoremap kr `[`]
 
-## Windows & Splits
+"" Windows & Splits
 nnoremap <leader>ww <C-w>w
 nnoremap <leader>wu <C-w>k
 nnoremap <leader>we <C-w>j
@@ -55,13 +54,13 @@ nnoremap <leader>sh <C-w>t<C-w>K
 nnoremap <leader>srv <C-w>b<C-w>H
 nnoremap <leader>srh <C-w>b<C-w>K
 
-## Resize
+"" Resize
 nnoremap <M-U> :resize +5<CR>
 nnoremap <M-E> :resize -5<CR>
 nnoremap <M-N> :vertical resize -10<CR>
 nnoremap <M-N> :vertical resize +10<CR>
 
-## Copy and Paste
+"" Copy and Paste
 noremap <M-y> "+y
 noremap <M-Y> "+Y
 noremap <M-p> "+p
@@ -69,28 +68,28 @@ noremap <M-P> "+P
 noremap <M-d> "+d
 noremap <M-D> "+D
 
-## Buffer
+"" Buffer
 nnoremap <leader>bd :bd<CR>
 
-## Other
+"" Other
 noremap U K
 nnoremap \\ :w<CR>
 
-### Toggle background [ dark | light ]
-def Toggle_background(): string
+""" Toggle background [ dark | light ]
+function! Toggle_background()
   if &background ==# 'dark'
     set background=light
   else
     set background=dark
   endif
-enddef
+endfunction
 nnoremap <F5> :call Toggle_background()<CR>
 
-# Options
+" Options
 syntax enable
-# colorscheme habamax
+" colorscheme habamax
 
-g:encoding = 'UTF-8'
+let g:encoding = 'UTF-8'
 
 set backspace=indent,eol,start
 set autowrite
@@ -106,7 +105,7 @@ set fileencoding=uft-8
 set ignorecase
 set incsearch
 set linebreak
-# set list
+" set list
 set number
 set scrolloff=8
 set shiftround
@@ -128,10 +127,15 @@ set virtualedit=block
 set winminwidth=5
 set nowrap
 
-# Plugins
-# call plug#begin()
-#
-# # List your plugins here
-# Plug 'altercation/vim-colors-solarized'
-#
-# call plug#end()
+" Plugins
+call plug#begin()
+
+" List your plugins here
+Plug 'gruvbox-community/gruvbox'
+Plug 'vim-airline/vim-airline'
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'npm ci'}
+
+call plug#end()
+
+set background=dark
+colorscheme gruvbox

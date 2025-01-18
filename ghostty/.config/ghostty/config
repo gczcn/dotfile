@@ -1,12 +1,16 @@
 # Test:
 # hello.
 # 你好。
-font-family = BlexMono Nerd Font Mono
+font-family = JetBrainsMono Nerd Font Mono
+# font-family = Mononoki Nerd Font Mono
+# font-family = Cascadia Code NF
 font-family = Noto Sans SC
-font-feature = onum
+# font-feature = onum
+font-feature = ss01
 # font-size = 15.3
 # font-size = 14.3
 font-size = 13.5
+# font-size = 15.8
 theme = GruvboxDark
 mouse-hide-while-typing = true
 window-padding-x = 0
@@ -14,3 +18,42 @@ window-padding-y = 0
 window-padding-balance = false
 macos-option-as-alt = true
 bold-is-bright = true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
