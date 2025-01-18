@@ -24,11 +24,26 @@ return {
     map('[[', 'prev')
 
     -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-    vim.api.nvim_create_autocmd('filetype', {
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = '*',
       callback = function()
         local buffer = vim.api.nvim_get_current_buf()
         map(']]', 'next', buffer)
         map('[[', 'prev', buffer)
+      end,
+    })
+
+    vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+      pattern = '*',
+      callback = function()
+        require('illuminate').resume()
+      end,
+    })
+
+    vim.api.nvim_create_autocmd({ 'InsertEnter' }, {
+      pattern = '*',
+      callback = function()
+        require('illuminate').pause()
       end,
     })
   end,
