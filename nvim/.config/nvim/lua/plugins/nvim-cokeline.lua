@@ -14,7 +14,7 @@ return {
     local api = vim.api
 
     local get_tab_name = function(tabpage_handle)
-      local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabpage_handle))), '/')
+      local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage_handle))), '/')
       return name[#name]
     end
 
@@ -157,6 +157,7 @@ return {
         api.nvim_set_hl(0, 'TabLineFill', get_hl()['tablinefill'][get_mode()])
       end
     })
+    api.nvim_set_hl(0, 'TabLineFill', get_hl()['tablinefill'][get_mode()])
 
     -- Set keymaps
     local opts = { noremap = true, silent = true }
@@ -285,8 +286,14 @@ return {
             text = function(tabpage)
               local name = get_tab_name(tabpage.number)
               if name then
-                local icon, _ = require('nvim-web-devicons').get_icon(name)
-                icon = icon and icon .. ' ' or ''
+                local icon = ''
+                local icon_filename, _ = require('nvim-web-devicons').get_icon(name)
+                if icon_filename then
+                  icon = icon_filename .. ' '
+                else
+                  local icon_filetype, _ = require('nvim-web-devicons').get_icon_by_filetype(api.nvim_buf_call(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage.number)), function() return vim.o.filetype end))
+                  icon = icon_filetype and icon_filetype .. ' ' or ''
+                end
                 return ' ' .. name .. ' ' .. icon
               end
               return ''
