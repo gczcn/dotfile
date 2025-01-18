@@ -11,6 +11,13 @@ return {
     local is_picking_focus = require('cokeline.mappings').is_picking_focus
     local is_picking_close = require('cokeline.mappings').is_picking_close
 
+    local api = vim.api
+
+    local get_tab_name = function(tabpage_handle)
+      local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(vim.api.nvim_tabpage_get_win(tabpage_handle))), '/')
+      return name[#name]
+    end
+
     local hl = {
       dark = {
         focused = {
@@ -123,7 +130,7 @@ return {
     }
 
     local get_mode = function()
-      local mode = vim.api.nvim_get_mode().mode or 'n'
+      local mode = api.nvim_get_mode().mode or 'n'
       local mode_first_char = string.sub(mode, 1, 1)
       if mode_first_char == 'n' then return 'normal'
       elseif string.lower(mode_first_char) == 'v' or mode == '\22' or mode == '\22s' then return 'visual'
@@ -140,10 +147,14 @@ return {
       return hl[(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
     end
 
-    vim.api.nvim_create_autocmd({ 'ModeChanged', 'ColorScheme' }, {
+    local get_focus_hl = function(is_focused)
+      return get_hl()[is_focused and 'focused' or 'not_focused']
+    end
+
+    api.nvim_create_autocmd({ 'ModeChanged', 'ColorScheme' }, {
       pattern = '*',
       callback = function()
-        vim.api.nvim_set_hl(0, 'TabLineFill', get_hl()['tablinefill'][get_mode()])
+        api.nvim_set_hl(0, 'TabLineFill', get_hl()['tablinefill'][get_mode()])
       end
     })
 
@@ -156,7 +167,7 @@ return {
     for i = 1, 9 do
       vim.keymap.set('n', (']%s'):format(keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
     end
-    vim.keymap.set('n', ']a', function()
+    vim.keymap.set('n', ']f', function()
       vim.ui.input({ prompt = 'Buffer Index:' }, function(index)
         if index then
           vim.cmd(('call feedkeys("\\<Plug>\\(cokeline-focus-%s)")'):format(index))
@@ -170,23 +181,24 @@ return {
 
     require('cokeline').setup({
       default_hl = {
-        fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['fg'] end,
-        bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['bg'] end,
-        bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['bold'] end,
-        italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['italic'] end,
-        underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['underline'] end,
-        undercurl = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['undercurl'] end,
-        strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode()]['strikethrough'] end,
+        fg = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['fg'] end,
+        bg = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['bg'] end,
+        bold = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['bold'] end,
+        italic = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['italic'] end,
+        underline = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['underline'] end,
+        undercurl = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['undercurl'] end,
+        strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode()]['strikethrough'] end,
       },
       components = {
         {
           text = function(buffer) return ' ' .. buffer.index .. ' ' end,
-          bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['bg'] end,
-          fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['fg'] end,
-          bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['bold'] end,
-          italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['italic'] end,
-          underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['underline'] end,
-          strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused'][get_mode() .. '_num']['strikethrough'] end,
+          bg = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['bg'] end,
+          fg = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['fg'] end,
+          bold = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['bold'] end,
+          italic = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['italic'] end,
+          underline = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['underline'] end,
+          undercurl = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['undercurl'] end,
+          strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)[get_mode() .. '_num']['strikethrough'] end,
         },
         {
           text = function(buffer)
@@ -221,72 +233,102 @@ return {
           text = function(buffer)
             return buffer.diagnostics.errors ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.errors .. ' ') or ''
           end,
-          bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['bg'] end,
-          fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['fg'] end,
-          bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['bold'] end,
-          italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['italic'] end,
-          underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['underline'] end,
-          undercurl = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['undercurl'] end,
-          strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_error']['strikethrough'] end,
+          bg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['bg'] end,
+          fg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['fg'] end,
+          bold = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['bold'] end,
+          italic = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['italic'] end,
+          underline = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['underline'] end,
+          undercurl = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['undercurl'] end,
+          strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_error']['strikethrough'] end,
         },
         {
           text = function(buffer)
             return buffer.diagnostics.warnings ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.warnings .. ' ') or ''
           end,
-          bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['bg'] end,
-          fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['fg'] end,
-          bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['bold'] end,
-          italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['italic'] end,
-          underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['underline'] end,
-          undercurl = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['undercurl'] end,
-          strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_warn']['strikethrough'] end,
+          bg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['bg'] end,
+          fg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['fg'] end,
+          bold = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['bold'] end,
+          italic = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['italic'] end,
+          underline = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['underline'] end,
+          undercurl = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['undercurl'] end,
+          strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_warn']['strikethrough'] end,
         },
         {
           text = function(buffer)
             return buffer.diagnostics.hints ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.hints .. ' ') or ''
           end,
-          bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['bg'] end,
-          fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['fg'] end,
-          bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['bold'] end,
-          italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['italic'] end,
-          underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['underline'] end,
-          undercurl = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['undercurl'] end,
-          strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_hint']['strikethrough'] end,
+          bg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['bg'] end,
+          fg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['fg'] end,
+          bold = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['bold'] end,
+          italic = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['italic'] end,
+          underline = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['underline'] end,
+          undercurl = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['undercurl'] end,
+          strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_hint']['strikethrough'] end,
         },
         {
           text = function(buffer)
             return buffer.diagnostics.infos ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.infos .. ' ') or ''
           end,
-          bg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['bg'] end,
-          fg = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['fg'] end,
-          bold = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['bold'] end,
-          italic = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['italic'] end,
-          underline = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['underline'] end,
-          undercurl = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['undercurl'] end,
-          strikethrough = function(buffer) return get_hl()[buffer.is_focused and 'focused' or 'not_focused']['diagnostic_info']['strikethrough'] end,
+          bg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['bg'] end,
+          fg = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['fg'] end,
+          bold = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['bold'] end,
+          italic = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['italic'] end,
+          underline = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['underline'] end,
+          undercurl = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['undercurl'] end,
+          strikethrough = function(buffer) return get_focus_hl(buffer.is_focused)['diagnostic_info']['strikethrough'] end,
         },
       },
       tabs = {
         placement = 'right',
-      },
-      rhs = {
-        {
-          text = ' X ',
-          bg = function() return get_hl()['quit']['bg'] end,
-          fg = function() return get_hl()['quit']['fg'] end,
-          bold = function() return get_hl()['quit']['bold'] end,
-          italic = function() return get_hl()['quit']['italic'] end,
-          underline = function() return get_hl()['quit']['underline'] end,
-          undercurl = function() return get_hl()['quit']['undercurl'] end,
-          strikethrough = function() return get_hl()['quit']['strikethrough'] end,
-          on_click = function()
-            vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
-              if input == '' or string.lower(input) == 'y' then
-                vim.cmd.qa()
+        components = {
+          {
+            text = function(tabpage)
+              local name = get_tab_name(tabpage.number)
+              if name then
+                local icon, _ = require('nvim-web-devicons').get_icon(name)
+                icon = icon and icon .. ' ' or ''
+                return ' ' .. name .. ' ' .. icon
               end
-            end)
-          end
-        }
+              return ''
+            end,
+            bg = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['bg'] end,
+            fg = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['fg'] end,
+            bold = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['bold'] end,
+            italic = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['italic'] end,
+            underline = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['underline'] end,
+            strikethrough = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode()]['strikethrough'] end,
+          },
+          {
+            text = function(tabpage)
+              return ' ' .. tabpage.number .. ' '
+            end,
+            bg = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['bg'] end,
+            fg = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['fg'] end,
+            bold = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['bold'] end,
+            italic = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['italic'] end,
+            underline = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['underline'] end,
+            strikethrough = function(tabpage) return get_focus_hl(tabpage.is_active)[get_mode() .. '_num']['strikethrough'] end,
+          },
+          {
+            text = function(tabpage)
+              return tabpage.is_last and ' X ' or ''
+            end,
+            bg = function() return get_hl()['quit']['bg'] end,
+            fg = function() return get_hl()['quit']['fg'] end,
+            bold = function() return get_hl()['quit']['bold'] end,
+            italic = function() return get_hl()['quit']['italic'] end,
+            underline = function() return get_hl()['quit']['underline'] end,
+            undercurl = function() return get_hl()['quit']['undercurl'] end,
+            strikethrough = function() return get_hl()['quit']['strikethrough'] end,
+            on_click = function()
+              vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
+                if input == '' or string.lower(input) == 'y' then
+                  vim.cmd.qa()
+                end
+              end)
+            end
+          }
+        },
       },
     })
   end
