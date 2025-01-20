@@ -1,15 +1,8 @@
 return {
   'nvim-lualine/lualine.nvim',
   event = { 'User FileOpened', 'BufAdd' },
-  -- dependencies = { 'nvim-tree/nvim-web-devicons' },
   dependencies = { 'echasnovski/mini.icons' },
   config = function()
-    -- columns = {
-    --   'icon',
-    --   'permissions',
-    --   'size',
-    --   -- 'mtime',
-    -- },
     local simple_mode = require('utils.simple_mode')
     local get_hl = require('utils.get_hl')
 
@@ -89,34 +82,6 @@ return {
         },
         lualine_z = { get_date },
       },
-      -- inactive_sections = {
-      --   lualine_a = {},
-      --   lualine_b = {},
-      --   lualine_c = { 'filename', 'branch', 'diff', 'filesize', 'filetype', 'encoding' },
-      --   lualine_x = { 'progress', 'location' },
-      --   lualine_y = {},
-      --   lualine_z = {},
-      -- },
-      -- tabline = {
-      --   lualine_a = { {
-      --     'buffers',
-      --     mode = 2,
-      --     use_mode_colors = true,
-      --     filetype_names = {
-      --       oil = 'Oil',
-      --     },
-      --     symbols = {
-      --       modified = ' *',      -- Text to show when the buffer is modified
-      --       alternate_file = '#', -- Text to show to identify the alternate file
-      --       directory =  '',     -- Text to show when the buffer is a directory
-      --     },
-      --   } },
-      --   lualine_b = {},
-      --   lualine_c = {},
-      --   lualine_x = {},
-      --   lualine_y = {},
-      --   lualine_z = { { 'tabs', mode = 2, use_mode_colors = true } },
-      -- },
     })
   end,
 }

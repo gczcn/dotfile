@@ -48,14 +48,14 @@ return {
         },
         mappings = {
           -- Textobjects
-          object_scope = '',
-          object_scope_with_border = '',
+          object_scope = 'kk',
+          object_scope_with_border = 'ak',
 
           -- Motions (jump to respective border line; if not present - body line)
           goto_top = '[i',
           goto_bottom = ']i',
         },
       })
-    end
+    end,
   },
 }
