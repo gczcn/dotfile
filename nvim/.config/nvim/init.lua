@@ -1,6 +1,6 @@
 -- =============================================================================
 -- My Neovim Config (Single File Version)
--- Author: gczcn
+-- wuthor: gczcn
 --
 -- Dependencies:
 --   Neovim - (latest or nightly version)
@@ -309,7 +309,7 @@ shell_scripts.update_dependencies = [[
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
 
-local keymaps_opts = { noremap = true }
+local keymaps_opts = { noremap = true, silent = true }
 
 vim.g.mapleader = ' '
 
@@ -390,7 +390,7 @@ keymap.set('n', '<leader>tc', function()
   opt.cursorcolumn = not vim.o.cursorcolumn
 end, keymaps_opts)
 keymap.set({ 'n', 'v' }, 'U', 'K', keymaps_opts)
-keymap.set('n', '<leader>hh', '<cmd>noh<CR>', keymaps_opts)
+keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
 
 -- =============================================================================
@@ -655,7 +655,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- Tags: PLUG, PLUGIN, PLUGINS
 -- =============================================================================
 
--- LAZY
+-- LAZYNVIM
 local lazy_config = enabled_plugins and {
   install = { colorscheme = { 'gruvbox', 'habamax' } },
   checker = { enabled = true },
@@ -999,6 +999,7 @@ local plugins = enabled_plugins and {
   {
     'echasnovski/mini.ai',
     event = 'VeryLazy',
+    enabled = false,
     config = function()
       require('mini.ai').setup({
         mappings = {
@@ -2104,38 +2105,36 @@ local plugins = enabled_plugins and {
   {
     'jake-stewart/multicursor.nvim',
     keys = function()
-      local mc = require('multicursor-nvim')
-
       return {
-        { '<up>', function() mc.lineAddCursor(-1) end, mode = { 'n', 'v' } },
-        { '<down>', function() mc.lineAddCursor(1) end, mode = { 'n', 'v' } },
-        { '<leader><up>', function() mc.lineAddCursor(-1) end, mode = { 'n', 'v' } },
-        { '<leader><down>', function() mc.lineAddCursor(1) end, mode = { 'n', 'v' } },
-        { '<M-K>', function() mc.matchAddCursor(-1) end, mode = { 'n', 'v' } },
-        { '<M-k>', function() mc.matchAddCursor(1) end, mode = { 'n', 'v' } },
-        { '<M-Q>', function() mc.matchAddCursor(-1) end, mode = { 'n', 'v' } },
-        { '<M-q>', function() mc.matchAddCursor(1) end, mode = { 'n', 'v' } },
-        { '<leader>A', mc.matchAllAddCursors, mode = { 'n', 'v' } },
-        { '<left>', mc.prevCursor, mode = { 'n', 'v' } },
-        { '<right>', mc.nextCursor, mode = { 'n', 'v' } },
-        { '<leader>x', mc.deleteCursor, mode = { 'n', 'v' } },
-        { '<C-q>', mc.toggleCursor, mode = { 'n', 'v' } },
-        { '<leader><C-q>', mc.duplicateCursors, mode = { 'n', 'v' } },
+        { '<up>', function() require('multicursor-nvim').lineAddCursor(-1) end, mode = { 'n', 'v' } },
+        { '<down>', function() require('multicursor-nvim').lineAddCursor(1) end, mode = { 'n', 'v' } },
+        { '<leader><up>', function() require('multicursor-nvim').lineSkipCursor(-1) end, mode = { 'n', 'v' } },
+        { '<leader><down>', function() require('multicursor-nvim').lineSkipCursor(1) end, mode = { 'n', 'v' } },
+        { '<M-K>', function() require('multicursor-nvim').matchAddCursor(-1) end, mode = { 'n', 'v' } },
+        { '<M-k>', function() require('multicursor-nvim').matchAddCursor(1) end, mode = { 'n', 'v' } },
+        { '<M-Q>', function() require('multicursor-nvim').matchSkipCursor(-1) end, mode = { 'n', 'v' } },
+        { '<M-q>', function() require('multicursor-nvim').matchSkipCursor(1) end, mode = { 'n', 'v' } },
+        { '<leader>A', function() require('multicursor-nvim').matchAllAddCursors() end, mode = { 'n', 'v' } },
+        { '<left>', function() require('multicursor-nvim').prevCursor() end, mode = { 'n', 'v' } },
+        { '<right>', function() require('multicursor-nvim').nextCursor() end, mode = { 'n', 'v' } },
+        { '<leader>x', function() require('multicursor-nvim').deleteCursor() end, mode = { 'n', 'v' } },
+        { '<C-q>', function() require('multicursor-nvim').toggleCursor() end, mode = { 'n', 'v' } },
+        { '<leader><C-q>', function() require('multicursor-nvim').duplicateCursors() end, mode = { 'n', 'v' } },
         { '<ESC>', function()
-          if not mc.cursorsEnabled() then
-            mc.enableCursors()
-          elseif mc.hasCursors() then
-            mc.clearCursors()
+          if not require('multicursor-nvim').cursorsEnabled() then
+            require('multicursor-nvim').enableCursors()
+          elseif require('multicursor-nvim').hasCursors() then
+            require('multicursor-nvim').clearCursors()
           end
         end, mode = 'n' },
-        { '<leader>gv', mc.restoreCursors, mode = 'n' },
-        { '<leader>ac', mc.alignCursors, mode = 'n' },
-        { 'S', mc.splitCursor, mode = 'v' },
-        { 'M', mc.matchCursors, mode = 'v' },
-        { '<leader>tc', function() mc.transposeCursors(1) end, mode = 'v' },
-        { '<leader>Tc', function() mc.transposeCursors(-1) end, mode = 'v' },
-        { '<C-i>', mc.jumpForward, mode = { 'n', 'v' } },
-        { '<C-o>', mc.jumpBackward, mode = { 'n', 'v' } },
+        { '<leader>gv', function() require('multicursor-nvim').restoreCursors() end, mode = 'n' },
+        { '<leader>ac', function() require('multicursor-nvim').alignCursors() end, mode = 'n' },
+        { 'S', function() require('multicursor-nvim').splitCursor() end, mode = 'v' },
+        { 'M', function() require('multicursor-nvim').matchCursors() end, mode = 'v' },
+        { '<leader>tc', function() require('multicursor-nvim').transposeCursors(1) end, mode = 'v' },
+        { '<leader>Tc', function() require('multicursor-nvim').transposeCursors(-1) end, mode = 'v' },
+        { '<C-i>', function() require('multicursor-nvim').jumpForward() end, mode = { 'n', 'v' } },
+        { '<C-o>', function() require('multicursor-nvim').jumpBackward() end, mode = { 'n', 'v' } },
       }
     end,
     config = function()
@@ -2174,10 +2173,31 @@ local plugins = enabled_plugins and {
     },
   },
 
+  -- HLSLENS, SEARCH
+  {
+    'kevinhwang91/nvim-hlslens',
+    event = { 'User FileOpened', 'CmdlineEnter' },
+    config = function()
+      require('scrollbar.handlers.search').setup()
+
+      local kopts = { noremap = true, silent = true }
+
+      keymap.set('n', 'j', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
+      keymap.set('n', 'J', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
+      keymap.set('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      keymap.set('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      keymap.set('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      keymap.set('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+    end,
+  },
+
   -- SCROLLBAR
   {
     'petertriho/nvim-scrollbar',
-    event = 'VeryLazy',
+    event = 'User FileOpened',
+    dependencies = {
+      'lewis6991/gitsigns.nvim',
+    },
     config = function()
       local change_highlight = function()
         local set_hl = api.nvim_set_hl
@@ -2188,8 +2208,8 @@ local plugins = enabled_plugins and {
 
           set_hl(0, 'ScrollbarCursor', { bg = bg, fg = get_hl('GruvboxGreen') })
           set_hl(0, 'ScrollbarCursorHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
-          set_hl(0, 'ScrollbarSearch', { bg = bg, fg = get_hl('GruvboxYellow') })
-          set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = get_hl('GruvboxYellow') })
+          set_hl(0, 'ScrollbarSearch', { fg = get_hl('GruvboxOrange') })
+          set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = get_hl('GruvboxOrange') })
           set_hl(0, 'ScrollbarErrorHandle', { bg = bg, fg = get_hl('GruvboxRed') })
           set_hl(0, 'ScrollbarWarnHandle', { bg = bg, fg = get_hl('GruvboxYellow') })
           set_hl(0, 'ScrollbarInfoHandle', { bg = bg, fg = get_hl('GruvboxBlue') })
@@ -2209,7 +2229,7 @@ local plugins = enabled_plugins and {
 
       require('scrollbar').setup({
         marks = {
-          Cursor = { text = '▎' },
+          Cursor = { text = '▐' },
           Search = { text = { '─', '═' }, },
           Error = { text = { '─', '═' }, },
           Warn = { text = { '─', '═' }, },
@@ -2218,11 +2238,15 @@ local plugins = enabled_plugins and {
           Misc = { text = { '─', '═' }, },
         },
         excluded_filetypes = {
+          'ministarter',
           'blink-cmp-menu',
           'TelescopePrompt',
           'TelescopeResults',
           'TelescopePreview',
           'dropbar_menu',
+        },
+        handlers = {
+          gitsigns = true,
         },
       })
       change_highlight()
@@ -2459,6 +2483,9 @@ local plugins = enabled_plugins and {
         },
         -- view = 'cmdline',
       },
+      messages = {
+        view_search = false,
+      },
       views = {
         cmdline_popup = { border = { style = 'single', } },
         cmdline_input = { border = { style = 'single', } },
@@ -2689,7 +2716,7 @@ local plugins = enabled_plugins and {
         keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
         opts.desc = 'Smart rename'
-        -- vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+        -- keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         keymap.set('n', '<leader>rn', function()
           return ':IncRename ' .. vim.fn.expand('<cword>')
         end, { noremap = true, expr = true })
@@ -3151,7 +3178,7 @@ if enabled_plugins then
     },
   })
 
-  keymap.set('n', '<leader>ls', '<cmd>Lazy sync<CR>', { noremap = true })
+  keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
   keymap.set('n', '<leader>tl', function()
     if vim.o.filetype == 'lazy' then
       vim.cmd.q()
