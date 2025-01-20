@@ -880,6 +880,7 @@ local plugins = enabled_plugins and {
           -- Builtin actions
           { name = 'n New buffer', action = ':ene', section = 'Builtin actions' },
           { name = 'q Quit Neovim', action = ':q', section = 'Builtin actions' },
+          { name = 'o Options', action = ':e ' .. vim.fn.stdpath('config') .. '/init.lua', section = 'Builtin actions' },
 
           -- Plugins actions
           { name = 's Sync Plugins', action = ':Lazy sync', section = 'Plugins actions' },
@@ -897,7 +898,7 @@ local plugins = enabled_plugins and {
           { name = 'h Help tags', action = ':FzfLua helptags', section = 'FzfLua' },
           { name = 'r Recent files', action = ':FzfLua oldfiles', section = 'FzfLua' },
           -- { name = 'Bookmarks', action = ':Telescope bookmarks list', section = 'Telescope' },
-          { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'FzfLua' },
+          -- { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'FzfLua' },
         },
         -- items = nil,
         content_hooks = {
@@ -959,6 +960,31 @@ local plugins = enabled_plugins and {
       -- Disable folding on Starter buffer
       vim.cmd([[ autocmd FileType Starter setlocal nofoldenable ]])
     end
+  },
+
+  -- MINI.AI
+  {
+    'echasnovski/mini.ai',
+    event = 'VeryLazy',
+    config = function()
+      require('mini.ai').setup({
+        mappings = {
+          -- Main textobject prefixes
+          around = 'a',
+          inside = 'k',
+
+          -- Next/last variants
+          around_next = 'an',
+          inside_next = 'kn',
+          around_last = 'al',
+          inside_last = 'kl',
+
+          -- Move cursor to corresponding edge of `a` textobject
+          goto_left = 'g[',
+          goto_right = 'g]',
+        },
+      })
+    end,
   },
 
   -- MINI.ICONS
@@ -1454,14 +1480,11 @@ local plugins = enabled_plugins and {
         build = 'make',
       },
     },
-    keys = function()
-      local dropbar_api = require('dropbar.api')
-      return {
-        { '<leader>;', dropbar_api.pick, desc = 'Pick symbols in winbar' },
-        { '[;', dropbar_api.goto_context_start, desc = 'Go to start of current context' },
-        { '];', dropbar_api.select_next_context, desc = 'Select next context' },
-      }
-    end,
+    keys = {
+      { '<leader>;', function() require('dropbar.api').pick() end, desc = 'Pick symbols in winbar' },
+      { '[;', function() require('dropbar.api').goto_context_start() end, desc = 'Go to start of current context' },
+      { '];', function() require('dropbar.api').select_next_context() end, desc = 'Select next context' },
+    },
   },
 
   -- COKELINE, TABBAR
