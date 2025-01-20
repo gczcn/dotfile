@@ -584,6 +584,39 @@ keymap.set('n', '<C-->', function()
   gui_change_font_size(-0.5)
 end)
 
+-- ===== NEOVIDE =====
+if vim.g.neovide then
+  local neovide_transparency = 1
+
+  local neovide_change_transparency = function(n)
+    if neovide_transparency + n <= 1 and neovide_transparency + n >= 0 then
+      neovide_transparency = neovide_transparency + n
+      vim.g.neovide_transparency = neovide_transparency
+      print(neovide_transparency)
+    else
+      print('transparency out of range (' .. neovide_transparency .. ')')
+    end
+  end
+
+  opt.pumblend = 30
+  opt.winblend = 30
+
+  vim.g.neovide_floating_blur_amount_x = 1.5
+  vim.g.neovide_floating_blur_amount_y = 1.5
+  vim.g.neovide_scroll_animation_length = 0.3
+  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_unlink_border_highlights = true
+  vim.g.neovide_confirm_quit = true
+  vim.g.neovide_cursor_animate_command_line = true
+  vim.g.neovide_cursor_unfocused_outline_width = 0.1
+  vim.g.neovide_remember_window_size = true
+  vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
+  vim.g.neovide_transparency = neovide_transparency
+
+  vim.keymap.set('n', '<C-+>', function() neovide_change_transparency(0.1) end)
+  vim.keymap.set('n', '<C-_>', function() neovide_change_transparency(-0.1) end)
+end
+
 -- =============================================================================
 -- Features
 -- Tags: FEATURES
