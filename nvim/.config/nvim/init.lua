@@ -855,6 +855,10 @@ local plugins = enabled_plugins and {
           comments = true,
         },
         overrides = {
+          LspReferenceText = { underline = true },
+          LspReferenceRead = { underline = true },
+          LspReferenceWrite = { underline = true },
+
           -- noice.nvim
           NoiceCmdlinePopupBorder = { link = 'Normal' },
           NoiceCmdlinePopupTitle = { link = 'Normal' },
@@ -1051,6 +1055,56 @@ local plugins = enabled_plugins and {
     end
   },
 
+  -- MINI.FILES, FILES_MANAGER
+  {
+    'echasnovski/mini.files',
+    dependencies = {
+      'echasnovski/mini.icons',
+    },
+    keys = {
+      ---@diagnostic disable-next-line: undefined-global
+      { '<leader>e', function() MiniFiles.open() end },
+      ---@diagnostic disable-next-line: undefined-global
+      { '<leader>E', function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end },
+    },
+    init = function()
+      local mini_files_open_folder = function(path) require('mini.files').open(path) end
+      autocmd_attach_file_browser('mini.files', mini_files_open_folder)
+    end,
+    config = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesActionRename",
+        callback = function(event)
+          ---@diagnostic disable-next-line: undefined-global
+          Snacks.rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
+      require('mini.files').setup({
+        mappings = {
+          close       = 'q',
+          go_in       = 'i',
+          go_in_plus  = 'I',
+          go_out      = 'n',
+          go_out_plus = 'N',
+          mark_goto   = "'",
+          mark_set    = 'm',
+          reset       = '<BS>',
+          reveal_cwd  = '@',
+          show_help   = 'g?',
+          synchronize = '=',
+          trim_left   = '<',
+          trim_right  = '>',
+        },
+        options = {
+          -- Whether to delete permanently or move into module-specific trash
+          permanent_delete = true,
+          -- Whether to use for editing directories
+          use_as_default_explorer = true,
+        },
+      })
+    end,
+  },
+
   -- MINI.AI
   {
     'echasnovski/mini.ai',
@@ -1133,6 +1187,7 @@ local plugins = enabled_plugins and {
   -- OIL
   {
     'stevearc/oil.nvim',
+    enabled = false,
     keys = {
       {
         '<leader>e',
