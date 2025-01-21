@@ -131,6 +131,7 @@ local get_hl = function(name, bg)
   return color and string.format('#%06x', color) or nil
 end
 
+-- https://www.reddit.com/r/neovim/comments/1egmpag/comment/lg2epw8/
 local autocmd_attach_file_browser = function(plugin_name, plugin_open)
   local previous_buffer_name
   api.nvim_create_autocmd('BufEnter', {
