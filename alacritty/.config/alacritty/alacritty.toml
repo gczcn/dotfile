@@ -45,14 +45,3 @@ hide_when_typing = true
 import = [
   "~/.config/alacritty/themes/gruvbox_dark.toml"
 ]
-
-
-
-
-
-
-
-
-
-
-
