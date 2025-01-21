@@ -11,6 +11,7 @@
 --   fzf - for fzf.lua
 --   gcc
 --   rust - nightly version for blink.cmp
+--   Nerd Font - if you want to show some icons
 --
 --   Language Servers:
 --     clangd
@@ -566,7 +567,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- Tags: GUI
 -- =============================================================================
 
-local gui_font = 'BlexMono Nerd Font Mono'
+local gui_font = 'Consolas Nerd Font Mono'
 local gui_font_size = 13.5
 
 local gui_change_font_size = function(n)
@@ -662,6 +663,7 @@ local lazy_config = enabled_plugins and {
   change_detection = { notify = false },
   ui = {
     -- My font does not display the default icon properly
+    -- Need Nerd Font
     icons = {
       debug = ' ',
       loaded = '',
@@ -816,6 +818,14 @@ local plugins = enabled_plugins and {
 
             set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
             set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
+            set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
+            set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
+            set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
+            set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
+            set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
+            set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
+            set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
+            set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
 
             set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0 })
 
@@ -886,6 +896,7 @@ local plugins = enabled_plugins and {
           BlinkCmpLabelDescription = { link = 'GruvboxGray' },
         },
       })
+      opt.background = 'dark'
       vim.cmd.colorscheme('gruvbox')
     end,
   },
@@ -1421,7 +1432,7 @@ local plugins = enabled_plugins and {
       'nvim-telescope/telescope-file-browser.nvim',
       'xiyaowong/telescope-emoji.nvim',
       'ghassan0/telescope-glyph.nvim',
-      '2kabhishek/nerdy.nvim',
+      { '2kabhishek/nerdy.nvim', cmd = 'Nerdy' },
     },
     config = function()
       local telescope = require('telescope')
@@ -1870,7 +1881,7 @@ local plugins = enabled_plugins and {
           },
           {
             text = function(buffer)
-              return buffer.is_modified and '* ' or ''
+              return buffer.is_modified and '● ' or ''
             end,
           },
           {
@@ -3310,6 +3321,7 @@ if enabled_plugins then
   opt.foldenable = true
 
   -- My font does not display the default icon properly.
+  -- Need Nerd Font
   vim.diagnostic.config({
     virtual_text = {
       prefix = '󰝤',
