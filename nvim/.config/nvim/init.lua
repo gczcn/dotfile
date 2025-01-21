@@ -435,7 +435,7 @@ opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 opt.winminwidth = 5 -- Minimum window width
-opt.wrap = false -- Disable line wrap
+-- opt.wrap = false -- Disable line wrap
 
 if not enabled_plugins then
   vim.cmd.colorschemes('habamax')
@@ -557,7 +557,7 @@ create_autocmd('FileType', {
 create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
   group = api.nvim_create_augroup('FileOpened', { clear = true }),
   pattern = '*',
-  callback = function(args)
+  callback = function()
     api.nvim_exec_autocmds('User', { pattern = 'FileOpened', modeline = false })
   end,
 })
@@ -949,6 +949,7 @@ local plugins = enabled_plugins and {
 
           -- Possibly filter files from current directory
           if current_dir then
+            ---@diagnostic disable-next-line: undefined-field
             local sep = vim.loop.os_uname().sysname == 'Windows_NT' and [[%\]] or '%/'
             local cwd_pattern = '^' .. vim.pesc(vim.fn.getcwd()) .. sep
             -- Use only files from current directory and its subdirectories
@@ -991,9 +992,9 @@ local plugins = enabled_plugins and {
           { name = 'p Plugins', action = ':Lazy', section = 'Plugins actions' },
           -- { name = 'Mason', action = ':Mason', section = 'Plugins actions' },
 
-          -- Oil
-          { name = 'e File Browser', action = ':Oil', section = 'Oil' },
-          { name = 'w File Browser (Options)', action = ':Oil ' .. vim.fn.stdpath('config'), section = 'Oil' },
+          -- MiniFiles
+          { name = 'e File Browser', action = ':lua require("mini.files").open()', section = 'MiniFiles' },
+          { name = 'w File Browser (Options)', action = ':lua require("mini.files").open("' .. vim.fn.stdpath('config') .. '")', section = 'MiniFiles' },
 
           -- FzfLua
           { name = 'f Find files', action = ':FzfLua files', section = 'FzfLua' },
@@ -1093,10 +1094,10 @@ local plugins = enabled_plugins and {
       require('mini.files').setup({
         mappings = {
           close       = 'q',
-          go_in       = 'i',
-          go_in_plus  = 'I',
-          go_out      = 'n',
-          go_out_plus = 'N',
+          go_in       = 'I',
+          go_in_plus  = 'i',
+          go_out      = 'N',
+          go_out_plus = 'n',
           mark_goto   = "'",
           mark_set    = 'm',
           reset       = '<BS>',
@@ -1315,6 +1316,7 @@ local plugins = enabled_plugins and {
           if package.loaded['neo-tree'] then
             return
           else
+            ---@diagnostic disable-next-line: undefined-field
             local stats = vim.uv.fs_stat(vim.fn.argv(0))
             if stats and stats.type == 'directory' then
               require('neo-tree')
@@ -1545,7 +1547,7 @@ local plugins = enabled_plugins and {
 
       require('ufo').setup({
         fold_virt_text_handler = handler,
-        provider_selector = function(bufnr, filetype, buftype)
+        provider_selector = function()
           return {'treesitter', 'indent'}
         end
       })
@@ -3220,6 +3222,7 @@ local plugins = enabled_plugins and {
                     return ' ' .. ctx.kind_icon .. ' '
                   end,
                   highlight = function(ctx)
+                    ---@diagnostic disable-next-line: ambiguity-1
                     return require('blink.cmp.completion.windows.render.tailwind').get_hl(ctx)
                       or 'BlinkCmpKind' .. ctx.kind
                   end,
