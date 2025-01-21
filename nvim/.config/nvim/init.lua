@@ -680,6 +680,62 @@ local lazy_config = enabled_plugins and {
 local plugins = enabled_plugins and {
 
   -- COLORSCHEME
+  --- CATPPUCCIN
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin-nvim',
+    priority = 1000,
+    enabled = false,
+    config = function()
+      require('catppuccin').setup({
+        custom_highlights = function(colors)
+          return {
+            DiagnosticNumHlError = { fg = colors.red, bold = true },
+            DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
+            DiagnosticNumHlHint = { fg = colors.teal, bold = true },
+            DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
+            MiniIndentscopeSymbol = { fg = '#585b70' },
+            FzfLuaHeaderText = { fg = colors.red },
+            FzfLuaHeaderBind = { fg = colors.pink },
+            IlluminatedWordText = { underline = true },
+            IlluminatedWordRead = { underline = true },
+            IlluminatedWordWrite = { underline = true },
+
+            BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
+            BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
+            BlinkCmpKindConstant = { bg = colors.peach, fg = colors.base },
+            BlinkCmpKindConstructor = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindEnum = { bg = colors.green, fg = colors.base },
+            BlinkCmpKindEnumMember = { bg = colors.red, fg = colors.base },
+            BlinkCmpKindEvent = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindField = { bg = colors.green, fg = colors.base },
+            BlinkCmpKindFile = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindFolder = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindFunction = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindInterface = { bg = colors.yellow, fg = colors.base },
+            BlinkCmpKindKeyword = { bg = colors.red, fg = colors.base },
+            BlinkCmpKindMethod = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindModule = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindOperator = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindProperty = { bg = colors.green, fg = colors.base },
+            BlinkCmpKindReference = { bg = colors.red, fg = colors.base },
+            BlinkCmpKindSnippet = { bg = colors.mauve, fg = colors.base },
+            BlinkCmpKindStruct = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindText = { bg = colors.teal, fg = colors.base },
+            BlinkCmpKindTypeParameter = { bg = colors.blue, fg = colors.base },
+            BlinkCmpKindUnit = { bg = colors.green, fg = colors.base },
+            BlinkCmpKindValue = { bg = colors.peach, fg = colors.base },
+            BlinkCmpKindVariable = { bg = colors.flamingo, fg = colors.base },
+            BlinkCmpKindCopilot = { bg = colors.lavender, fg = colors.base },
+          }
+        end,
+      })
+
+      opt.background = 'dark'
+      vim.cmd.colorscheme('catppuccin')
+    end
+  },
+
   --- GRUVBOX
   {
     'ellisonleao/gruvbox.nvim',
@@ -1435,7 +1491,11 @@ local plugins = enabled_plugins and {
     'rrethy/vim-illuminate',
     event = 'User FileOpened',
     opts = {
-      delay = 0,
+      delay = 200,
+      large_file_cutoff = 2000,
+      large_file_overrides = {
+        providers = { "lsp" },
+      },
       filetypes_denylist = {
         'dirbuf',
         'dirvish',
@@ -2199,14 +2259,33 @@ local plugins = enabled_plugins and {
       'lewis6991/gitsigns.nvim',
     },
     config = function()
+      local set_hl = api.nvim_set_hl
+
+      local catppuccin_change_highlight = function(flavours)
+        local palette = require('catppuccin.palettes').get_palette(flavours)
+        local bg = palette.surface0
+
+        set_hl(0, 'ScrollbarHandle', { bg = bg, fg = palette.blue })
+        set_hl(0, 'ScrollbarCursor', { fg = palette.blue })
+        set_hl(0, 'ScrollbarCursorHandle', { bg = bg, fg = palette.blue })
+        set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = palette.peach })
+        set_hl(0, 'ScrollbarErrorHandle', { bg = bg, fg = palette.red })
+        set_hl(0, 'ScrollbarWarnHandle', { bg = bg, fg = palette.yellow })
+        set_hl(0, 'ScrollbarInfoHandle', { bg = bg, fg = palette.sky })
+        set_hl(0, 'ScrollbarHintHandle', { bg = bg, fg = palette.teal })
+        set_hl(0, 'ScrollbarMiscHandle', { bg = bg, fg = palette.text })
+        set_hl(0, 'ScrollbarGitDeleteHandle', { bg = bg, fg = palette.red })
+        set_hl(0, 'ScrollbarGitAddHandle', { bg = bg, fg = palette.green })
+        set_hl(0, 'ScrollbarGitChangeHandle', { bg = bg, fg = palette.yellow })
+      end
+
       local change_highlight = function()
-        local set_hl = api.nvim_set_hl
         if vim.g.colors_name == 'gruvbox' then
           -- local palette = require('gruvbox').palette
           local bg = get_hl('GruvboxBg2')
           set_hl(0, 'ScrollbarHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
 
-          set_hl(0, 'ScrollbarCursor', { bg = bg, fg = get_hl('GruvboxGreen') })
+          set_hl(0, 'ScrollbarCursor', { fg = get_hl('GruvboxGreen') })
           set_hl(0, 'ScrollbarCursorHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
           set_hl(0, 'ScrollbarSearch', { fg = get_hl('GruvboxOrange') })
           set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = get_hl('GruvboxOrange') })
@@ -2218,6 +2297,10 @@ local plugins = enabled_plugins and {
           set_hl(0, 'ScrollbarGitDeleteHandle', { bg = bg, link = 'ScrollbarErrorHandle' })
           set_hl(0, 'ScrollbarGitAddHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
           set_hl(0, 'ScrollbarGitChangeHandle', { bg = bg, fg = get_hl('GruvboxOrange') })
+        elseif vim.g.colors_name == 'catppuccin-mocha' then catppuccin_change_highlight('mocha')
+        elseif vim.g.colors_name == 'catppuccin-latte' then catppuccin_change_highlight('latte')
+        elseif vim.g.colors_name == 'catppuccin-macchiato' then catppuccin_change_highlight('macchiato')
+        elseif vim.g.colors_name == 'catppuccin-frappe' then catppuccin_change_highlight('frappe')
         elseif vim.g.colors_name == 'onedark' then
           set_hl(0, 'ScrollbarHandle', { bg = '#373d49', fg = '#4966A0' })
           set_hl(0, 'ScrollbarCursor', { bg = '#373d49', fg = '#4966A0' })

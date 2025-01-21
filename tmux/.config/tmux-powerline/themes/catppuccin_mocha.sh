@@ -102,7 +102,7 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 		# "hostname #313244 #cba6f7"
 		#"mode_indicator 165 0"
 		# "ifstat 30 255"
-		# "lan_ip 24 255 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
+		"lan_ip #313244 #cba6f7 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
 		#"vpn 24 255 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
 		# "wan_ip 24 255"
 		"vcs_branch #a6e3a1 #1e1e2e"
@@ -110,7 +110,7 @@ if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 		"vcs_staged #f9e2af #1e1e2e"
 		"vcs_modified #f38ba8 #1e1e2e"
 		"vcs_others #cdd6f4 #1e1e2e"
-		"ifstat_sys #313244 #cba6f7"
+		# "ifstat_sys #313244 #cba6f7"
 	)
 fi
 
