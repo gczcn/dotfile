@@ -417,6 +417,7 @@ opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
 opt.number = true
+opt.pumblend = 15
 opt.pumheight = 30
 -- opt.relativenumber = true
 opt.scrolloff = 8 -- Lines of context
@@ -435,6 +436,7 @@ opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
+opt.winblend = 15
 opt.winminwidth = 5 -- Minimum window width
 -- opt.wrap = false -- Disable line wrap
 
@@ -569,7 +571,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- =============================================================================
 
 local gui_font = 'Consolas Nerd Font Mono'
-local gui_font_size = 13.5
+local gui_font_size = 15
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
@@ -600,8 +602,8 @@ if vim.g.neovide then
     end
   end
 
-  opt.pumblend = 30
-  opt.winblend = 30
+  vim.o.pumblend = 20
+  vim.o.winblend = 20
 
   vim.g.neovide_floating_blur_amount_x = 1.5
   vim.g.neovide_floating_blur_amount_y = 1.5
@@ -615,8 +617,12 @@ if vim.g.neovide then
   vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
   vim.g.neovide_transparency = neovide_transparency
 
-  vim.keymap.set('n', '<C-+>', function() neovide_change_transparency(0.1) end)
-  vim.keymap.set('n', '<C-_>', function() neovide_change_transparency(-0.1) end)
+  keymap.set('n', '<C-+>', function()
+    neovide_change_transparency(0.1)
+  end)
+  keymap.set('n', '<C-_>', function()
+    neovide_change_transparency(-0.1)
+  end)
 end
 
 -- =============================================================================
@@ -1009,8 +1015,8 @@ local plugins = enabled_plugins and {
         -- items = nil,
         content_hooks = {
           starter.gen_hook.padding(7, 3),
-          -- starter.gen_hook.adding_bullet('│ '),
-          starter.gen_hook.adding_bullet('░ '),
+          starter.gen_hook.adding_bullet('▏ '),
+          -- starter.gen_hook.adding_bullet('░ '),
         },
         header = header(),
         footer = footer(),
@@ -1989,7 +1995,7 @@ local plugins = enabled_plugins and {
               strikethrough = function() return get_colors()['quit']['strikethrough'] end,
               on_click = function()
                 vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
-                  if input == '' or string.lower(input) == 'y' then
+                  if input and (input == '' or string.lower(input) == 'y') then
                     vim.cmd.qa()
                   end
                 end)
@@ -3316,8 +3322,6 @@ if enabled_plugins then
 
   opt.cmdheight = 0
   opt.laststatus = 0
-  opt.winblend = 15
-  opt.pumblend = 15
   opt.signcolumn = 'auto'
   opt.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
