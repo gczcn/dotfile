@@ -973,7 +973,7 @@ local plugins = enabled_plugins and {
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
             local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
             i = i == '' and '' or i + 1
-            table.insert(items, { action = 'edit ' .. f, name = name, section = section })
+            items[#items + 1] = { action = 'edit ' .. f, name = name, section = section }
           end
 
           return items
@@ -1534,11 +1534,11 @@ local plugins = enabled_plugins and {
           local chunkText = chunk[1]
           local chunkWidth = vim.fn.strdisplaywidth(chunkText)
           if targetWidth > curWidth + chunkWidth then
-            table.insert(newVirtText, chunk)
+            newVirtText[#newVirtText + 1] = chunk
           else
             chunkText = truncate(chunkText, targetWidth - curWidth)
             local hlGroup = chunk[2]
-            table.insert(newVirtText, { chunkText, hlGroup })
+            newVirtText[#newVirtText + 1] = { chunkText, hlGroup }
             chunkWidth = vim.fn.strdisplaywidth(chunkText)
             -- str width returned from truncate() may less than 2nd argument, need padding
             if curWidth + chunkWidth < targetWidth then
@@ -1548,7 +1548,7 @@ local plugins = enabled_plugins and {
           end
           curWidth = curWidth + chunkWidth
         end
-        table.insert(newVirtText, { suffix, 'MoreMsg' })
+        newVirtText[#newVirtText + 1] = { suffix, 'MoreMsg' }
         return newVirtText
       end
 
@@ -2027,7 +2027,7 @@ local plugins = enabled_plugins and {
 
         local c = {}
         for _, client in pairs(clients) do
-          table.insert(c, client.name)
+          c[#c] = client.name
         end
         return ' ' .. table.concat(c, ', ')
       end
@@ -3137,7 +3137,7 @@ local plugins = enabled_plugins and {
       'folke/lazydev.nvim',
 
       -- nvim-cmp sources
-      { 'Saghen/blink.compat', opts = { impersonate_nvim_cmp = true } },
+      -- { 'Saghen/blink.compat', opts = { impersonate_nvim_cmp = true } },
       -- { 'tzachar/cmp-tabnine', enabled = enabled_tabnine, build = './install.sh' },
     },
     build = 'rustup run nightly cargo build --release',
@@ -3149,11 +3149,11 @@ local plugins = enabled_plugins and {
         local sources = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer', 'emoji' }
 
         if enabled_copilot then
-          table.insert(sources, 'copilot')
+          sources[#sources + 1] = 'copilot'
         end
 
         -- if enabled_tabnine then
-        --   table.insert(sources, 'cmp_tabnine')
+        --   sources[#sources + 1] = 'cmp_tabnine'
         -- end
 
         return sources
