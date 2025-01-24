@@ -33,10 +33,6 @@
 --     stylua
 --     shfmt
 --
--- Run `:RunShellScript [install/update]_dependencies_[package_manager]` to
--- install or update dependencies.
--- package_manager: [homebrew/pacman]
---
 -- Jump to somewhere by searching for an uppercase tag.
 --
 -- I hope I can read the code later :)
@@ -418,7 +414,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- =============================================================================
 
 local gui_font = 'Consolas Nerd Font Mono'
-local gui_font_size = 15
+local gui_font_size = 14.5
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
@@ -541,7 +537,7 @@ local plugins = enabled_plugins and {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -596,7 +592,7 @@ local plugins = enabled_plugins and {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
@@ -771,8 +767,8 @@ local plugins = enabled_plugins and {
           'Nvim is open source and freely distributable\n' ..
           'https://neovim.io/#chat'
 
-        -- 'This configuration\n' ..
-        -- 'https://github.com/gczcn/dotfile/tree/main/nvim/.config/nvim'
+          -- 'Configured by gczcn\n' ..
+          -- 'https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua'
       end
 
       local footer = function()
@@ -2725,6 +2721,7 @@ local plugins = enabled_plugins and {
         python = { 'isort', 'black' },
         javascript = { { 'prettierd', 'prettier' } },
         c = { 'clang-format' },
+        go = { 'gofmt' },
       },
       formatters = {
         shfmt = {
@@ -2854,6 +2851,30 @@ local plugins = enabled_plugins and {
     end,
   },
 
+  -- DAP, DEBUG, DEBUGGER
+  {
+    'mfussenegger/nvim-dap',
+    keys = {
+      { '<leader>dB', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Breakpoint Condition' },
+      { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
+      { '<leader>dc', function() require('dap').continue() end, desc = 'Run/Continue' },
+      -- { '<leader>da', function() require('dap').continue({ before = get_args }) end, desc = 'Run with Args' },
+      { '<leader>dC', function() require('dap').run_to_cursor() end, desc = 'Run to Cursor' },
+      { '<leader>dg', function() require('dap').goto_() end, desc = 'Go to Line (No Execute)' },
+      { '<leader>di', function() require('dap').step_into() end, desc = 'Step Into' },
+      { '<leader>dj', function() require('dap').down() end, desc = 'Down' },
+      { '<leader>dk', function() require('dap').up() end, desc = 'Up' },
+      { '<leader>dl', function() require('dap').run_last() end, desc = 'Run Last' },
+      { '<leader>do', function() require('dap').step_out() end, desc = 'Step Out' },
+      { '<leader>dO', function() require('dap').step_over() end, desc = 'Step Over' },
+      { '<leader>dP', function() require('dap').pause() end, desc = 'Pause' },
+      { '<leader>dr', function() require('dap').repl.toggle() end, desc = 'Toggle REPL' },
+      { '<leader>ds', function() require('dap').session() end, desc = 'Session' },
+      { '<leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
+      { '<leader>dw', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
+    },
+  },
+
   -- LSP
   {
     'neovim/nvim-lspconfig',
@@ -2872,7 +2893,7 @@ local plugins = enabled_plugins and {
     },
     config = function()
       local lspconfig = require('lspconfig')
-      -- local util = require('lspconfig.util')
+      local util = require('lspconfig.util')
       local opts = { noremap = true, silent = true }
       local on_attach = function(_, bufnr)
         opts.buffer = bufnr
@@ -3002,24 +3023,29 @@ local plugins = enabled_plugins and {
         severity_sort = true,
       })
 
-      local lsp_default_config = function()
-        return {
-          capabilities = capabilities(),
-          on_attach = on_attach,
-        }
-      end
-
       -- configure html server
-      lspconfig['html'].setup(lsp_default_config())
+      lspconfig['html'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure typescript server with plugin
-      lspconfig['ts_ls'].setup(lsp_default_config())
+      lspconfig['ts_ls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure css server
-      lspconfig['cssls'].setup(lsp_default_config())
+      lspconfig['cssls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure tailwindcss server
-      lspconfig['tailwindcss'].setup(lsp_default_config())
+      lspconfig['tailwindcss'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure svelte server
       lspconfig['svelte'].setup({
@@ -3039,22 +3065,30 @@ local plugins = enabled_plugins and {
       })
 
       -- configure prisma orm server
-      lspconfig['prismals'].setup(lsp_default_config())
+      lspconfig['prismals'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure graphql language server
-      local graphql_config = lsp_default_config()
-      graphql_config['filetypes'] = { 'graphql', 'gql', 'svelte', 'typescriptreact', 'javascriptreact' }
-
-      lspconfig['graphql'].setup(graphql_config)
+      lspconfig['graphql'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+        filetypes = { 'graphql', 'gql', 'svelte', 'typescriptreact', 'javascriptreact' },
+      })
 
       -- configure emmet language server
-      local emmet_config = lsp_default_config()
-      emmet_config['filetypes'] = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'svelte' }
-
-      lspconfig['emmet_ls'].setup(emmet_config)
+      lspconfig['emmet_ls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+        filetype = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'svelte' },
+      })
 
       -- configure python server
-      lspconfig['pyright'].setup(lsp_default_config())
+      lspconfig['pyright'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure lua server (with special settings)
       lspconfig['lua_ls'].setup({
@@ -3078,7 +3112,21 @@ local plugins = enabled_plugins and {
       })
 
       -- configure Go language server
-      lspconfig['gopls'].setup(lsp_default_config())
+      lspconfig['gopls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+        cmd = { 'gopls' },
+        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
+        settings = {
+          gopls = {
+            completeUnimported = true,
+            analyses = {
+              unusedparams = true,
+            },
+          },
+        },
+      })
 
       -- configure Bash language server
       lspconfig['bashls'].setup({
@@ -3087,7 +3135,10 @@ local plugins = enabled_plugins and {
         cmd = { 'bash-language-server', 'start' },
       })
 
-      lspconfig['vimls'].setup(lsp_default_config())
+      lspconfig['vimls'].setup({
+        capabilities = capabilities(),
+        on_attach = on_attach,
+      })
 
       -- configure C and C++ ... language server
       lspconfig['clangd'].setup({

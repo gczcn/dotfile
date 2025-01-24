@@ -118,7 +118,7 @@ fi
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
 		#"earthquake 3 0"
-		"pwd #313234 #a6e3a1"
+		"pwd #313244 #a6e3a1"
 		#"macos_notification_count 29 255"
 		#"mailcount 9 255"
 		"now_playing #89b4fa #181825"
