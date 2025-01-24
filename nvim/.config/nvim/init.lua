@@ -162,151 +162,6 @@ local autocmd_attach_file_browser = function(plugin_name, plugin_open)
 end
 
 -- =============================================================================
--- Shell scripts
--- Tags: SH, SHELL, SCRIPT, SCRIPTS
--- =============================================================================
-
-local shell_scripts = {}
-
-shell_scripts.install_dependencies_homebrew = [[
-  brew update
-
-  brew install ripgrep
-  brew install fd
-  brew install node
-  brew install npm
-  brew install fzf
-
-  brew install gcc
-
-  brew install llvm
-  brew install typescript-language-server
-  brew install pyright
-  brew install lua-language-server
-  brew install gopls
-  brew install tailwindcss-language-server
-  brew install bash-language-server
-  npm install -g vscode-langservers-extracted
-  npm install -g graphql-language-service-cli
-  npm install -g svelte-language-server
-  npm install -g emmet-ls
-  npm install -g @prisma/language-server
-  npm install -g vim-language-server
-
-  brew install black
-  brew install stylua
-  brew install shfmt
-
-  brew install rustup
-  rustup install nightly
-]]
-
-shell_scripts.update_dependencies_homebrew = [[
-  brew update
-
-  brew upgrade ripgrep
-  brew upgrade fd
-  brew upgrade node
-  brew upgrade npm
-  brew upgrade fzf
-
-  brew upgrade gcc
-
-  brew upgrade llvm
-  brew upgrade typescript-language-server
-  brew upgrade pyright
-  brew upgrade lua-language-server
-  brew upgrade gopls
-  brew upgrade tailwindcss-language-server
-  brew upgrade bash-language-server
-  npm update -g vscode-langservers-extracted
-  npm update -g graphql-language-service-cli
-  npm update -g svelte-language-server
-  npm update -g emmet-ls
-  npm update -g @prisma/language-server
-  npm update -g vim-language-server
-
-  brew upgrade black
-  brew upgrade stylua
-  brew upgrade shfmt
-
-  brew upgrade rustup
-  rustup upgrade nightly
-]]
-
-shell_scripts.install_dependencies_pacman = [[
-  sudo pacman -Sy
-
-  yes | sudo pacman -S ripgrep
-  yes | sudo pacman -S fd
-  yes | sudo pacman -S nodejs
-  yes | sudo pacman -S npm
-  yes | sudo pacman -S fzf
-
-  yes | sudo pacman -S gcc
-
-  yes | sudo pacman -S llvm
-  yes | sudo pacman -S clang
-  yes | sudo pacman -S typescript-language-server
-  yes | sudo pacman -S pyright
-  yes | sudo pacman -S lua-language-server
-  yes | sudo pacman -S gopls
-  yes | sudo pacman -S tailwindcss-language-server
-  yes | sudo pacman -S bash-language-server
-  yes | sudo pacman -S vscode-css-languageserver
-  yes | sudo pacman -S vscode-html-languageserver
-  yes | sudo pacman -S vscode-json-languageserver
-  yes | sudo pacman -S svelte-language-server
-  yes | sudo pacman -S graphql-client-cli
-  sudo npm install -g emmet-ls
-  sudo npm install -g @prisma/language-server
-  sudo npm install -g vim-language-server
-
-  yes | sudo pacman -S python-black
-  yes | sudo pacman -S stylua
-  yes | sudo pacman -S shfmt
-
-  yes | sudo pacman -S rustup
-  rustup install nightly
-]]
-
-shell_scripts.update_dependencies = [[
-  sudo pacman -Sy
-
-  yes | sudo pacman -S ripgrep
-  yes | sudo pacman -S fd
-  yes | sudo pacman -S nodejs
-  yes | sudo pacman -S npm
-  yes | sudo pacman -S fzf
-
-  yes | sudo pacman -S gcc
-
-  yes | sudo pacman -S llvm
-  yes | sudo pacman -S clang
-  yes | sudo pacman -S typescript-language-server
-  yes | sudo pacman -S pyright
-  yes | sudo pacman -S lua-language-server
-  yes | sudo pacman -S gopls
-  yes | sudo pacman -S tailwindcss-language-server
-  yes | sudo pacman -S bash-language-server
-  yes | sudo pacman -S vscode-css-languageserver
-  yes | sudo pacman -S vscode-html-languageserver
-  yes | sudo pacman -S vscode-json-languageserver
-  yes | sudo pacman -S svelte-language-server
-  yes | sudo pacman -S graphql-client-cli
-  sudo npm update -g @prisma/language-server
-  sudo npm update -g emmet-ls
-  sudo npm update -g vim-language-server
-
-  yes | sudo pacman -S python-black
-  yes | sudo pacman -S stylua
-  yes | sudo pacman -S shfmt
-
-  yes | sudo pacman -S rustup
-  rustup update nightly
-]]
-
--- =============================================================================
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
@@ -354,10 +209,10 @@ keymap.set('n', '<leader>srv', '<C-w>b<C-w>H', keymaps_opts)
 keymap.set('n', '<leader>srh', '<C-w>b<C-w>K', keymaps_opts)
 
 -- Resize
-keymap.set('n', '<M-+>', '<cmd>resize +5<CR>', keymaps_opts)
-keymap.set('n', '<M-_>', '<cmd>resize -5<CR>', keymaps_opts)
-keymap.set('n', '<M-->', '<cmd>vertical resize -10<CR>', keymaps_opts)
-keymap.set('n', '<M-=>', '<cmd>vertical resize +10<CR>', keymaps_opts)
+keymap.set('n', '<C-up>', '<cmd>resize +5<CR>', keymaps_opts)
+keymap.set('n', '<C-down>', '<cmd>resize -5<CR>', keymaps_opts)
+keymap.set('n', '<C-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
+keymap.set('n', '<C-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
@@ -438,10 +293,10 @@ opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
 opt.winblend = 15
 opt.winminwidth = 5 -- Minimum window width
--- opt.wrap = false -- Disable line wrap
+opt.wrap = false -- Disable line wrap
 
 if not enabled_plugins then
-  vim.cmd.colorschemes('habamax')
+  vim.cmd.colorscheme('habamax')
 end
 
 -- =============================================================================
@@ -477,14 +332,6 @@ vim.cmd.cabbrev('W w')
 vim.cmd.cabbrev('Q q')
 vim.cmd.cabbrev('Qa qa')
 vim.cmd.cabbrev('Qall qall')
-
-create_user_command('RunShellScript', function(t)
-  if shell_scripts[t.args] then
-    vim.cmd.term(shell_scripts[t.args])
-  else
-    vim.notify('No such shell script', vim.log.levels.ERROR)
-  end
-end, { nargs = 1 })
 
 -- =============================================================================
 -- Autocmds
@@ -1677,6 +1524,118 @@ local plugins = enabled_plugins and {
 
       local colors = {
         default = 'gruvbox',
+        ['catppuccin-mocha'] = {
+          dark = {
+            focused = {
+              normal = { bg = '#89b4fa', fg = '#181825', bold = true },
+              insert = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
+              command = { bg = '#fab387', fg = '#1e1e2e', bold = true },
+              visual = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
+              select = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
+              replace = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
+              term = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
+              normal_num = { bg = '#629cf8', fg = '#181825', bold = true },
+              insert_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
+              command_num = { bg = '#f49357', fg = '#1e1e2e', bold = true },
+              visual_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
+              select_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
+              replace_num = { bg = '#ee5983', fg = '#1e1e2e', bold = true },
+              term_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
+              unique_prefix_fg = '#45475a',
+              diagnostic_error = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
+              diagnostic_warn = { bg = '#f9e2af', fg = '#1e1e2e', bold = true },
+              diagnostic_info = { bg = '#89dceb', fg = '#1e1e2e', bold = true },
+              diagnostic_hint = { bg = '#94e2d5', fg = '#1e1e2e', bold = true },
+            },
+            not_focused = {
+              normal = { bg = '#313244', fg = '#89b4fa' },
+              insert = { bg = '#313244', fg = '#a6e3a1' },
+              command = { bg = '#313244', fg = '#fab387' },
+              visual = { bg = '#313244', fg = '#cba6f7' },
+              select = { bg = '#313244', fg = '#cba6f7' },
+              replace = { bg = '#313244', fg = '#f38ba8' },
+              term = { bg = '#313244', fg = '#a6e3a1' },
+              normal_num = { bg = '#45475a', fg = '#89b4fa' },
+              insert_num = { bg = '#45475a', fg = '#a6e3a1' },
+              command_num = { bg = '#45475a', fg = '#fab387' },
+              visual_num = { bg = '#45475a', fg = '#cba6f7' },
+              select_num = { bg = '#45475a', fg = '#cba6f7' },
+              replace_num = { bg = '#45475a', fg = '#f38ba8' },
+              term_num = { bg = '#45475a', fg = '#a6e3a1' },
+              unique_prefix_fg = '#9399b2',
+              diagnostic_error = { bg = '#313244', fg = '#f38ba8' },
+              diagnostic_warn = { bg = '#313244', fg = '#f9e2af' },
+              diagnostic_info = { bg = '#313244', fg = '#89dceb' },
+              diagnostic_hint = { bg = '#313244', fg = '#94e2d5' },
+            },
+            tablinefill = {
+              normal = { bg = '#181825', fg = '#cdd6f4' },
+              insert = { bg = '#181825', fg = '#cdd6f4' },
+              command = { bg = '#181825', fg = '#cdd6f4' },
+              visual = { bg = '#181825', fg = '#cdd6f4' },
+              select = { bg = '#181825', fg = '#cdd6f4' },
+              replace = { bg = '#181825', fg = '#cdd6f4' },
+              term = { bg = '#181825', fg = '#cdd6f4' },
+            },
+            quit = { bg = '#f38ba8', fg = '#1e1e2e', bold = true }
+          },
+        },
+        ['catppuccin-latte'] = {
+          light = {
+            focused = {
+              normal = { bg = '#1e66f5', fg = '#e6e9ef', bold = true },
+              insert = { bg = '#40a02b', fg = '#eff1f5', bold = true },
+              command = { bg = '#fe640d', fg = '#eff1f5', bold = true },
+              visual = { bg = '#8839ef', fg = '#eff1f5', bold = true },
+              select = { bg = '#8839ef', fg = '#eff1f5', bold = true },
+              replace = { bg = '#d20f39', fg = '#eff1f5', bold = true },
+              term = { bg = '#40a02b', fg = '#eff1f5', bold = true },
+              normal_num = { bg = '#3c7af6', fg = '#e6e9ef', bold = true },
+              insert_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
+              command_num = { bg = '#fe7e34', fg = '#eff1f5', bold = true },
+              visual_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
+              select_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
+              replace_num = { bg = '#ee1141', fg = '#eff1f5', bold = true },
+              term_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
+              unique_prefix_fg = '#bcc0cc',
+              diagnostic_error = { bg = '#d20f39', fg = '#eff1f5', bold = true },
+              diagnostic_warn = { bg = '#df8e1d', fg = '#eff1f5', bold = true },
+              diagnostic_info = { bg = '#04a5e5', fg = '#eff1f5', bold = true },
+              diagnostic_hint = { bg = '#179299', fg = '#eff1f5', bold = true },
+            },
+            not_focused = {
+              normal = { bg = '#ccd0da', fg = '#1e66f5' },
+              insert = { bg = '#ccd0da', fg = '#40a02b' },
+              command = { bg = '#ccd0da', fg = '#fe640d' },
+              visual = { bg = '#ccd0da', fg = '#8839ef' },
+              select = { bg = '#ccd0da', fg = '#8839ef' },
+              replace = { bg = '#ccd0da', fg = '#d20f39' },
+              term = { bg = '#ccd0da', fg = '#40a02b' },
+              normal_num = { bg = '#acb0be', fg = '#1e66f5' },
+              insert_num = { bg = '#acb0be', fg = '#40a02b' },
+              command_num = { bg = '#acb0be', fg = '#fe640d' },
+              visual_num = { bg = '#acb0be', fg = '#8839ef' },
+              select_num = { bg = '#acb0be', fg = '#8839ef' },
+              replace_num = { bg = '#acb0be', fg = '#d20f39' },
+              term_num = { bg = '#acb0be', fg = '#40a02b' },
+              unique_prefix_fg = '#7c7f93',
+              diagnostic_error = { bg = '#ccd0da', fg = '#d20f39' },
+              diagnostic_warn = { bg = '#ccd0da', fg = '#df8e1d' },
+              diagnostic_info = { bg = '#ccd0da', fg = '#04a5e5' },
+              diagnostic_hint = { bg = '#ccd0da', fg = '#179299' },
+            },
+            tablinefill = {
+              normal = { bg = '#e6e9ef', fg = '#4c4f69' },
+              insert = { bg = '#e6e9ef', fg = '#4c4f69' },
+              command = { bg = '#e6e9ef', fg = '#4c4f69' },
+              visual = { bg = '#e6e9ef', fg = '#4c4f69' },
+              select = { bg = '#e6e9ef', fg = '#4c4f69' },
+              replace = { bg = '#e6e9ef', fg = '#4c4f69' },
+              term = { bg = '#e6e9ef', fg = '#4c4f69' },
+            },
+            quit = { bg = '#d20f39', fg = '#eff1f5', bold = true }
+          },
+        },
         gruvbox = {
           dark = {
             focused = {
@@ -1687,7 +1646,7 @@ local plugins = enabled_plugins and {
               select = { bg = '#fe8019', fg = '#282828', bold = true },
               replace = { bg = '#fb4934', fg = '#282828', bold = true },
               term = { bg = '#a89984', fg = '#282828', bold = true },
-              normal_num = { bg = '#928374', fg = '#282828', bold = true },
+              normal_num = { bg = '#867869', fg = '#282828', bold = true },
               insert_num = { bg = '#458588', fg = '#282828', bold = true },
               command_num = { bg = '#98971a', fg = '#282828', bold = true },
               visual_num = { bg = '#d65d0e', fg = '#282828', bold = true },
@@ -2096,26 +2055,10 @@ local plugins = enabled_plugins and {
   -- TREESITTER
   {
     'nvim-treesitter/nvim-treesitter',
-    event = { 'User FileOpened', 'BufAdd' },
-    cmd = {
-      'TSBufDisable',
-      'TSBufEnable',
-      'TSBufToggle',
-      'TSDisable',
-      'TSEnable',
-      'TSToggle',
-      'TSInstall',
-      'TSInstallInfo',
-      'TSInstallSync',
-      'TSModuleInfo',
-      'TSUninstall',
-      'TSUpdate',
-      'TSUpdateSync',
-    },
+    version = false,
+    event = { 'User FileOpened', 'BufAdd', 'CmdlineEnter', 'VeryLazy' },
+    cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     keys = {
-      ':',
-      '/',
-      '?',
       -- context
       { '[c', function() require('treesitter-context').go_to_context() end, mode = 'n' },
     },
@@ -2123,8 +2066,12 @@ local plugins = enabled_plugins and {
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       'nvim-treesitter/nvim-treesitter-context',
-      'HiPhish/rainbow-delimiters.nvim',
+      -- 'HiPhish/rainbow-delimiters.nvim',  -- crazy
     },
+    init = function(plugin)
+      require('lazy.core.loader').add_to_rtp(plugin)
+      require('nvim-treesitter.query_predicates')
+    end,
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup({
@@ -2153,7 +2100,7 @@ local plugins = enabled_plugins and {
           'c_sharp',
           'go',
         },
-        auto_install = true,
+        -- auto_install = true,
         highlight = {
           enable = true,
           additional_vim_regex_highlighting = false,
@@ -2312,6 +2259,7 @@ local plugins = enabled_plugins and {
   {
     'kevinhwang91/nvim-hlslens',
     event = { 'User FileOpened', 'CmdlineEnter' },
+    keys = { 'j', 'J', '*', '#', 'g*', 'g#' },
     config = function()
       require('scrollbar.handlers.search').setup()
 
@@ -2581,7 +2529,6 @@ local plugins = enabled_plugins and {
   --- PRECOGNITION
   {
     'tris203/precognition.nvim',
-    event = { 'VeryLazy', 'User FileOpened', 'BufAdd' },
     keys = {
       { '<leader>ap', '<cmd>Precognition peek<CR>', mode = 'n' }
     },
@@ -2606,6 +2553,14 @@ local plugins = enabled_plugins and {
     config = function()
       vim.cmd.cabbrev('ww SudaWrite')
       vim.cmd.cabbrev('wwr SudaRead')
+    end,
+  },
+
+  -- LASTPLACE
+  {
+    'farmergreg/vim-lastplace',
+    priority = 1000,
+    config = function()
     end,
   },
 
@@ -2832,6 +2787,73 @@ local plugins = enabled_plugins and {
     end,
   },
 
+  -- MASON
+  {
+    'williamboman/mason.nvim',
+    cmd = {
+      'Mason',
+      'MasonInstall',
+      'MasonLog',
+      'MasonUninstall',
+      'MasonUninstallAll',
+      'MasonUpdate',
+    },
+    dependencies = {
+      {
+        {
+          'WhoIsSethDaniel/mason-tool-installer.nvim',
+          build = ':MasonToolsUpdate',
+          cmd = {
+            'MasonToolsUpdate',
+            'MasonToolsInstall',
+            'MasonToolsClean',
+            'MasonToolsInstallSync',
+            'MasonToolsUpdateSync',
+          },
+        },
+        'williamboman/mason-lspconfig.nvim',
+      },
+    },
+    build = ':MasonUpdate',
+    config = function()
+      require('mason').setup({
+        ui = {
+          icons = {
+            package_installed = '󰽢',
+            package_pending = '',
+            package_uninstalled = '󰽤',
+          },
+        },
+      })
+
+      require('mason-tool-installer').setup({
+        ensure_installed = {
+          'stylua',
+          'shfmt',
+          'black',
+        },
+      })
+
+      require('mason-lspconfig').setup({
+        ensure_installed = {
+          'clangd',
+          'ts_ls',
+          'html',
+          'cssls',
+          'tailwindcss',
+          'svelte',
+          'lua_ls',
+          'graphql',
+          'emmet_ls',
+          'prismals',
+          'pyright',
+          'omnisharp',
+          'gopls',
+        },
+      })
+    end,
+  },
+
   -- LSP
   {
     'neovim/nvim-lspconfig',
@@ -2840,6 +2862,7 @@ local plugins = enabled_plugins and {
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
+      'williamboman/mason.nvim',
       {
         'smjonas/inc-rename.nvim',
         config = function()
@@ -3322,7 +3345,7 @@ if enabled_plugins then
 
   opt.cmdheight = 0
   opt.laststatus = 0
-  opt.signcolumn = 'auto'
+  opt.signcolumn = 'yes'
   opt.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevelstart = 99
