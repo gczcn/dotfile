@@ -565,6 +565,7 @@ local plugins = enabled_plugins and {
 
   -- COLORSCHEME
   --- CATPPUCCIN
+  --- Supported flavors: [mocha|latte]
   {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
