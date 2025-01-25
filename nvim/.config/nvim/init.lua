@@ -785,7 +785,11 @@ local plugins = enabled_plugins and {
 
   -- MINI.STARTER
   {
-    'echasnovski/mini.starter', config = function()
+    'echasnovski/mini.starter',
+    dependencies = {
+      'echasnovski/mini.icons',
+    },
+    config = function()
       local starter = require('mini.starter')
       local v = vim.version()
       local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
@@ -808,7 +812,7 @@ local plugins = enabled_plugins and {
         os.date()
       end
 
-      local recent_files = function(n, index_h, index, current_dir, show_path)
+      local recent_files = function(n, index_h, index, current_dir, show_path, show_icon)
         n = n or 5
         if current_dir == nil then current_dir = false end
 
@@ -818,6 +822,15 @@ local plugins = enabled_plugins and {
           show_path = function(path) return string.format(' (%s)', vim.fn.fnamemodify(path, ':~:.')) end
         end
 
+        if show_icon == nil then show_icon = true end
+        if show_icon == nil then show_icon = function() return '' end end
+        if show_icon == true then
+          show_icon = function(file_name)
+            local icon, _ = require('nvim-web-devicons').get_icon(file_name)
+            if not icon then icon = '󰈔' end
+            return icon .. ' '
+          end
+        end
 
         return function()
           local section = string.format('Recent files%s', current_dir and ' ' .. current_dir or '')
@@ -846,7 +859,8 @@ local plugins = enabled_plugins and {
           local i = index or ''
           local items = {}
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
-            local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. vim.fn.fnamemodify(f, ':t') .. show_path(f)
+            local file_name = vim.fn.fnamemodify(f, ':t')
+            local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. show_icon(file_name) .. file_name .. show_path(f)
             i = i == '' and '' or i + 1
             items[#items + 1] = { action = 'edit ' .. f, name = name, section = section }
           end
