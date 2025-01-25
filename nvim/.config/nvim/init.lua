@@ -59,7 +59,7 @@ local enabled_tabnine = false
 
 local plugins_config = {
   border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-  nerd_font_circle_and_square = false,
+  nerd_font_circle_and_square = true,
 }
 
 -- =============================================================================
@@ -344,7 +344,7 @@ vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
   end,
 })
 
-vim.api.nvim_create_autocmd('UILeave', {
+vim.api.nvim_create_autocmd({ 'UILeave', 'VimLeave' }, {
   callback = function()
     io.write('\027Ptmux;\027\027]111;\007\027\\')
     io.write('\027]111\027\\')
@@ -2921,7 +2921,7 @@ local plugins = enabled_plugins and {
     },
   },
 
-  -- LSP
+  -- LSP (Language Server Protocol)
   {
     'neovim/nvim-lspconfig',
     event = { 'BufReadPre', 'BufNewFile' },
