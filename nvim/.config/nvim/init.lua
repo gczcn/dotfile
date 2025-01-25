@@ -206,10 +206,10 @@ keymap.set('n', '<leader>srv', '<C-w>b<C-w>H', keymaps_opts)
 keymap.set('n', '<leader>srh', '<C-w>b<C-w>K', keymaps_opts)
 
 -- Resize
-keymap.set('n', '<C-up>', '<cmd>resize +5<CR>', keymaps_opts)
-keymap.set('n', '<C-down>', '<cmd>resize -5<CR>', keymaps_opts)
-keymap.set('n', '<C-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
-keymap.set('n', '<C-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
+keymap.set('n', '<M-up>', '<cmd>resize +5<CR>', keymaps_opts)
+keymap.set('n', '<M-down>', '<cmd>resize -5<CR>', keymaps_opts)
+keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
+keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
