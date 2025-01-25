@@ -1,0 +1,29 @@
+---
+If:
+  PathMatch: .*\.c
+
+CompileFlags:
+  Add: [
+    -std=c2x,
+    -isystem,
+    -I/usr/lib/gcc/x86_64-redhat-linux/14/include,
+    -I/usr/local/include,
+    -I/usr/include
+  ]
+  Compiler: gcc
+---
+If:
+  PathMatch: .*\.cpp
+
+CompileFlags:
+  Add: [
+    -std=c++2x,
+    -isystem,
+    /usr/include/c++/14,
+    -I/usr/include/c++/14/x86_64-redhat-linux,
+    -I/usr/include/c++/14/backward,
+    -I/usr/lib/gcc/x86_64-redhat-linux/14/include,
+    -I/usr/local/include,
+    -I/usr/include
+  ]
+---

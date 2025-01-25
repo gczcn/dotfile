@@ -2,24 +2,24 @@
 #            中文：   你好
 
 [font]
-size = 14.2
+size = 13.1
 # 1234567890
 # JetBrains Mono
 offset = { x = 0, y = -1 }
 [font.bold]
-family = "Consolas Nerd Font Mono"
+family = "BlexMono Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "Consolas Nerd Font Mono"
+family = "BlexMono Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "Consolas Nerd Font Mono"
+family = "BlexMono Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "Consolas Nerd Font Mono"
+family = "BlexMono Nerd Font Mono"
 style = "Regular"
 
 # Noto Sans Mono
@@ -43,5 +43,5 @@ hide_when_typing = true
 
 [general]
 import = [
-  "~/.config/alacritty/themes/catppuccin_mocha.toml"
+  "~/.config/alacritty/themes/gruvbox_dark.toml"
 ]

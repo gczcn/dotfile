@@ -59,6 +59,7 @@ local enabled_tabnine = false
 
 local plugins_config = {
   border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+  nerd_font_circle_and_square = false,
 }
 
 -- =============================================================================
@@ -282,7 +283,7 @@ opt.smoothscroll = true
 opt.softtabstop = 4
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
-opt.tabstop = 4 -- Number of spaces tabs count for
+-- opt.tabstop = 4 -- Number of spaces tabs count for
 opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
@@ -409,6 +410,21 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 })
 
 -- =============================================================================
+-- PopUp Menu
+-- Tags: POPUP, POPUPMENU
+-- =============================================================================
+if enabled_plugins then
+  vim.cmd[[
+amenu disable PopUp.How-to\ disable\ mouse
+anoremenu PopUp.References       <cmd>FzfLua lsp_references<CR>
+anoremenu PopUp.Declarations     <cmd>FzfLua lsp_declarations<CR>
+anoremenu PopUp.Definitions      <cmd>FzfLua lsp_definitions<CR>
+anoremenu PopUp.Implementations  <cmd>FzfLua lsp_implementations<CR>
+anoremenu PopUp.TypeDefs         <cmd>FzfLua lsp_typedefs<CR>
+]]
+end
+
+-- =============================================================================
 -- Gui
 -- Tags: GUI
 -- =============================================================================
@@ -431,7 +447,7 @@ keymap.set('n', '<C-->', function()
   gui_change_font_size(-0.5)
 end)
 
--- ===== NEOVIDE =====
+-- ========== NEOVIDE ==========
 if vim.g.neovide then
   local neovide_transparency = 1
 
@@ -514,11 +530,11 @@ local lazy_config = enabled_plugins and {
   ui = {
     -- My font does not display the default icon properly
     -- Need Nerd Font
-    icons = {
+    icons = plugins_config.nerd_font_circle_and_square and {
       debug = ' ',
       loaded = '',
       not_loaded = '',
-    },
+    } or {},
   },
   performance = {
     rtp = {
@@ -537,7 +553,7 @@ local plugins = enabled_plugins and {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -592,7 +608,7 @@ local plugins = enabled_plugins and {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
@@ -712,7 +728,7 @@ local plugins = enabled_plugins and {
       require('gruvbox').setup({
         italic = {
           strings = false,
-          comments = true,
+          comments = false,
         },
         overrides = {
           LspReferenceText = { underline = true },
@@ -2324,8 +2340,6 @@ local plugins = enabled_plugins and {
           set_hl(0, 'ScrollbarHandle', { bg = '#373d49', fg = '#4966A0' })
           set_hl(0, 'ScrollbarCursor', { bg = '#373d49', fg = '#4966A0' })
           set_hl(0, 'ScrollbarCursorHandle', { bg = '#373d49', fg = '#4966A0' })
-        else
-          set_hl(0, 'ScrollbarHandle', { link = 'Pmenu' })
         end
       end
 
@@ -2372,7 +2386,7 @@ local plugins = enabled_plugins and {
     end,
   },
 
-  -- CODERUNNER
+  -- CODERUNNER, RUNCODE
   {
     'CRAG666/code_runner.nvim',
     dependencies = {
@@ -2427,6 +2441,7 @@ local plugins = enabled_plugins and {
             'java $fileNameWithoutExt'
           },
           python = function() return 'python3 $file ' .. vim.g.code_runner_run_args end,
+          go = function()  end,
           lua = function() return 'lua $file ' .. vim.g.code_runner_run_args end,
           typescript = 'deno run',
           rust = {
@@ -2437,8 +2452,8 @@ local plugins = enabled_plugins and {
           c = function()
             local c_base = {
               'cd $dir &&',
-              'gcc-14 --std=gnu23 $fileName -o', -- for homebrew
-              -- 'gcc $fileName -o',
+              -- 'gcc-14 --std=gnu23 $fileName -o', -- for homebrew
+              'gcc --std=gnu23 $fileName -o',
               -- 'clang $fileName -o',
               '/tmp/$fileNameWithoutExt',
             }
@@ -2903,7 +2918,7 @@ local plugins = enabled_plugins and {
         keymap.set('n', 'gR', '<cmd>FzfLua lsp_references<CR>', opts) -- show definition, references
 
         opts.desc = 'Go to declaration'
-        keymap.set('n', 'gD', vim.lsp.buf.declaration, opts) -- go to declaration
+        keymap.set('n', 'gD', '<cmd>FzfLua lsp_declarations<CR>', opts) -- go to declaration
 
         opts.desc = 'Show LSP definitions'
         keymap.set('n', 'gd', '<cmd>FzfLua lsp_definitions<CR>', opts) -- show lsp definitions
@@ -3120,7 +3135,6 @@ local plugins = enabled_plugins and {
         root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
         settings = {
           gopls = {
-            completeUnimported = true,
             analyses = {
               unusedparams = true,
             },
@@ -3207,7 +3221,6 @@ local plugins = enabled_plugins and {
       'L3MON4D3/LuaSnip',
       { 'giuxtaposition/blink-cmp-copilot', enabled = enabled_copilot },
       { 'zbirenbaum/copilot.lua', enabled = enabled_copilot },
-      'moyiz/blink-emoji.nvim',
       'folke/lazydev.nvim',
 
       -- nvim-cmp sources
@@ -3220,7 +3233,7 @@ local plugins = enabled_plugins and {
       require('luasnip.loaders.from_vscode').lazy_load()
 
       local get_default_sources = function()
-        local sources = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer', 'emoji' }
+        local sources = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
 
         if enabled_copilot then
           sources[#sources + 1] = 'copilot'
@@ -3332,12 +3345,6 @@ local plugins = enabled_plugins and {
               -- make lazydev completions top priority (see `:h blink.cmp`)
               score_offset = 100,
             },
-            emoji = {
-              module = 'blink-emoji',
-              name = 'Emoji',
-              score_offset = 15, -- Tune by preference
-              opts = { insert = true }, -- Insert emoji (default) or complete its name
-            },
           },
         },
       }
@@ -3404,11 +3411,11 @@ if enabled_plugins then
 
   -- My font does not display the default icon properly.
   -- Need Nerd Font
-  vim.diagnostic.config({
+  vim.diagnostic.config(plugins_config.nerd_font_circle_and_square and {
     virtual_text = {
       prefix = '󰝤',
     },
-  })
+  } or { virtual_text = true })
 
   keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
   keymap.set('n', '<leader>tl', function()
