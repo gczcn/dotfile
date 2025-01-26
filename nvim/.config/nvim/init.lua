@@ -68,8 +68,7 @@ local plugins_config = {
 -- =============================================================================
 
 local simple_mode = function()
-  local mode_map = {
-    ['n'] = 'NOR',
+  local mode_map = { ['n'] = 'NOR',
     ['no'] = 'O-P',
     ['nov'] = 'O-P',
     ['noV'] = 'O-P',
@@ -265,6 +264,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
+opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
@@ -570,7 +570,7 @@ local plugins = enabled_plugins and {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -582,9 +582,13 @@ local plugins = enabled_plugins and {
             MiniIndentscopeSymbol = { fg = '#585b70' },
             FzfLuaHeaderText = { fg = colors.red },
             FzfLuaHeaderBind = { fg = colors.pink },
+
             IlluminatedWordText = { underline = true },
             IlluminatedWordRead = { underline = true },
             IlluminatedWordWrite = { underline = true },
+            LspReferenceText = { underline = true },
+            LspReferenceRead = { underline = true },
+            LspReferenceWrite = { underline = true },
 
             BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
             BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
@@ -625,7 +629,7 @@ local plugins = enabled_plugins and {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
