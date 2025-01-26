@@ -570,7 +570,7 @@ local plugins = enabled_plugins and {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -629,7 +629,7 @@ local plugins = enabled_plugins and {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
