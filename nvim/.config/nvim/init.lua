@@ -431,13 +431,13 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- =============================================================================
 if enabled_plugins then
   vim.cmd[[
-amenu disable PopUp.How-to\ disable\ mouse
-anoremenu PopUp.References       <cmd>FzfLua lsp_references<CR>
-anoremenu PopUp.Declarations     <cmd>FzfLua lsp_declarations<CR>
-anoremenu PopUp.Definitions      <cmd>FzfLua lsp_definitions<CR>
-anoremenu PopUp.Implementations  <cmd>FzfLua lsp_implementations<CR>
-anoremenu PopUp.TypeDefs         <cmd>FzfLua lsp_typedefs<CR>
-]]
+    amenu disable PopUp.How-to\ disable\ mouse
+    anoremenu PopUp.References <cmd>FzfLua lsp_references<CR>
+    anoremenu PopUp.Declarations <cmd>FzfLua lsp_declarations<CR>
+    anoremenu PopUp.Definitions <cmd>FzfLua lsp_definitions<CR>
+    anoremenu PopUp.Implementations <cmd>FzfLua lsp_implementations<CR>
+    anoremenu PopUp.TypeDefs <cmd>FzfLua lsp_typedefs<CR>
+  ]]
 end
 
 -- =============================================================================
@@ -570,7 +570,7 @@ local plugins = enabled_plugins and {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     priority = 1000,
-    enabled = true,
+    enabled = false,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -629,7 +629,7 @@ local plugins = enabled_plugins and {
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
-    enabled = false,
+    enabled = true,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
