@@ -342,7 +342,7 @@
 	# Branch symbol for SVN repositories
 	# export TMUX_POWERLINE_SEG_VCS_BRANCH_SVN_SYMBOL="${TMUX_POWERLINE_SEG_VCS_BRANCH_DEFAULT_SYMBOL}"
 	# Branch symbol colour for git repositories
-	export TMUX_POWERLINE_SEG_VCS_BRANCH_GIT_SYMBOL_COLOUR="5"
+	export TMUX_POWERLINE_SEG_VCS_BRANCH_GIT_SYMBOL_COLOUR="0"
 	# Branch symbol colour for hg/mercurial repositories
 	export TMUX_POWERLINE_SEG_VCS_BRANCH_HG_SYMBOL_COLOUR="45"
 	# Branch symbol colour for SVN repositories
