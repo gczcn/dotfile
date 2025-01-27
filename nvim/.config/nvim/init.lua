@@ -335,16 +335,16 @@ vim.cmd.cabbrev('Qall qall')
 -- Tags: AU, AUTOCMD, AUTOCMDS
 -- =============================================================================
 -- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
-vim.api.nvim_create_autocmd({ 'UIEnter', 'ColorScheme' }, {
+create_autocmd({ 'UIEnter', 'ColorScheme' }, {
   callback = function()
-    local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+    local normal = api.nvim_get_hl(0, { name = 'Normal' })
     if not normal.bg then return end
     io.write(string.format('\027Ptmux;\027\027]11;#%06x\007\027\\', normal.bg))
     io.write(string.format('\027]11;#%06x\027\\', normal.bg))
   end,
 })
 
-vim.api.nvim_create_autocmd({ 'UILeave', 'VimLeave' }, {
+create_autocmd({ 'UILeave', 'VimLeave' }, {
   callback = function()
     io.write('\027Ptmux;\027\027]111;\007\027\\')
     io.write('\027]111\027\\')
@@ -540,7 +540,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 
 -- LAZYNVIM
 local lazy_config = enabled_plugins and {
-  install = { colorscheme = { 'gruvbox', 'habamax' } },
+  install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
   checker = { enabled = true },
   change_detection = { notify = false },
   ui = {
@@ -569,8 +569,8 @@ local plugins = enabled_plugins and {
   {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
-    priority = 1000,
     enabled = true,
+    priority = 1000,
     config = function()
       require('catppuccin').setup({
         custom_highlights = function(colors)
@@ -628,8 +628,8 @@ local plugins = enabled_plugins and {
   --- GRUVBOX
   {
     'ellisonleao/gruvbox.nvim',
-    priority = 1000,
     enabled = false,
+    priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
         pattern = '*',
@@ -978,14 +978,14 @@ local plugins = enabled_plugins and {
       ---@diagnostic disable-next-line: undefined-global
       { '<leader>e', function() MiniFiles.open() end },
       ---@diagnostic disable-next-line: undefined-global
-      { '<leader>E', function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end },
+      { '<leader>E', function() MiniFiles.open(api.nvim_buf_get_name(0)) end },
     },
     init = function()
       local mini_files_open_folder = function(path) require('mini.files').open(path) end
       autocmd_attach_file_browser('mini.files', mini_files_open_folder)
     end,
     config = function()
-      vim.api.nvim_create_autocmd("User", {
+      api.nvim_create_autocmd("User", {
         pattern = "MiniFilesActionRename",
         callback = function(event)
           ---@diagnostic disable-next-line: undefined-global
@@ -995,10 +995,10 @@ local plugins = enabled_plugins and {
       require('mini.files').setup({
         mappings = {
           close       = 'q',
-          go_in       = 'I',
-          go_in_plus  = 'i',
-          go_out      = 'N',
-          go_out_plus = 'n',
+          go_in       = '<S-CR>',
+          go_in_plus  = '<CR>',
+          go_out      = '_',
+          go_out_plus = '-',
           mark_goto   = "'",
           mark_set    = 'm',
           reset       = '<BS>',
@@ -1210,7 +1210,7 @@ local plugins = enabled_plugins and {
       -- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
       -- because `cwd` is not set up properly.
       api.nvim_create_autocmd('BufEnter', {
-        group = vim.api.nvim_create_augroup('Neotree_start_directory', { clear = true }),
+        group = api.nvim_create_augroup('Neotree_start_directory', { clear = true }),
         desc = 'Start Neo-tree with directory',
         once = true,
         callback = function()
@@ -1375,6 +1375,18 @@ local plugins = enabled_plugins and {
             hijack_netrw = true,
             hidden = { file_browser = true, folder_browser = true },
           },
+          emoji = {
+            action = function(emoji)
+              -- argument emoji is a table.
+              -- {name="", value="", cagegory="", description=""}
+
+              vim.fn.setreg("+", emoji.value)
+              print([[Press "+p or <M-p> to paste this emoji]] .. emoji.value)
+
+              -- insert emoji when picked
+              -- vim.api.nvim_put({ emoji.value }, 'c', false, true)
+            end,
+          },
         },
       })
 
@@ -1486,23 +1498,23 @@ local plugins = enabled_plugins and {
       map('[[', 'prev')
 
       -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-      vim.api.nvim_create_autocmd('FileType', {
+      create_autocmd('FileType', {
         pattern = '*',
         callback = function()
-          local buffer = vim.api.nvim_get_current_buf()
+          local buffer = api.nvim_get_current_buf()
           map(']]', 'next', buffer)
           map('[[', 'prev', buffer)
         end,
       })
 
-      vim.api.nvim_create_autocmd({ 'InsertLeave' }, {
+      create_autocmd({ 'InsertLeave' }, {
         pattern = '*',
         callback = function()
           require('illuminate').resume()
         end,
       })
 
-      vim.api.nvim_create_autocmd({ 'InsertEnter' }, {
+      create_autocmd({ 'InsertEnter' }, {
         pattern = '*',
         callback = function()
           require('illuminate').pause()
@@ -2272,7 +2284,7 @@ local plugins = enabled_plugins and {
       require('multicursor-nvim').setup()
 
       -- Customize how cursors look.
-      local hl = vim.api.nvim_set_hl
+      local hl = api.nvim_set_hl
       hl(0, 'MultiCursorCursor', { link = 'Cursor' })
       hl(0, 'MultiCursorVisual', { link = 'Visual' })
       hl(0, 'MultiCursorSign', { link = 'SignColumn'})
@@ -3105,7 +3117,7 @@ local plugins = enabled_plugins and {
         on_attach = function(client, bufnr)
           on_attach(client, bufnr)
 
-          vim.api.nvim_create_autocmd('BufWritePost', {
+          create_autocmd('BufWritePost', {
             pattern = { '*.js', '*.ts' },
             callback = function(ctx)
               if client.name == 'svelte' then

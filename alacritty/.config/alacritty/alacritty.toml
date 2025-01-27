@@ -44,5 +44,5 @@ hide_when_typing = true
 
 [general]
 import = [
-  "~/.config/alacritty/themes/gruvbox_dark.toml"
+  "~/.config/alacritty/themes/gruvbox_dark_medium.toml"
 ]
