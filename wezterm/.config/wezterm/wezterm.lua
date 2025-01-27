@@ -6,13 +6,12 @@ local config = {}
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
   -- 'JetBrainsMono Nerd Font mono',
-  'Terminus (TTF)',
+  'Consolig Nerd Font Mono',
   -- 'JetBrainsMono Nerd Font mono',
   'Noto Sans SC',
 })
 
-config.freetype_load_target = 'Mono'
-config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
+-- config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
 -- config.harfbuzz_features = { 'ss06', 'cv10' }  -- Fira Code
 -- config.harfbuzz_features = { 'ss04' }  -- Source Code Pro
 
@@ -22,7 +21,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = false,
     font = wezterm.font_with_fallback({
-      { family = 'Terminus (TTF)', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Consolig Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
@@ -30,7 +29,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = true,
     font = wezterm.font_with_fallback({
-      { family = 'Terminus (TTF)', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'Consolig Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },
@@ -50,7 +49,7 @@ config.max_fps = 120
 config.animation_fps = 120
 
 -- Window
--- config.window_decorations = 'RESIZE'
+config.window_decorations = 'RESIZE'
 config.window_padding = {
   left = 0,
   right = 0,

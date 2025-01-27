@@ -264,7 +264,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.fillchars = { foldopen = '▂', foldclose = '▐' }
+-- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
@@ -573,13 +573,23 @@ local plugins = enabled_plugins and {
     priority = 1000,
     config = function()
       require('catppuccin').setup({
+        styles = {
+          functions = { 'bold' },
+        },
+        integrations = {
+          dropbar = { enabled = true, color_mode = true },
+          mason = true,
+          mini = { indentscope_color = 'overlay0' },
+          neotree = false,
+          noice = true,
+          lsp_trouble = true,
+        },
         custom_highlights = function(colors)
           return {
             DiagnosticNumHlError = { fg = colors.red, bold = true },
             DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
             DiagnosticNumHlHint = { fg = colors.teal, bold = true },
             DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
-            MiniIndentscopeSymbol = { fg = '#585b70' },
             FzfLuaHeaderText = { fg = colors.red },
             FzfLuaHeaderBind = { fg = colors.pink },
 
@@ -995,10 +1005,10 @@ local plugins = enabled_plugins and {
       require('mini.files').setup({
         mappings = {
           close       = 'q',
-          go_in       = '<S-CR>',
-          go_in_plus  = '<CR>',
-          go_out      = '_',
-          go_out_plus = '-',
+          go_in       = 'I',
+          go_in_plus  = 'i',
+          go_out      = 'N',
+          go_out_plus = 'n',
           mark_goto   = "'",
           mark_set    = 'm',
           reset       = '<BS>',
@@ -2322,7 +2332,35 @@ local plugins = enabled_plugins and {
     event = { 'User FileOpened', 'CmdlineEnter' },
     keys = { 'j', 'J', '*', '#', 'g*', 'g#' },
     config = function()
-      require('scrollbar.handlers.search').setup()
+      require('scrollbar.handlers.search').setup({
+        override_lens = function(render, posList, nearest, idx, relIdx)
+          local sfw = vim.v.searchforward == 1
+          local indicator, text, chunks
+          local absRelIdx = math.abs(relIdx)
+          if absRelIdx > 1 then
+            indicator = ('%d%s'):format(absRelIdx, sfw ~= (relIdx > 1) and 'J' or 'j')
+          elseif absRelIdx == 1 then
+            indicator = sfw ~= (relIdx == 1) and 'J' or 'j'
+          else
+            indicator = ''
+          end
+
+          local lnum, col = unpack(posList[idx])
+          if nearest then
+            local cnt = #posList
+            if indicator ~= '' then
+              text = ('[%s %d/%d]'):format(indicator, idx, cnt)
+            else
+              text = ('[%d/%d]'):format(idx, cnt)
+            end
+            chunks = {{' '}, {text, 'HlSearchLensNear'}}
+          else
+            text = ('[%s %d]'):format(indicator, idx)
+            chunks = {{' '}, {text, 'HlSearchLens'}}
+          end
+          render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
+        end
+      })
 
       local kopts = { noremap = true, silent = true }
 
