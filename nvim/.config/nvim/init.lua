@@ -6,6 +6,7 @@
 --   Neovim - (latest or nightly version)
 --   ripgrep - for fzf.lua
 --   fd - for fzf.lua
+--   make
 --   node
 --   npm
 --   fzf - for fzf.lua
