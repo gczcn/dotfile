@@ -1,6 +1,6 @@
 -- =============================================================================
 -- My Neovim Config (Single File Version)
--- Author: gczcn
+-- Author: Zixuan Chu
 --
 -- Dependencies:
 --   Neovim - (latest or nightly version)
@@ -53,6 +53,7 @@ local create_user_command = api.nvim_create_user_command
 local middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' } -- Colemak
 -- local middle_row_of_keyboard = { ';', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' } -- Qwerty
 
+local enabled_custom_statuscolumn = true
 local enabled_plugins = true
 local enabled_copilot = false
 local enabled_tabnine = false
@@ -66,7 +67,17 @@ local plugins_config = {
 -- Functions
 -- Tags: FUN, FUNC, FUNCTION, FUNCTIONS
 -- =============================================================================
-
+-- local merge_highlights = function(h1, h2, to)
+--   local h1t = api.nvim_get_hl(0, { name = h1 })
+--   local h2t = api.nvim_get_hl(0, { name = h2 })
+--
+--   for k, v in pairs(h2t) do
+--     h1t[k] = h1t[k] or v
+--   end
+--
+--   ---@diagnostic disable-next-line: param-type-mismatch
+--   api.nvim_set_hl(0, to, h1t)
+-- end
 local simple_mode = function()
   local mode_map = { ['n'] = 'NOR',
     ['no'] = 'O-P',
@@ -298,6 +309,12 @@ opt.wrap = false -- Disable line wrap
 
 if not enabled_plugins then
   vim.cmd.colorscheme('habamax')
+  local set_hl = api.nvim_set_hl
+
+  -- Custom Status Column (Tags: column, statuscolumn, status_column)
+  set_hl(0, 'StatusColumnFold', { link = 'FoldColumn' })
+  set_hl(0, 'StatusColumnFoldOpen', { link = 'FoldColumn' })
+  set_hl(0, 'StatusColumnFoldClose', { link = 'Normal' })
 end
 
 -- =============================================================================
@@ -445,12 +462,71 @@ if enabled_plugins then
 end
 
 -- =============================================================================
+-- Status Column
+-- The following highlight groups need to be set manually
+--   StatusColumnFold
+--   StatusColumnFoldOpen
+--   StatusColumnFoldClose
+--
+-- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
+-- =============================================================================
+if enabled_custom_statuscolumn then
+  _G.GetStatusColumn = function()
+    local text = ''
+
+    local cursorline_background = function()
+      if vim.v.relnum == 0 then
+        return '%#CursorLine#'
+      end
+      return ''
+    end
+
+    local get_line_number = function()
+      local lnum = ''
+      if vim.o.relativenumber then
+        lnum = tostring(vim.v.relnum == 0 and vim.v.lnum or vim.v.relnum)
+      else
+        lnum = tostring(vim.v.lnum)
+      end
+      return '%=' .. lnum
+    end
+
+    local get_fold = function()
+      local foldlevel = vim.fn.foldlevel(vim.v.lnum);
+      local foldlevel_before = vim.fn.foldlevel((vim.v.lnum - 1) >= 1 and vim.v.lnum - 1 or 1);
+      local foldlevel_after = vim.fn.foldlevel((vim.v.lnum + 1) <= vim.fn.line('$') and (vim.v.lnum + 1) or vim.fn.line('$'));
+      local foldclosed = vim.fn.foldclosed(vim.v.lnum);
+
+      if foldlevel == 0 then return ' ' end
+      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose#+' end
+      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen#-' end
+      -- if foldlevel > foldlevel_after then return '%#StatusColumnFold#└' end -- '└'
+      -- return '%#StatusColumnFold#│' -- '│'
+      return ' '
+    end
+
+    text = table.concat({
+      '%s',
+      cursorline_background(),
+      get_line_number(),
+      ' ',
+      get_fold(),
+      ' '
+    })
+
+    return text
+  end
+
+  opt.statuscolumn = '%!v:lua.GetStatusColumn()'
+end
+
+-- =============================================================================
 -- Gui
 -- Tags: GUI
 -- =============================================================================
 
-local gui_font = 'Consolas Nerd Font Mono'
-local gui_font_size = 14.5
+local gui_font = 'JetBrainsMono Nerd Font Mono'
+local gui_font_size = 12.8
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
@@ -573,9 +649,18 @@ local plugins = enabled_plugins and {
   {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
-    enabled = true,
+    enabled = false,
     priority = 1000,
     config = function()
+      create_autocmd('ColorScheme', {
+        pattern = '*',
+        callback = function()
+          if vim.startswith(vim.g.colors_name, 'catppuccin') then
+            local set_hl = api.nvim_set_hl
+            set_hl(0, 'CursorLineNr', { bg = get_hl('CursorLine', true), fg = get_hl('CursorLineNr') })
+          end
+        end,
+      })
       require('catppuccin').setup({
         styles = {
           functions = { 'bold' },
@@ -590,6 +675,11 @@ local plugins = enabled_plugins and {
         },
         custom_highlights = function(colors)
           return {
+            -- Custom Status Column (Tags: column, statuscolumn, status_column )
+            StatusColumnFold = { fg = colors.surface0 },
+            StatusColumnFoldOpen = { link = 'FoldColumn' },
+            StatusColumnFoldClose = { fg = colors.blue },
+
             DiagnosticNumHlError = { fg = colors.red, bold = true },
             DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
             DiagnosticNumHlHint = { fg = colors.teal, bold = true },
@@ -634,15 +724,14 @@ local plugins = enabled_plugins and {
         end,
       })
 
-      opt.background = 'dark'
-      vim.cmd.colorscheme('catppuccin')
+      vim.cmd.colorscheme('catppuccin-mocha')
     end
   },
 
   --- GRUVBOX
   {
     'ellisonleao/gruvbox.nvim',
-    enabled = false,
+    enabled = true,
     priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
@@ -712,6 +801,13 @@ local plugins = enabled_plugins and {
             set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
             set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
             set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
+            set_hl(0, 'SignColumn', { bg = colors.bg0 })
+            set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+
+            -- Custom Status Column (Tags: column, statuscolumn, status_column )
+            set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
+            set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
+            set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow })
 
             set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
             set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
@@ -1579,7 +1675,7 @@ local plugins = enabled_plugins and {
     },
   },
 
-  -- COKELINE, TABBAR
+  -- COKELINE, TABBAR, TABLINE
   {
     'willothy/nvim-cokeline',
     enabled = true,
@@ -1864,7 +1960,7 @@ local plugins = enabled_plugins and {
       local opts = { noremap = true, silent = true }
 
       -- Buffers
-      keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
+      -- keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
       for i = 1, 9 do
         keymap.set('n', (']%s'):format(middle_row_of_keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
       end
@@ -2480,6 +2576,17 @@ local plugins = enabled_plugins and {
     end,
   },
 
+  -- RENDER-MARKDOWN
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' },
+    cmd = 'RenderMarkdown',
+    opts = {
+      -- file_types = { 'markdown' },
+    },
+    ft = { 'markdown' },
+  },
+
   -- CODERUNNER, RUNCODE
   {
     'CRAG666/code_runner.nvim',
@@ -2527,7 +2634,8 @@ local plugins = enabled_plugins and {
         },
         filetype = {
           markdown = function ()
-            vim.cmd [[MarkdownPreviewToggle]]
+            -- vim.cmd [[MarkdownPreviewToggle]]
+            vim.cmd('RenderMarkdown toggle')
           end,
           java = {
             'cd $dir &&',
@@ -2747,11 +2855,11 @@ local plugins = enabled_plugins and {
         bigfile = {},
         notifier = {},
         quickfile = {},
-        statuscolumn = {
-          folds = {
-            git_hl = true,
-          },
-        },
+        -- statuscolumn = {
+        --   folds = {
+        --     git_hl = true,
+        --   },
+        -- },
 
         styles = {
           notification = { border = 'single' },
@@ -3125,6 +3233,8 @@ local plugins = enabled_plugins and {
             [vim.diagnostic.severity.HINT] = '',
             [vim.diagnostic.severity.INFO] = '',
           },
+
+          -- The following highlight groups need to be set manually
           numhl = {
             [vim.diagnostic.severity.ERROR] = 'DiagnosticNumHlError',
             [vim.diagnostic.severity.WARN] = 'DiagnosticNumHlWarn',
