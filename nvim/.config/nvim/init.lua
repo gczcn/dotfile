@@ -16,7 +16,7 @@
 --   Language Servers:
 --     clangd
 --     typescript-language-server
---     pyright
+--     basedpyright
 --     lua-language-server
 --     gopls
 --     tailwindcss-language-server
@@ -217,6 +217,10 @@ keymap.set({ 'n', 'v' }, '<M-p>', '"+p', keymaps_opts)
 keymap.set({ 'n', 'v' }, '<M-P>', '"+P', keymaps_opts)
 keymap.set({ 'n', 'v' }, '<M-d>', '"+d', keymaps_opts)
 keymap.set({ 'n', 'v' }, '<M-D>', '"+D', keymaps_opts)
+keymap.set('o', '<M-y>', 'y', keymaps_opts)
+keymap.set('o', '<M-Y>', 'Y', keymaps_opts)
+keymap.set('o', '<M-d>', 'd', keymaps_opts)
+keymap.set('o', '<M-D>', 'D', keymaps_opts)
 
 -- Buffer
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
@@ -593,12 +597,12 @@ local plugins = enabled_plugins and {
             FzfLuaHeaderText = { fg = colors.red },
             FzfLuaHeaderBind = { fg = colors.pink },
 
-            IlluminatedWordText = { underline = true },
-            IlluminatedWordRead = { underline = true },
-            IlluminatedWordWrite = { underline = true },
-            LspReferenceText = { underline = true },
-            LspReferenceRead = { underline = true },
-            LspReferenceWrite = { underline = true },
+            -- IlluminatedWordText = { underline = true },
+            -- IlluminatedWordRead = { underline = true },
+            -- IlluminatedWordWrite = { underline = true },
+            -- LspReferenceText = { underline = true },
+            -- LspReferenceRead = { underline = true },
+            -- LspReferenceWrite = { underline = true },
 
             BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
             BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
@@ -752,6 +756,9 @@ local plugins = enabled_plugins and {
             set_hl(0, 'BlinkCmpKindValue', { bg = colors.orange, fg = colors.bg1 })
             set_hl(0, 'BlinkCmpKindVariable', { bg = colors.orange, fg = colors.bg1 })
             set_hl(0, 'BlinkCmpKindCopilot', { bg = colors.gray, fg = colors.bg1 })
+            set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
+            set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
+            set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
           end
         end,
       })
@@ -779,9 +786,9 @@ local plugins = enabled_plugins and {
           -- lua/plugins/nvim-scrollbar.lua change_highlight()
 
           -- vim-illuminate
-          IlluminatedWordText = { underline = true },
-          IlluminatedWordRead = { underline = true },
-          IlluminatedWordWrite = { underline = true },
+          -- IlluminatedWordText = { link = 'GruvboxBg2' },
+          -- IlluminatedWordRead = { link = 'GruvboxBg2' },
+          -- IlluminatedWordWrite = { link = 'GruvboxBg2' },
 
           -- gitsigns.nvim
           GitSignsCurrentLineBlame = { fg = palette.dark4 },
@@ -1681,13 +1688,13 @@ local plugins = enabled_plugins and {
                 select = { bg = '#ccd0da', fg = '#8839ef' },
                 replace = { bg = '#ccd0da', fg = '#d20f39' },
                 term = { bg = '#ccd0da', fg = '#40a02b' },
-                normal_num = { bg = '#acb0be', fg = '#1e66f5' },
-                insert_num = { bg = '#acb0be', fg = '#40a02b' },
-                command_num = { bg = '#acb0be', fg = '#fe640d' },
-                visual_num = { bg = '#acb0be', fg = '#8839ef' },
-                select_num = { bg = '#acb0be', fg = '#8839ef' },
-                replace_num = { bg = '#acb0be', fg = '#d20f39' },
-                term_num = { bg = '#acb0be', fg = '#40a02b' },
+                normal_num = { bg = '#bcc0cc', fg = '#1e66f5' },
+                insert_num = { bg = '#bcc0cc', fg = '#40a02b' },
+                command_num = { bg = '#bcc0cc', fg = '#fe640d' },
+                visual_num = { bg = '#bcc0cc', fg = '#8839ef' },
+                select_num = { bg = '#bcc0cc', fg = '#8839ef' },
+                replace_num = { bg = '#bcc0cc', fg = '#d20f39' },
+                term_num = { bg = '#bcc0cc', fg = '#40a02b' },
                 unique_prefix_fg = '#7c7f93',
                 diagnostic_error = { bg = '#ccd0da', fg = '#d20f39' },
                 diagnostic_warn = { bg = '#ccd0da', fg = '#df8e1d' },
@@ -2740,6 +2747,11 @@ local plugins = enabled_plugins and {
         bigfile = {},
         notifier = {},
         quickfile = {},
+        statuscolumn = {
+          folds = {
+            git_hl = true,
+          },
+        },
 
         styles = {
           notification = { border = 'single' },
@@ -2945,7 +2957,8 @@ local plugins = enabled_plugins and {
           'graphql',
           'emmet_ls',
           'prismals',
-          'pyright',
+          -- 'pyright',
+          'basedpyright',
           'omnisharp',
           'gopls',
         },
@@ -3187,9 +3200,19 @@ local plugins = enabled_plugins and {
       })
 
       -- configure python server
-      lspconfig['pyright'].setup({
+      -- lspconfig['pyright'].setup({
+      --   capabilities = capabilities(),
+      --   on_attach = on_attach,
+      -- })
+
+      lspconfig['basedpyright'].setup({
         capabilities = capabilities(),
         on_attach = on_attach,
+        settings = {
+          basedpyright = {
+            typeCheckingMode = 'standard',
+          },
+        },
       })
 
       -- configure lua server (with special settings)
@@ -3310,6 +3333,13 @@ local plugins = enabled_plugins and {
       { 'zbirenbaum/copilot.lua', enabled = enabled_copilot },
       'folke/lazydev.nvim',
 
+      {
+        'xzbdmw/colorful-menu.nvim',
+        config = function()
+          require('colorful-menu').setup()
+        end,
+      },
+
       -- nvim-cmp sources
       -- { 'Saghen/blink.compat', opts = { impersonate_nvim_cmp = true } },
       -- { 'tzachar/cmp-tabnine', enabled = enabled_tabnine, build = './install.sh' },
@@ -3392,11 +3422,20 @@ local plugins = enabled_plugins and {
               treesitter = { 'lsp', 'copilot', 'cmp_tabnine', 'snippets' },
               columns = {
                 { 'kind_icon' },
-                { 'label', 'label_description', gap = 1 },
+                -- { 'label', 'label_description', gap = 1 },
+                { 'label', gap = 1 },
                 -- { 'kind_icon', 'kind', gap = 1 },
                 { 'source_name' },
               },
               components = {
+                label = {
+                  text = function(ctx)
+                    return require('colorful-menu').blink_components_text(ctx)
+                  end,
+                  highlight = function(ctx)
+                    return require('colorful-menu').blink_components_highlight(ctx)
+                  end,
+                },
                 kind_icon = {
                   ellipsis = false,
                   text = function(ctx)
@@ -3491,6 +3530,7 @@ if enabled_plugins then
   opt.cmdheight = 0
   opt.laststatus = 0
   opt.signcolumn = 'yes'
+  opt.fillchars = { foldclose = '>' }
   opt.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevelstart = 99
