@@ -3641,7 +3641,6 @@ if enabled_plugins then
   opt.laststatus = 0
   opt.signcolumn = 'yes'
   opt.fillchars = { foldclose = '>' }
-  opt.foldcolumn = '1' -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevelstart = 99
   opt.foldenable = true
