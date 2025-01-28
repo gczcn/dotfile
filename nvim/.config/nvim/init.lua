@@ -525,8 +525,8 @@ end
 -- Tags: GUI
 -- =============================================================================
 
-local gui_font = 'JetBrainsMono Nerd Font Mono'
-local gui_font_size = 12.8
+local gui_font = 'Consolas Nerd Font Mono'
+local gui_font_size = 14.5
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
