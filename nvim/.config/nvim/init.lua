@@ -2577,17 +2577,6 @@ local plugins = enabled_plugins and {
     end,
   },
 
-  -- RENDER-MARKDOWN
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' },
-    cmd = 'RenderMarkdown',
-    opts = {
-      -- file_types = { 'markdown' },
-    },
-    ft = { 'markdown' },
-  },
-
   -- CODERUNNER, RUNCODE
   {
     'CRAG666/code_runner.nvim',
@@ -2635,8 +2624,7 @@ local plugins = enabled_plugins and {
         },
         filetype = {
           markdown = function ()
-            -- vim.cmd [[MarkdownPreviewToggle]]
-            vim.cmd('RenderMarkdown toggle')
+            vim.cmd [[MarkdownPreviewToggle]]
           end,
           java = {
             'cd $dir &&',

@@ -12,6 +12,7 @@ cd dotfile
 - [Neovim](https://neovim.io/) (latest stable version or nightly version)
 - [ripgrep](https://github.com/BurntSushi/ripgrep/) for fzf.lua
 - [fd](https://github.com/sharkdp/fd/) for fzf.lua
+- make
 - [nodejs](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 - [fzf](junegunn/fzf) for fzf.lua
