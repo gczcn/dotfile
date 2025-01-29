@@ -483,26 +483,25 @@ if enabled_custom_statuscolumn then
     end
 
     local get_line_number = function()
-      local lnum = ''
-      if vim.o.relativenumber then
-        lnum = tostring(vim.v.relnum == 0 and vim.v.lnum or vim.v.relnum)
-      else
-        lnum = tostring(vim.v.lnum)
-      end
-      return '%=' .. lnum
+      -- Copy from snacks.statuscolumn
+      return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
+        .. (vim.fn.has('nvim-0.11') == 1 and '"%l"' or 'v:relnum == 0 ? (&number ? "%l" : "%r") : (&relativenumber ? "%r" : "%l")')
+        .. ') : ""%}'
     end
 
     local get_fold = function()
-      local foldlevel = vim.fn.foldlevel(vim.v.lnum);
-      local foldlevel_before = vim.fn.foldlevel((vim.v.lnum - 1) >= 1 and vim.v.lnum - 1 or 1);
-      local foldlevel_after = vim.fn.foldlevel((vim.v.lnum + 1) <= vim.fn.line('$') and (vim.v.lnum + 1) or vim.fn.line('$'));
-      local foldclosed = vim.fn.foldclosed(vim.v.lnum);
+      local win = vim.g.statusline_winid
+      local win_call = api.nvim_win_call
+      local foldlevel = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum) end)
+      local foldlevel_before = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum - 1) end)
+      -- local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
+      local foldclosed = api.nvim_win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
 
       if foldlevel == 0 then return ' ' end
       if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose#+' end
       if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen#-' end
       -- if foldlevel > foldlevel_after then return '%#StatusColumnFold#└' end -- '└'
-      -- return '%#StatusColumnFold#│' -- '│'
+      -- return '%#StatusColumnFold#│'
       return ' '
     end
 
@@ -664,6 +663,7 @@ local plugins = enabled_plugins and {
       })
       require('catppuccin').setup({
         styles = {
+          comments = {},
           functions = { 'bold' },
         },
         integrations = {
