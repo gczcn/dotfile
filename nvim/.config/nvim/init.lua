@@ -280,6 +280,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
+opt.guicursor = 'n-v-c-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
