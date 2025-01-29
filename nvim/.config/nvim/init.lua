@@ -3629,7 +3629,6 @@ if enabled_plugins then
   opt.cmdheight = 0
   opt.laststatus = 0
   opt.signcolumn = 'yes'
-  opt.fillchars = { foldclose = '>' }
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevelstart = 99
   opt.foldenable = true
