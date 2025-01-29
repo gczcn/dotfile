@@ -1434,7 +1434,7 @@ local plugins = enabled_plugins and {
       { '<leader>fe', '<cmd>Telescope file_browser<CR>' },
       { '<leader>fu', '<cmd>Telescope undo<CR>' },
       { '<leader>fp', '<cmd>Telescope neoclip<CR>' },
-      { '<leader>ft', '<cmd>Telescope nerdy<CR>' },
+      { '<leader>fG', '<cmd>Telescope nerdy<CR>' },
     },
     dependencies = {
       'nvim-lua/popup.nvim',
@@ -1697,6 +1697,17 @@ local plugins = enabled_plugins and {
         local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage_handle))), '/')
         return name[#name]
       end
+
+      local config = {
+        special_file_type_symbol = '$ ',
+        special_file_type = {
+          ['TelescopePrompt'] = 'Telescope',
+          ['fzf'] = 'FZF',
+          ['lazy'] = 'Lazy',
+          ['minifiles'] = 'Files',
+          ['mason'] = 'Mason',
+        },
+      }
 
       local colors = {
         default = 'gruvbox',
@@ -2077,6 +2088,19 @@ local plugins = enabled_plugins and {
             underline = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['underline'] end,
             undercurl = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['undercurl'] end,
             strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['strikethrough'] end,
+          },
+          {
+            text = function(buffer)
+              local text = buffer.is_last and config.special_file_type[vim.o.filetype]
+              return text and ' ' .. config.special_file_type_symbol .. text or ''
+            end,
+            bg = function() return get_colors()['tablinefill'][get_mode()]['bg'] end,
+            fg = function() return get_colors()['tablinefill'][get_mode()]['fg'] end,
+            bold = function() return get_colors()['tablinefill'][get_mode()]['bold'] end,
+            italic = function() return get_colors()['tablinefill'][get_mode()]['italic'] end,
+            underline = function() return get_colors()['tablinefill'][get_mode()]['underline'] end,
+            undercurl = function() return get_colors()['tablinefill'][get_mode()]['undercurl'] end,
+            strikethrough = function() return get_colors()['tablinefill'][get_mode()]['strikethrough'] end,
           },
         },
         tabs = {
