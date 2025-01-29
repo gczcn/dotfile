@@ -799,12 +799,14 @@ local plugins = enabled_plugins and {
               dark_aqua = p.light_aqua,
               gray = p.gray,
             }
+            set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+
+            -- Custom
             set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
             set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
             set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
             set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
             set_hl(0, 'SignColumn', { bg = colors.bg0 })
-            set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 
             -- Custom Status Column (Tags: column, statuscolumn, status_column )
             set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
