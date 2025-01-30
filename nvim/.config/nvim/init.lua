@@ -280,7 +280,9 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.guicursor = 'n-v-c-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
+opt.guicursor = vim.fn.has('nvim-0.11') == 1
+  and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
+  or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
@@ -482,9 +484,9 @@ if enabled_custom_statuscolumn then
   _G.GetStatusColumn = function()
     local text = ''
 
-    local cursorline_background = function()
+    local cursorline_hl = function()
       if vim.v.relnum == 0 then
-        return '%#CursorLine#'
+        return '%#CursorLineNr#'
       end
       return ''
     end
@@ -516,7 +518,7 @@ if enabled_custom_statuscolumn then
 
     text = table.concat({
       '%s',
-      cursorline_background(),
+      cursorline_hl(),
       get_line_number(),
       ' ',
       get_fold(false),
