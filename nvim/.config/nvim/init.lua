@@ -2045,7 +2045,7 @@ local plugins = enabled_plugins and {
           },
           {
             text = function(buffer)
-              return buffer.is_modified and '● ' or ''
+              return buffer.is_modified and (plugins_config.nerd_font_circle_and_square and ' ' or '● ') or ''
             end,
           },
           {
@@ -3450,6 +3450,8 @@ local plugins = enabled_plugins and {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        'lazy.nvim',
+        'nvim-dap-ui',
       },
     },
   },
@@ -3481,20 +3483,6 @@ local plugins = enabled_plugins and {
     -- build = 'cargo build --release',
     config = function()
       require('luasnip.loaders.from_vscode').lazy_load()
-
-      local get_default_sources = function()
-        local sources = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' }
-
-        if enabled_copilot then
-          sources[#sources + 1] = 'copilot'
-        end
-
-        -- if enabled_tabnine then
-        --   sources[#sources + 1] = 'cmp_tabnine'
-        -- end
-
-        return sources
-      end
 
       local opts = {
         appearance = {
@@ -3596,7 +3584,10 @@ local plugins = enabled_plugins and {
         },
         snippets = { preset = 'luasnip' },
         sources = {
-          default = get_default_sources(),
+          default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer',
+            enabled_copilot and 'copilot' or nil,
+            -- enabled_tabnine and 'cmp_tabnine' or nil,
+          },
           providers = {
             lazydev = {
               name = 'lazydev',
