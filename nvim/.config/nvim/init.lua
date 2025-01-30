@@ -600,7 +600,7 @@ end
 local translate = function(t, to)
   vim.cmd.split()
   local text = t
-  text = string.gsub(text, '"', '"' .. "'" .. '"' .. "'" .. '"')
+  text = string.gsub(text, '"', [["'"'"]])
   text = string.gsub(text, '\\', '\\\\')
   text = string.gsub(text, '#', '\\#')
   vim.cmd.term('trans :' .. to .. ' "' .. text .. '"')
@@ -1116,8 +1116,8 @@ local plugins = enabled_plugins and {
       autocmd_attach_file_browser('mini.files', mini_files_open_folder)
     end,
     config = function()
-      api.nvim_create_autocmd("User", {
-        pattern = "MiniFilesActionRename",
+      api.nvim_create_autocmd('User', {
+        pattern = 'MiniFilesActionRename',
         callback = function(event)
           ---@diagnostic disable-next-line: undefined-global
           Snacks.rename.on_rename_file(event.data.from, event.data.to)
@@ -1509,9 +1509,9 @@ local plugins = enabled_plugins and {
           emoji = {
             action = function(emoji)
               -- argument emoji is a table.
-              -- {name="", value="", cagegory="", description=""}
+              -- {name='', value='', cagegory='', description=''}
 
-              vim.fn.setreg("+", emoji.value)
+              vim.fn.setreg('+', emoji.value)
               print([[Press "+p or <M-p> to paste this emoji]] .. emoji.value)
 
               -- insert emoji when picked
@@ -1606,7 +1606,7 @@ local plugins = enabled_plugins and {
       delay = 200,
       large_file_cutoff = 2000,
       large_file_overrides = {
-        providers = { "lsp" },
+        providers = { 'lsp' },
       },
       filetypes_denylist = {
         'dirbuf',
@@ -2823,12 +2823,12 @@ local plugins = enabled_plugins and {
         -- enabled = false,
         format = {
           cmdline = { pattern = '^:', icon = '>', lang = 'vim' },
-          search_down = { kind = "search", pattern = "^/", icon = " Up", lang = "regex" },
-          search_up = { kind = "search", pattern = "^%?", icon = " Down", lang = "regex" },
-          -- filter = { pattern = "^:%s*!", icon = " $", lang = "bash" },
-          -- lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = " ", lang = "lua" },
-          help = { pattern = "^:%s*he?l?p?%s+", icon = "?" },
-          -- input = { view = "cmdline", icon = " 󰥻 " },
+          search_down = { kind = 'search', pattern = '^/', icon = ' Up', lang = 'regex' },
+          search_up = { kind = 'search', pattern = '^%?', icon = ' Down', lang = 'regex' },
+          -- filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash' },
+          -- lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' ', lang = 'lua' },
+          help = { pattern = '^:%s*he?l?p?%s+', icon = '?' },
+          -- input = { view = 'cmdline', icon = ' 󰥻 ' },
         },
         -- view = 'cmdline',
       },
@@ -3427,13 +3427,13 @@ local plugins = enabled_plugins and {
     event = { 'InsertEnter', 'CmdlineEnter' },
     build = 'make install_jsregexp',
     config = function()
-      local ls = require("luasnip")
+      local ls = require('luasnip')
 
-      keymap.set({"i"}, "<C-k>", function() ls.expand() end, {silent = true})
-      keymap.set({"i", "s"}, "<C-l>", function() ls.jump( 1) end, {silent = true})
-      keymap.set({"i", "s"}, "<C-j>", function() ls.jump(-1) end, {silent = true})
+      keymap.set({'i'}, '<C-k>', function() ls.expand() end, {silent = true})
+      keymap.set({'i', 's'}, '<C-l>', function() ls.jump( 1) end, {silent = true})
+      keymap.set({'i', 's'}, '<C-j>', function() ls.jump(-1) end, {silent = true})
 
-      keymap.set({"i", "s"}, "<C-f>", function()
+      keymap.set({'i', 's'}, '<C-f>', function()
         if ls.choice_active() then
           ls.change_choice(1)
         end
@@ -3449,7 +3449,7 @@ local plugins = enabled_plugins and {
       library = {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
         'lazy.nvim',
         'nvim-dap-ui',
       },
