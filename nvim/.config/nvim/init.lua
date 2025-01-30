@@ -272,7 +272,7 @@ vim.g.encoding = 'UTF-8'
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 -- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
-opt.colorcolumn = '80,100' -- Line number reminder
+opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting
@@ -317,6 +317,9 @@ if not enabled_plugins then
   set_hl(0, 'StatusColumnFold', { link = 'FoldColumn' })
   set_hl(0, 'StatusColumnFoldOpen', { link = 'FoldColumn' })
   set_hl(0, 'StatusColumnFoldClose', { link = 'Normal' })
+  set_hl(0, 'StatusColumnFoldCursorLine', { link = 'FoldColumn' })
+  set_hl(0, 'StatusColumnFoldOpenCursorLine', { link = 'FoldColumn' })
+  set_hl(0, 'StatusColumnFoldCloseCursorLine', { link = 'Normal' })
 end
 
 -- =============================================================================
@@ -469,6 +472,9 @@ end
 --   StatusColumnFold
 --   StatusColumnFoldOpen
 --   StatusColumnFoldClose
+--   StatusColumnFoldCursorLine
+--   StatusColumnFoldOpenCursorLine
+--   StatusColumnFoldCloseCursorLine
 --
 -- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
 -- =============================================================================
@@ -490,20 +496,22 @@ if enabled_custom_statuscolumn then
         .. ') : ""%}'
     end
 
-    local get_fold = function()
+    local get_fold = function(show_indent_symbol)
       local win = vim.g.statusline_winid
       local win_call = api.nvim_win_call
       local foldlevel = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum) end)
       local foldlevel_before = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum - 1) end)
-      -- local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
+      local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
       local foldclosed = api.nvim_win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
 
       if foldlevel == 0 then return ' ' end
-      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose#+' end
-      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen#-' end
-      -- if foldlevel > foldlevel_after then return '%#StatusColumnFold#└' end -- '└'
-      -- return '%#StatusColumnFold#│'
-      return ' '
+      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' end
+      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#-' end
+      if show_indent_symbol then
+        if foldlevel > foldlevel_after then return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#└' end -- '└'
+        return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#│'
+      end
+      return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '# '
     end
 
     text = table.concat({
@@ -511,7 +519,7 @@ if enabled_custom_statuscolumn then
       cursorline_background(),
       get_line_number(),
       ' ',
-      get_fold(),
+      get_fold(false),
       ' '
     })
 
@@ -646,25 +654,15 @@ local plugins = enabled_plugins and {
 
   -- COLORSCHEME
   --- CATPPUCCIN
-  --- Supported flavors: [mocha|latte]
+  --- Supported flavors: [mocha|latte ]
   {
     'catppuccin/nvim',
     name = 'catppuccin-nvim',
     enabled = false,
     priority = 1000,
     config = function()
-      create_autocmd('ColorScheme', {
-        pattern = '*',
-        callback = function()
-          if vim.startswith(vim.g.colors_name, 'catppuccin') then
-            local set_hl = api.nvim_set_hl
-            set_hl(0, 'CursorLineNr', { bg = get_hl('CursorLine', true), fg = get_hl('CursorLineNr') })
-          end
-        end,
-      })
       require('catppuccin').setup({
         styles = {
-          comments = {},
           functions = { 'bold' },
         },
         integrations = {
@@ -676,12 +674,23 @@ local plugins = enabled_plugins and {
           lsp_trouble = true,
         },
         custom_highlights = function(colors)
+          local U = require('catppuccin.utils.colors')
           return {
             -- Custom Status Column (Tags: column, statuscolumn, status_column )
             StatusColumnFold = { fg = colors.surface0 },
-            StatusColumnFoldOpen = { link = 'FoldColumn' },
-            StatusColumnFoldClose = { fg = colors.blue },
+            StatusColumnFoldOpen = { fg = colors.overlay0 },
+            StatusColumnFoldClose = { link = 'Folded' },
+            StatusColumnFoldCursorLine = { fg = colors.surface0,
+              bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+            },
+            StatusColumnFoldOpenCursorLine = { fg = colors.overlay0,
+              bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+            },
+            StatusColumnFoldCloseCursorLine = { link = 'Folded' },
 
+            CursorLineNr = {
+              bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+            },
             DiagnosticNumHlError = { fg = colors.red, bold = true },
             DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
             DiagnosticNumHlHint = { fg = colors.teal, bold = true },
@@ -811,7 +820,10 @@ local plugins = enabled_plugins and {
             -- Custom Status Column (Tags: column, statuscolumn, status_column )
             set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
             set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
-            set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow })
+            set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
+            set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
+            set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+            set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
 
             set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
             set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
