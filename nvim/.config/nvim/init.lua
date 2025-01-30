@@ -817,7 +817,7 @@ local plugins = enabled_plugins and {
             set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
             set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
             set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
-            set_hl(0, 'SignColumn', { bg = colors.bg0 })
+            set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
 
             -- Custom Status Column (Tags: column, statuscolumn, status_column )
             set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
