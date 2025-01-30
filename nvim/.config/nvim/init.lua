@@ -1964,11 +1964,9 @@ local plugins = enabled_plugins and {
       end
 
       local get_colors = function()
-        if colors['colorschemes'][vim.g.colors_name] then
-          return colors['colorschemes'][vim.g.colors_name][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
-        else
-          return colors['colorschemes'][colors.default][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
-        end
+        return colors['colorschemes'][vim.g.colors_name]
+          and colors['colorschemes'][vim.g.colors_name][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
+          or colors['colorschemes'][colors.default][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
       end
 
       local get_focus_colors = function(is_focused)
@@ -2026,10 +2024,7 @@ local plugins = enabled_plugins and {
           },
           {
             text = function(buffer)
-              if is_picking_focus() or is_picking_close() then
-                return ' ' .. buffer.pick_letter
-              end
-              return ' ' .. buffer.devicon.icon
+              return ' ' .. ((is_picking_focus() or is_picking_close()) and buffer.pick_letter or buffer.devicon.icon)
             end,
             style = function(_)
               return (is_picking_focus() or is_picking_close()) and 'italic,bold' or nil
