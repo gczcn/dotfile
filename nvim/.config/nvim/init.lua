@@ -2167,7 +2167,11 @@ local plugins = enabled_plugins and {
       end
 
       local get_colors = function()
-        return colors['colorschemes'][colors['colorschemes'][vim.g.colors_name] and vim.g.colors_name or colors.default][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
+        return colors['colorschemes'][
+          colors['colorschemes'][vim.g.colors_name]
+          and vim.g.colors_name
+          or colors.default
+          ][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
       end
 
       local get_focus_colors = function(is_focused)
