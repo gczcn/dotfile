@@ -25,12 +25,6 @@ Run `stow nvim` to create an symlink for the neovim configuration
 * **all**
   - [x] Use `stow` to manage configuration files
 * neovim
-  - [x] Rewrite the basic functions of the configuration file and change the current configuration file package name to `nvim_backup`
-  > - [x] Start mode switching function ( and README change )
-  > - [ ] Replace the text connection part in some plugins with the format string
-  > - [ ] Make color scheme settings more convenient
-  > - [x] Replace `telescope-z.nvim` with `telescope-zoxide`
-  > - [ ] Find or make a better Tetris game
-  > - [ ] Added menu for launching games
+  - [ ] Archlinux installation dependency script fully automatic (I can't test it right now)
 * wezterm
   - [ ] Configuration Modularity

@@ -29,6 +29,9 @@
 --     prisma-language-server
 --     vim-language-server
 --
+--   Debuggers:
+--     delve (go)
+--
 --   Formatters:
 --     black
 --     stylua
@@ -79,6 +82,7 @@ local plugins_config = {
 --   ---@diagnostic disable-next-line: param-type-mismatch
 --   api.nvim_set_hl(0, to, h1t)
 -- end
+
 local simple_mode = function()
   local mode_map = { ['n'] = 'NOR',
     ['no'] = 'O-P',
@@ -325,6 +329,188 @@ if not enabled_plugins then
 end
 
 -- =============================================================================
+-- Shell Scripts
+-- Some shell scripts, mostly used to install dependencies
+--
+-- I use the package manager that comes with the distribution to manage all
+-- neovim dependencies, including language servers and debuggers.
+--
+-- Tags: SCRIPT, SCRIPTS, SHELLSCRIPT, SHELLSCRIPTS
+-- =============================================================================
+local shell_scripts = {
+  install_deps_brew = [[
+    #!/usr/bin/env bash
+    brew update
+
+    brew install ripgrep
+    brew install fd
+    brew install node
+    brew install npm
+    brew install fzf
+
+    # Code Runner
+    brew install gcc
+
+    # Language servers
+    brew install llvm  # C and C++
+    brew install typescript-language-server  # Typescript
+    # brew install pyright  # Python
+    brew install basedpyright  # Python
+    brew install lua-language-server  # Lua
+    brew install gopls  # Go
+    brew install tailwindcss-language-server
+    brew install bash-language-server
+    npm install -g vscode-langservers-extracted  # Html, Css...
+    npm install -g graphql-language-service-cli
+    npm install -g svelte-language-server
+    npm install -g emmet-ls
+    npm install -g @prisma/language-server
+    npm install -g vim-language-server
+
+    # Debuggers
+    brew install delve
+
+    # Tools
+    brew install black
+    brew install stylua
+    brew install shfmt
+
+    # Rust Nightly (for blink.cmp)
+    brew install rustup
+    rustup install nightly
+  ]],
+  update_deps_brew = [[
+    #!/usr/bin/env bash
+    brew update
+
+    brew upgrade ripgrep
+    brew upgrade fd
+    brew upgrade node
+    brew upgrade npm
+    brew upgrade fzf
+
+    # Code Runner
+    brew upgrade gcc
+
+    # Language servers
+    brew upgrade llvm
+    brew upgrade typescript-language-server
+    # brew upgrade pyright
+    brew install basedpyright
+    brew upgrade lua-language-server
+    brew upgrade gopls
+    brew upgrade tailwindcss-language-server
+    brew upgrade bash-language-server
+    npm update -g vscode-langservers-extracted
+    npm update -g svelte-language-server
+    npm update -g graphql-language-service-cli
+    npm update -g emmet-ls
+    npm update -g @prisma/language-server
+    npm update -g vim-language-server
+
+    # Debuggers
+    brew upgrade delve
+
+    # Tools
+    brew upgrade black
+    brew upgrade stylua
+    brew upgrade shfmt
+
+    # Rust Nightly (for blink.cmp)
+    brew upgrade rustup
+    rustup update nightly
+  ]],
+  install_deps_pacman_and_yay = [[
+    #!/usr/bin/env bash
+    sudo pacman -Sy
+
+    yes | sudo pacman -S ripgrep
+    yes | sudo pacman -S fd
+    yes | sudo pacman -S nodejs
+    yes | sudo pacman -S npm
+    yes | sudo pacman -S fzf
+
+    # Code Runner
+    yes | sudo pacman -S gcc
+
+    # Language servers
+    yes | sudo pacman -S llvm
+    yes | sudo pacman -S clang
+    yes | sudo pacman -S typescript-language-server
+    # yes | sudo pacman -S pyright
+    yay -S basedpyright
+    yes | sudo pacman -S lua-language-server
+    yes | sudo pacman -S gopls
+    yes | sudo pacman -S tailwindcss-language-server
+    yes | sudo pacman -S bash-language-server
+    yes | sudo pacman -S vscode-css-languageserver
+    yes | sudo pacman -S vscode-html-languageserver
+    yes | sudo pacman -S vscode-json-languageserver
+    yes | sudo pacman -S svelte-language-server
+    yes | sudo pacman -S graphql-client-cli
+    sudo npm install -g emmet-ls
+    sudo npm install -g @prisma/language-server
+    sudo npm install -g vim-language-server
+
+    # Debuggers
+    yes | sudo pacman -S delve
+
+    # Tools
+    yes | sudo pacman -S python-black
+    yes | sudo pacman -S stylua
+    yes | sudo pacman -S shfmt
+
+    # Rust Nightly (for blink.cmp)
+    yes | sudo pacman -S rustup
+    rustup install nightly
+  ]],
+  update_deps_pacman_and_yay = [[
+    #!/usr/bin/env bash
+    sudo pacman -Sy
+
+    yes | sudo pacman -S ripgrep
+    yes | sudo pacman -S fd
+    yes | sudo pacman -S nodejs
+    yes | sudo pacman -S npm
+    yes | sudo pacman -S fzf
+
+    # Code Runner
+    yes | sudo pacman -S gcc
+
+    # Language servers
+    yes | sudo pacman -S llvm
+    yes | sudo pacman -S clang
+    yes | sudo pacman -S typescript-language-server
+    # yes | sudo pacman -S pyright
+    yay -S basedpyright
+    yes | sudo pacman -S lua-language-server
+    yes | sudo pacman -S gopls
+    yes | sudo pacman -S tailwindcss-language-server
+    yes | sudo pacman -S bash-language-server
+    yes | sudo pacman -S vscode-css-languageserver
+    yes | sudo pacman -S vscode-html-languageserver
+    yes | sudo pacman -S vscode-json-languageserver
+    yes | sudo pacman -S svelte-language-server
+    yes | sudo pacman -S graphql-client-cli
+    sudo npm update -g @prisma/language-server
+    sudo npm update -g emmet-ls
+    sudo npm update -g vim-language-server
+
+    # Debuggers
+    yes | sudo pacman -S delve
+
+    # Tools
+    yes | sudo pacman -S python-black
+    yes | sudo pacman -S stylua
+    yes | sudo pacman -S shfmt
+
+    # Rust Nightly (for blink.cmp)
+    yes | sudo pacman -S rustup
+    rustup update nightly
+  ]],
+}
+
+-- =============================================================================
 -- Commands
 -- Tags: CMD, COMMAND, COMMANDS
 -- =============================================================================
@@ -357,6 +543,21 @@ vim.cmd.cabbrev('W w')
 vim.cmd.cabbrev('Q q')
 vim.cmd.cabbrev('Qa qa')
 vim.cmd.cabbrev('Qall qall')
+
+local script_path = '/var/tmp/neovim_run_shell_script.sh'
+os.remove(script_path)
+create_user_command('RunShellScript', function(t)
+  if shell_scripts[t.args] then
+    local script = io.open(script_path, 'w')
+    ---@diagnostic disable-next-line: need-check-nil
+    script:write(shell_scripts[t.args])
+    ---@diagnostic disable-next-line: need-check-nil
+    script:close()
+    vim.cmd.term(string.format('bash %s; rm %s', script_path, script_path))
+  else
+    vim.notify('No such shell script', vim.log.levels.ERROR)
+  end
+end, { nargs = 1 })
 
 -- =============================================================================
 -- Autocmds
@@ -3029,74 +3230,6 @@ local plugins = enabled_plugins and {
     end,
   },
 
-  -- MASON
-  {
-    'williamboman/mason.nvim',
-    cmd = {
-      'Mason',
-      'MasonInstall',
-      'MasonLog',
-      'MasonUninstall',
-      'MasonUninstallAll',
-      'MasonUpdate',
-    },
-    dependencies = {
-      {
-        {
-          'WhoIsSethDaniel/mason-tool-installer.nvim',
-          build = ':MasonToolsUpdate',
-          cmd = {
-            'MasonToolsUpdate',
-            'MasonToolsInstall',
-            'MasonToolsClean',
-            'MasonToolsInstallSync',
-            'MasonToolsUpdateSync',
-          },
-        },
-        'williamboman/mason-lspconfig.nvim',
-      },
-    },
-    build = ':MasonUpdate',
-    config = function()
-      require('mason').setup({
-        ui = {
-          icons = {
-            package_installed = '󰽢',
-            package_pending = '',
-            package_uninstalled = '󰽤',
-          },
-        },
-      })
-
-      require('mason-tool-installer').setup({
-        ensure_installed = {
-          'stylua',
-          'shfmt',
-          'black',
-        },
-      })
-
-      require('mason-lspconfig').setup({
-        ensure_installed = {
-          'clangd',
-          'ts_ls',
-          'html',
-          'cssls',
-          'tailwindcss',
-          'svelte',
-          'lua_ls',
-          'graphql',
-          'emmet_ls',
-          'prismals',
-          -- 'pyright',
-          'basedpyright',
-          'omnisharp',
-          'gopls',
-        },
-      })
-    end,
-  },
-
   -- DAP, DEBUG, DEBUGGER
   {
     'mfussenegger/nvim-dap',
@@ -3119,6 +3252,23 @@ local plugins = enabled_plugins and {
       { '<leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
       { '<leader>dw', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
     },
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'rcarriga/nvim-dap-ui',
+      'leoluz/nvim-dap-go',
+    },
+    config = function()
+      local dap = require('dap')
+      local dapui = require('dapui')
+      dapui.setup()
+
+      dap.listeners.before.attach.dapui_config = function() dapui.open() end
+      dap.listeners.before.launch.dapui_config = function() dapui.open() end
+      dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
+      dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+
+      require('dap-go').setup()
+    end,
   },
 
   -- LSP (Language Server Protocol)
@@ -3129,7 +3279,6 @@ local plugins = enabled_plugins and {
       'nvim-treesitter/nvim-treesitter',
       'echasnovski/mini.icons',
       'lewis6991/gitsigns.nvim',
-      'williamboman/mason.nvim',
       {
         'smjonas/inc-rename.nvim',
         config = function()
