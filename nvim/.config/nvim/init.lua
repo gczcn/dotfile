@@ -1246,7 +1246,7 @@ local plugins = enabled_plugins and {
         -- items = nil,
         content_hooks = {
           starter.gen_hook.padding(7, 3),
-          starter.gen_hook.adding_bullet('▏ '),
+          starter.gen_hook.adding_bullet('│ '),
           -- starter.gen_hook.adding_bullet('░ '),
         },
         header = header(),
