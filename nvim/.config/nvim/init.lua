@@ -1012,6 +1012,7 @@ local plugins = enabled_plugins and {
               gray = p.gray,
             }
             set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+            set_hl(0, 'Conditional', { fg = colors.red, italic = true })
 
             -- Custom
             set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
@@ -1081,7 +1082,7 @@ local plugins = enabled_plugins and {
       require('gruvbox').setup({
         italic = {
           strings = false,
-          comments = false,
+          -- comments = false,
         },
         overrides = {
           LspReferenceText = { underline = true },
