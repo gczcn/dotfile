@@ -86,7 +86,8 @@ local plugins_config = {
 -- end
 
 local simple_mode = function()
-  local mode_map = { ['n'] = 'NOR',
+  local mode_map = {
+    ['n'] = 'NOR',
     ['no'] = 'O-P',
     ['nov'] = 'O-P',
     ['noV'] = 'O-P',
@@ -128,8 +129,9 @@ end
 -- Copy from https://github.com/LazyVim/LazyVim/blob/f11890bf99477898f9c003502397786026ba4287/lua/lazyvim/util/ui.lua#L171-L187
 local get_hl = function(name, bg)
   ---@type {foreground?:number}?
-  ---@diagnostic disable-next-line: deprecated
-  local hl = api.nvim_get_hl and api.nvim_get_hl(0, { name = name, link = false }) or api.nvim_get_hl_by_name(name, true)
+  local hl = api.nvim_get_hl and api.nvim_get_hl(0, { name = name, link = false })
+    ---@diagnostic disable-next-line: deprecated
+    or api.nvim_get_hl_by_name(name, true)
   ---@diagnostic disable-next-line: undefined-field
   ---@type string?
   local color = nil
