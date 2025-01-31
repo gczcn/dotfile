@@ -2916,8 +2916,8 @@ local plugins = enabled_plugins and {
     event = 'User FileOpened',
     opts = {
       indent = {
-        char = '▏',
-        tab_char = '▏',
+        char = '│',
+        tab_char = '│',
       },
       scope = { enabled = false },
     },
@@ -2950,8 +2950,8 @@ local plugins = enabled_plugins and {
     end,
     config = function()
       require('mini.indentscope').setup({
-        -- symbol = '│',
-        symbol = '▏',
+        symbol = '│',
+        -- symbol = '▏',
         options = {
           indent_at_cursor = false,
         },
