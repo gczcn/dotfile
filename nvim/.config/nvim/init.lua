@@ -57,6 +57,7 @@ local create_user_command = api.nvim_create_user_command
 local middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' } -- Colemak
 -- local middle_row_of_keyboard = { ';', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' } -- Qwerty
 
+local remove_padding_around_neovim_instance = false
 local enabled_custom_statuscolumn = true
 local enabled_plugins = true
 local enabled_copilot = false
@@ -64,7 +65,8 @@ local enabled_tabnine = false
 
 local plugins_config = {
   border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-  nerd_font_circle_and_square = true,
+  nerd_font_circle_and_square = false,
+  ascii_icons = false,
 }
 
 -- =============================================================================
@@ -564,21 +566,23 @@ end, { nargs = 1 })
 -- Tags: AU, AUTOCMD, AUTOCMDS
 -- =============================================================================
 -- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
-create_autocmd({ 'UIEnter', 'ColorScheme' }, {
-  callback = function()
-    local normal = api.nvim_get_hl(0, { name = 'Normal' })
-    if not normal.bg then return end
-    io.write(string.format('\027Ptmux;\027\027]11;#%06x\007\027\\', normal.bg))
-    io.write(string.format('\027]11;#%06x\027\\', normal.bg))
-  end,
-})
+if remove_padding_around_neovim_instance then
+  create_autocmd({ 'UIEnter', 'ColorScheme' }, {
+    callback = function()
+      local normal = api.nvim_get_hl(0, { name = 'Normal' })
+      if not normal.bg then return end
+      io.write(string.format('\027Ptmux;\027\027]11;#%06x\007\027\\', normal.bg))
+      io.write(string.format('\027]11;#%06x\027\\', normal.bg))
+    end,
+  })
 
-create_autocmd({ 'UILeave', 'VimLeave' }, {
-  callback = function()
-    io.write('\027Ptmux;\027\027]111;\007\027\\')
-    io.write('\027]111\027\\')
-  end,
-})
+  create_autocmd({ 'UILeave', 'VimLeave' }, {
+    callback = function()
+      io.write('\027Ptmux;\027\027]111;\007\027\\')
+      io.write('\027]111\027\\')
+    end,
+  })
+end
 
 -- Line breaks are not automatically commented
 create_autocmd('FileType', {
@@ -1165,7 +1169,7 @@ local plugins = enabled_plugins and {
         if show_icon == true then
           show_icon = function(file_name)
             local icon, _ = require('nvim-web-devicons').get_icon(file_name)
-            if not icon then icon = '󰈔' end
+            if not icon then icon = plugins_config.ascii_icons and 'F' or '󰈔' end
             return icon .. ' '
           end
         end
@@ -1382,12 +1386,13 @@ local plugins = enabled_plugins and {
     'echasnovski/mini.icons',
     lazy = true,
     opts = {
+      style = plugins_config.ascii_icons and 'ascii' or 'glyph',
       file = {
-        ['.keep'] = { glyph = '󰊢', hl = 'MiniIconsGrey' },
-        ['devcontainer.json'] = { glyph = '', hl = 'MiniIconsAzure' },
+        ['.keep'] = { glyph = plugins_config.ascii_icons and 'G' or '󰊢', hl = 'MiniIconsGrey' },
+        ['devcontainer.json'] = { glyph = plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsAzure' },
       },
       filetype = {
-        dotenv = { glyph = '', hl = 'MiniIconsYellow' },
+        dotenv = { glyph = plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
       },
     },
     init = function()
@@ -2403,7 +2408,7 @@ local plugins = enabled_plugins and {
         for _, client in pairs(clients) do
           c[#c] = client.name
         end
-        return ' ' .. table.concat(c, ', ')
+        return plugins_config.ascii_icons and 'LS: ' or ' ' .. table.concat(c, ', ')
       end
 
       require('lualine').setup({
