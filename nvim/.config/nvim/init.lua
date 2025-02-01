@@ -518,8 +518,6 @@ local shell_scripts = {
 -- Commands
 -- Tags: CMD, COMMAND, COMMANDS
 -- =============================================================================
-
--- Useless
 vim.cmd.cabbrev('W! w!')
 vim.cmd.cabbrev('W1 w!')
 vim.cmd.cabbrev('w1 w!')
@@ -619,7 +617,7 @@ create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinE
   pattern = '*',
   callback = function()
     if vim.o.nu and api.nvim_get_mode().mode ~= 'i' then
-      vim.opt.relativenumber = true
+      opt.relativenumber = true
     end
   end,
 })
@@ -628,7 +626,7 @@ create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLea
   pattern = '*',
   callback = function()
     if vim.o.nu then
-      vim.opt.relativenumber = false
+      opt.relativenumber = false
       vim.cmd('redraw')
     end
   end,
@@ -711,7 +709,7 @@ if enabled_custom_statuscolumn then
       local foldlevel = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum) end)
       local foldlevel_before = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum - 1) end)
       local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
-      local foldclosed = api.nvim_win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
+      local foldclosed = win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
 
       if foldlevel == 0 then return ' ' end
       if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' end
@@ -728,7 +726,7 @@ if enabled_custom_statuscolumn then
       cursorline_hl(),
       get_line_number(),
       ' ',
-      get_fold(false),
+      get_fold(true),
       ' '
     })
 
