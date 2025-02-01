@@ -59,6 +59,7 @@ local middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i
 
 local remove_padding_around_neovim_instance = false
 local enabled_custom_statuscolumn = true
+local custom_statuscolumn_show_indent = true
 local enabled_plugins = true
 local enabled_copilot = false
 local enabled_tabnine = false
@@ -726,7 +727,7 @@ if enabled_custom_statuscolumn then
       cursorline_hl(),
       get_line_number(),
       ' ',
-      get_fold(true),
+      get_fold(custom_statuscolumn_show_indent),
       ' '
     })
 
