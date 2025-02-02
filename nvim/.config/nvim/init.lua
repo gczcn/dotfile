@@ -745,23 +745,22 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-
 local gui_font = 'Mononoki Nerd Font Mono'
-local gui_font_size = 12.3
+local gui_font_size = 12.5
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
   opt.guifont = gui_font .. ':h' .. gui_font_size
-  print(gui_font_size)
+  vim.notify(gui_font_size)
 end
 
 opt.guifont = gui_font .. ':h' .. gui_font_size
 
 keymap.set('n', '<C-=>', function()
-  gui_change_font_size(0.5)
+ gui_change_font_size(0.1)
 end)
 keymap.set('n', '<C-->', function()
-  gui_change_font_size(-0.5)
+  gui_change_font_size(-0.1)
 end)
 
 -- ========== NEOVIDE ==========
