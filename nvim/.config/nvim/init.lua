@@ -698,9 +698,8 @@ if enabled_custom_statuscolumn then
     end
 
     local get_line_number = function()
-      -- Copy from snacks.statuscolumn
       return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
-        .. (vim.fn.has('nvim-0.11') == 1 and '"%l"' or 'v:relnum == 0 ? (&number ? "%l" : "%r") : (&relativenumber ? "%r" : "%l")')
+        .. (vim.fn.has('nvim-0.11') == 1 and '"%l "' or 'v:relnum == 0 ? (&number ? "%l " : "%r ") : (&relativenumber ? "%r " : "%l ")')
         .. ') : ""%}'
     end
 
@@ -711,29 +710,32 @@ if enabled_custom_statuscolumn then
       local foldlevel_before = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum - 1) end)
       local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
       local foldclosed = win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
+      local foldcolumn = win_call(win, function() return vim.o.foldcolumn end)
+      local spaces = string.rep(' ', tonumber(foldcolumn))
 
-      if foldlevel == 0 then return ' ' end
-      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' end
-      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#-' end
+      if foldcolumn == '0' then return '' end
+
+      if foldlevel == 0 then return ' ' .. spaces end
+      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' .. spaces end
+      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#-' .. spaces end
       if show_indent_symbol then
-        if foldlevel > foldlevel_after then return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#└' end -- '└'
-        return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#│'
+        if foldlevel > foldlevel_after then return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#└' .. spaces end
+        return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#│' .. spaces
       end
-      return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '# '
+      return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '# ' .. spaces
     end
 
     text = table.concat({
       '%s',
       cursorline_hl(),
       get_line_number(),
-      ' ',
       get_fold(custom_statuscolumn_show_indent),
-      ' '
     })
 
     return text
   end
 
+  opt.foldcolumn = '1'
   opt.statuscolumn = '%!v:lua.GetStatusColumn()'
 end
 
@@ -742,8 +744,8 @@ end
 -- Tags: GUI
 -- =============================================================================
 
-local gui_font = 'BlexMono Nerd Font Mono'
-local gui_font_size = 13
+local gui_font = 'Mononoki Nerd Font Mono'
+local gui_font_size = 12.3
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
