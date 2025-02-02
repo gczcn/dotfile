@@ -46,7 +46,6 @@
 -- Globar vars
 -- Tags: VAR, VARS, GLOBAL
 -- =============================================================================
-
 local keymap = vim.keymap
 local api = vim.api
 local opt = vim.opt
@@ -275,7 +274,6 @@ keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lu
 -- Options
 -- Tags: OPT, OPTS, OPTION, OPTIONS
 -- =============================================================================
-
 vim.g.encoding = 'UTF-8'
 
 opt.autowrite = true
@@ -289,6 +287,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true -- Use space instead of tabs
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
+opt.foldcolumn = '1'
 opt.guicursor = vim.fn.has('nvim-0.11') == 1
   and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
@@ -704,26 +703,29 @@ if enabled_custom_statuscolumn then
     end
 
     local get_fold = function(show_indent_symbol)
-      local win = vim.g.statusline_winid
-      local win_call = api.nvim_win_call
-      local foldlevel = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum) end)
-      local foldlevel_before = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum - 1) end)
-      local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
-      local foldclosed = win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
-      local foldcolumn = win_call(win, function() return vim.o.foldcolumn end)
-      ---@diagnostic disable-next-line: param-type-mismatch
-      local spaces = string.rep(' ', tonumber(foldcolumn))
+      return api.nvim_win_call(vim.g.statusline_winid, function()
+        local ts_foldexpr = tostring(vim.treesitter.foldexpr(vim.v.lnum))
+        local ts_foldexpr_after = tostring(vim.treesitter.foldexpr(vim.v.lnum + 1))
+        local foldlevel = vim.fn.foldlevel(vim.v.lnum)
+        local foldlevel_before = vim.fn.foldlevel(vim.v.lnum - 1)
+        local foldlevel_after = vim.fn.foldlevel(vim.v.lnum + 1)
+        local foldclosed = vim.fn.foldclosed(vim.v.lnum)
+        local foldcolumn = vim.o.foldcolumn
+        ---@diagnostic disable-next-line: param-type-mismatch
+        local spaces = string.rep(' ', tonumber(foldcolumn))
 
-      if foldcolumn == '0' then return '' end
-
-      if foldlevel == 0 then return ' ' .. spaces end
-      if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' .. spaces end
-      if foldlevel > foldlevel_before then return '%#StatusColumnFoldOpen' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#-' .. spaces end
-      if show_indent_symbol then
-        if foldlevel > foldlevel_after then return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#└' .. spaces end
-        return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#│' .. spaces
-      end
-      return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '# ' .. spaces
+        if foldcolumn == '0' then return '' end
+        if foldlevel == 0 then return ' ' .. spaces end
+        if foldclosed ~= -1 and foldclosed == vim.v.lnum then return '%#StatusColumnFoldClose' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#+' .. spaces end
+        if foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>' then return '%#StatusColumnFoldOpen' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#-' .. spaces end
+        if show_indent_symbol then
+          if (ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after then
+            return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#└' .. spaces
+          end
+          return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '#│' .. spaces
+        end
+        return '%#StatusColumnFold' .. (vim.v.relnum == 0 and 'CursorLine' or '') .. '# ' .. spaces
+      end)
     end
 
     text = table.concat({
@@ -736,7 +738,6 @@ if enabled_custom_statuscolumn then
     return text
   end
 
-  opt.foldcolumn = '1'
   opt.statuscolumn = '%!v:lua.GetStatusColumn()'
 end
 
@@ -1763,8 +1764,9 @@ local plugins = enabled_plugins and {
   -- NVIM-UFO
   {
     'kevinhwang91/nvim-ufo',
+    enabled = true,
     dependencies = {
-      'kevinhwang91/promise-async'
+      'kevinhwang91/promise-async',
     },
     keys = { 'z' },
     event = { 'BufAdd', 'User FileOpened' },
@@ -1803,10 +1805,20 @@ local plugins = enabled_plugins and {
       require('ufo').setup({
         fold_virt_text_handler = handler,
         provider_selector = function()
-          return {'treesitter', 'indent'}
-        end
+          if require("nvim-treesitter.parsers").has_parser() then
+            return { 'treesitter' }
+          end
+          return { 'treesitter', 'indent' }
+        end,
       })
-    end
+
+      create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
+        callback = function()
+          vim.cmd.UfoDisable()
+          vim.cmd.UfoEnable()
+        end,
+      })
+    end,
   },
 
   -- VIM-ILLUMINATE, WORD
@@ -2480,7 +2492,7 @@ local plugins = enabled_plugins and {
   {
     'nvim-treesitter/nvim-treesitter',
     version = false,
-    event = { 'User FileOpened', 'BufAdd', 'CmdlineEnter', 'VeryLazy' },
+    event = { 'User FileOpened', 'BufAdd', 'VeryLazy' },
     cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     keys = {
       -- context
@@ -2554,6 +2566,17 @@ local plugins = enabled_plugins and {
           },
         },
       })
+      -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
+      --   group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+      --   callback = function()
+      --     if require("nvim-treesitter.parsers").has_parser() then
+      --       opt.foldmethod = "expr"
+      --       opt.foldexpr = "nvim_treesitter#foldexpr()"
+      --     else
+      --       opt.foldmethod = "syntax"
+      --     end
+      --   end,
+      -- })
     end,
   },
 
@@ -3095,6 +3118,7 @@ local plugins = enabled_plugins and {
         quickfile = {},
         -- statuscolumn = {
         --   folds = {
+        --     open = true,
         --     git_hl = true,
         --   },
         -- },
