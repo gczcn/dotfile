@@ -711,6 +711,7 @@ if enabled_custom_statuscolumn then
       local foldlevel_after = win_call(win, function() return vim.fn.foldlevel(vim.v.lnum + 1) end)
       local foldclosed = win_call(win, function() return vim.fn.foldclosed(vim.v.lnum) end)
       local foldcolumn = win_call(win, function() return vim.o.foldcolumn end)
+      ---@diagnostic disable-next-line: param-type-mismatch
       local spaces = string.rep(' ', tonumber(foldcolumn))
 
       if foldcolumn == '0' then return '' end
