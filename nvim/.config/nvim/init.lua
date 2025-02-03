@@ -736,8 +736,8 @@ if enabled_custom_statuscolumn then
           return current_line
         end
 
-        local get_hl_text = function(hl, text)
-          return string.format('%%#%s#%s', 'StatusColumn' .. hl .. (vim.v.relnum == 0 and 'CursorLine' or ''), text .. spaces)
+        local get_hl_text = function(hl, s)
+          return string.format('%%#%s#%s', 'StatusColumn' .. hl .. (vim.v.relnum == 0 and 'CursorLine' or ''), s .. spaces)
         end
 
         if foldcolumn == '0' then return '' end
