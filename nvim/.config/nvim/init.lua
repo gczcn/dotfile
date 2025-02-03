@@ -2535,7 +2535,7 @@ local plugins = enabled_plugins and {
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       'nvim-treesitter/nvim-treesitter-context',
-      -- 'HiPhish/rainbow-delimiters.nvim',  -- crazy
+      'HiPhish/rainbow-delimiters.nvim',
     },
     init = function(plugin)
       require('lazy.core.loader').add_to_rtp(plugin)
@@ -2599,6 +2599,15 @@ local plugins = enabled_plugins and {
           },
         },
       })
+
+      -- HACK: temporary fix to ensure rainbow delimiters are highlighted in real-time
+      create_autocmd('BufRead', {
+        desc = 'Ensure treesitter is initialized???',
+        callback = function()
+          pcall(vim.treesitter.start)
+        end,
+      })
+
       -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
       --   group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
       --   callback = function()
