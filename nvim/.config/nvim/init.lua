@@ -1,6 +1,6 @@
 -- =============================================================================
 -- My Neovim Config (Single File Version)
--- Author: Zixuan Chu
+-- Author: Zixuan Chu <494353540@qq.com>
 --
 -- Dependencies:
 --   Neovim - (latest or nightly version)
@@ -1804,7 +1804,7 @@ local plugins = enabled_plugins and {
       require('ufo').setup({
         fold_virt_text_handler = handler,
         provider_selector = function()
-          if require("nvim-treesitter.parsers").has_parser() then
+          if require('nvim-treesitter.parsers').has_parser() then
             return { 'treesitter' }
           end
           return { 'treesitter', 'indent' }
