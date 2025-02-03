@@ -771,8 +771,8 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'Mononoki Nerd Font Mono'
-local gui_font_size = 12.5
+local gui_font = 'FiraCode Nerd Font Mono'
+local gui_font_size = 11
 
 local gui_change_font_size = function(n)
   gui_font_size = gui_font_size + n
