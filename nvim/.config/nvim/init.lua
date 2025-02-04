@@ -52,23 +52,29 @@ local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
 local create_user_command = api.nvim_create_user_command
 
--- Middle Row of Keyboard      |  0    1    2    3    4    5    6    7    8    9  |
-local middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' } -- Colemak
--- local middle_row_of_keyboard = { ';', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' } -- Qwerty
-
-local remove_padding_around_neovim_instance = false
-local enabled_custom_statuscolumn = true
-local custom_statuscolumn_show_indent = false
-local custom_statuscolumn_show_current_fold = false -- There may be performance issues
-local enabled_plugins = true
-local enabled_copilot = false
-local enabled_tabnine = false
-
-local plugins_config = {
-  border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-  nerd_font_circle_and_square = false,
-  ascii_icons = false,
-  gruvbox_italic = false,
+local global_config = {
+  --                       |  0    1    2    3    4    5    6    7    8    9  |
+  middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
+  -- middle_row_of_keyboard = { ';', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' }, -- Qwerty
+  remove_padding_around_neovim_instance = false,
+  enabled_plugins = true,
+  enabled_copilot = false,
+  enabled_tabnine = false,
+  statuscolumn = {
+    enabled = true,
+    indent = false,
+    current_fold = false,
+    fold_end = {
+      enabled = true,
+      text = '|'
+    },
+  },
+  plugins_config = {
+    border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
+    nerd_font_circle_and_square = false,
+    ascii_icons = false,
+    gruvbox_italic = false,
+  },
 }
 
 -- =============================================================================
@@ -183,7 +189,6 @@ end
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
-
 local keymaps_opts = { noremap = true, silent = true }
 
 vim.g.mapleader = ' '
@@ -254,7 +259,7 @@ for i = 1, 199 do
   number = tostring(i)
   keys = ''
   for j = 1, #number do
-    keys = keys .. middle_row_of_keyboard[tonumber(string.sub(number, j, j)) + 1]
+    keys = keys .. global_config.middle_row_of_keyboard[tonumber(string.sub(number, j, j)) + 1]
   end
   keymap.set({ 'n', 'v', 'o' }, "'" .. keys .. '<leader>', number .. 'j', keymaps_opts)
   keymap.set({ 'n', 'v', 'o' }, '[' .. keys .. '<leader>', number .. 'k', keymaps_opts)
@@ -321,7 +326,7 @@ opt.winblend = 15
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
-if not enabled_plugins then
+if not global_config.enabled_plugins then
   vim.cmd.colorscheme('habamax')
   local set_hl = api.nvim_set_hl
 
@@ -345,175 +350,171 @@ end
 -- =============================================================================
 local shell_scripts = {
   install_deps_brew = [[
-    #!/usr/bin/env bash
-    brew update
+#!/usr/bin/env bash
+brew update
 
-    brew install ripgrep
-    brew install fd
-    brew install node
-    brew install npm
-    brew install fzf
+brew install ripgrep
+brew install fd
+brew install node
+brew install npm
+brew install fzf
 
-    # Code Runner
-    brew install gcc
+# Code Runner
+brew install gcc
 
-    # Language servers
-    brew install llvm  # C and C++
-    brew install typescript-language-server  # Typescript
-    # brew install pyright  # Python
-    brew install basedpyright  # Python
-    brew install lua-language-server  # Lua
-    brew install gopls  # Go
-    brew install tailwindcss-language-server
-    brew install bash-language-server
-    npm install -g vscode-langservers-extracted  # Html, Css...
-    npm install -g graphql-language-service-cli
-    npm install -g svelte-language-server
-    npm install -g emmet-ls
-    npm install -g @prisma/language-server
-    npm install -g vim-language-server
+# Language servers
+brew install llvm  # C and C++
+brew install typescript-language-server  # Typescript
+# brew install pyright  # Python
+brew install basedpyright  # Python
+brew install lua-language-server  # Lua
+brew install gopls  # Go
+brew install tailwindcss-language-server
+brew install bash-language-server
+npm install -g vscode-langservers-extracted  # Html, Css...
+npm install -g graphql-language-service-cli
+npm install -g svelte-language-server
+npm install -g emmet-ls
+npm install -g @prisma/language-server
+npm install -g vim-language-server
 
-    # Debuggers
-    brew install delve
+# Debuggers
+brew install delve
 
-    # Tools
-    brew install black
-    brew install stylua
-    brew install shfmt
+# Tools
+brew install black
+brew install stylua
+brew install shfmt
 
-    # Rust Nightly (for blink.cmp)
-    brew install rustup
-    rustup install nightly
-  ]],
+# Rust Nightly (for blink.cmp)
+brew install rustup
+rustup install nightly]],
   update_deps_brew = [[
-    #!/usr/bin/env bash
-    brew update
+#!/usr/bin/env bash
+brew update
 
-    brew upgrade ripgrep
-    brew upgrade fd
-    brew upgrade node
-    brew upgrade npm
-    brew upgrade fzf
+brew upgrade ripgrep
+brew upgrade fd
+brew upgrade node
+brew upgrade npm
+brew upgrade fzf
 
-    # Code Runner
-    brew upgrade gcc
+# Code Runner
+brew upgrade gcc
 
-    # Language servers
-    brew upgrade llvm
-    brew upgrade typescript-language-server
-    # brew upgrade pyright
-    brew install basedpyright
-    brew upgrade lua-language-server
-    brew upgrade gopls
-    brew upgrade tailwindcss-language-server
-    brew upgrade bash-language-server
-    npm update -g vscode-langservers-extracted
-    npm update -g svelte-language-server
-    npm update -g graphql-language-service-cli
-    npm update -g emmet-ls
-    npm update -g @prisma/language-server
-    npm update -g vim-language-server
+# Language servers
+brew upgrade llvm
+brew upgrade typescript-language-server
+# brew upgrade pyright
+brew install basedpyright
+brew upgrade lua-language-server
+brew upgrade gopls
+brew upgrade tailwindcss-language-server
+brew upgrade bash-language-server
+npm update -g vscode-langservers-extracted
+npm update -g svelte-language-server
+npm update -g graphql-language-service-cli
+npm update -g emmet-ls
+npm update -g @prisma/language-server
+npm update -g vim-language-server
 
-    # Debuggers
-    brew upgrade delve
+# Debuggers
+brew upgrade delve
 
-    # Tools
-    brew upgrade black
-    brew upgrade stylua
-    brew upgrade shfmt
+# Tools
+brew upgrade black
+brew upgrade stylua
+brew upgrade shfmt
 
-    # Rust Nightly (for blink.cmp)
-    brew upgrade rustup
-    rustup update nightly
-  ]],
+# Rust Nightly (for blink.cmp)
+brew upgrade rustup
+rustup update nightly]],
   install_deps_pacman_and_yay = [[
-    #!/usr/bin/env bash
-    sudo pacman -Sy
+#!/usr/bin/env bash
+sudo pacman -Sy
 
-    yes | sudo pacman -S ripgrep
-    yes | sudo pacman -S fd
-    yes | sudo pacman -S nodejs
-    yes | sudo pacman -S npm
-    yes | sudo pacman -S fzf
+yes | sudo pacman -S ripgrep
+yes | sudo pacman -S fd
+yes | sudo pacman -S nodejs
+yes | sudo pacman -S npm
+yes | sudo pacman -S fzf
 
-    # Code Runner
-    yes | sudo pacman -S gcc
+# Code Runner
+yes | sudo pacman -S gcc
 
-    # Language servers
-    yes | sudo pacman -S llvm
-    yes | sudo pacman -S clang
-    yes | sudo pacman -S typescript-language-server
-    # yes | sudo pacman -S pyright
-    yay -S basedpyright
-    yes | sudo pacman -S lua-language-server
-    yes | sudo pacman -S gopls
-    yes | sudo pacman -S tailwindcss-language-server
-    yes | sudo pacman -S bash-language-server
-    yes | sudo pacman -S vscode-css-languageserver
-    yes | sudo pacman -S vscode-html-languageserver
-    yes | sudo pacman -S vscode-json-languageserver
-    yes | sudo pacman -S svelte-language-server
-    yes | sudo pacman -S graphql-client-cli
-    sudo npm install -g emmet-ls
-    sudo npm install -g @prisma/language-server
-    sudo npm install -g vim-language-server
+# Language servers
+yes | sudo pacman -S llvm
+yes | sudo pacman -S clang
+yes | sudo pacman -S typescript-language-server
+# yes | sudo pacman -S pyright
+yay -S basedpyright
+yes | sudo pacman -S lua-language-server
+yes | sudo pacman -S gopls
+yes | sudo pacman -S tailwindcss-language-server
+yes | sudo pacman -S bash-language-server
+yes | sudo pacman -S vscode-css-languageserver
+yes | sudo pacman -S vscode-html-languageserver
+yes | sudo pacman -S vscode-json-languageserver
+yes | sudo pacman -S svelte-language-server
+yes | sudo pacman -S graphql-client-cli
+sudo npm install -g emmet-ls
+sudo npm install -g @prisma/language-server
+sudo npm install -g vim-language-server
 
-    # Debuggers
-    yes | sudo pacman -S delve
+# Debuggers
+yes | sudo pacman -S delve
 
-    # Tools
-    yes | sudo pacman -S python-black
-    yes | sudo pacman -S stylua
-    yes | sudo pacman -S shfmt
+# Tools
+yes | sudo pacman -S python-black
+yes | sudo pacman -S stylua
+yes | sudo pacman -S shfmt
 
-    # Rust Nightly (for blink.cmp)
-    yes | sudo pacman -S rustup
-    rustup install nightly
-  ]],
+# Rust Nightly (for blink.cmp)
+yes | sudo pacman -S rustup
+rustup install nightly]],
   update_deps_pacman_and_yay = [[
-    #!/usr/bin/env bash
-    sudo pacman -Sy
+#!/usr/bin/env bash
+sudo pacman -Sy
 
-    yes | sudo pacman -S ripgrep
-    yes | sudo pacman -S fd
-    yes | sudo pacman -S nodejs
-    yes | sudo pacman -S npm
-    yes | sudo pacman -S fzf
+yes | sudo pacman -S ripgrep
+yes | sudo pacman -S fd
+yes | sudo pacman -S nodejs
+yes | sudo pacman -S npm
+yes | sudo pacman -S fzf
 
-    # Code Runner
-    yes | sudo pacman -S gcc
+# Code Runner
+yes | sudo pacman -S gcc
 
-    # Language servers
-    yes | sudo pacman -S llvm
-    yes | sudo pacman -S clang
-    yes | sudo pacman -S typescript-language-server
-    # yes | sudo pacman -S pyright
-    yay -S basedpyright
-    yes | sudo pacman -S lua-language-server
-    yes | sudo pacman -S gopls
-    yes | sudo pacman -S tailwindcss-language-server
-    yes | sudo pacman -S bash-language-server
-    yes | sudo pacman -S vscode-css-languageserver
-    yes | sudo pacman -S vscode-html-languageserver
-    yes | sudo pacman -S vscode-json-languageserver
-    yes | sudo pacman -S svelte-language-server
-    yes | sudo pacman -S graphql-client-cli
-    sudo npm update -g @prisma/language-server
-    sudo npm update -g emmet-ls
-    sudo npm update -g vim-language-server
+# Language servers
+yes | sudo pacman -S llvm
+yes | sudo pacman -S clang
+yes | sudo pacman -S typescript-language-server
+# yes | sudo pacman -S pyright
+yay -S basedpyright
+yes | sudo pacman -S lua-language-server
+yes | sudo pacman -S gopls
+yes | sudo pacman -S tailwindcss-language-server
+yes | sudo pacman -S bash-language-server
+yes | sudo pacman -S vscode-css-languageserver
+yes | sudo pacman -S vscode-html-languageserver
+yes | sudo pacman -S vscode-json-languageserver
+yes | sudo pacman -S svelte-language-server
+yes | sudo pacman -S graphql-client-cli
+sudo npm update -g @prisma/language-server
+sudo npm update -g emmet-ls
+sudo npm update -g vim-language-server
 
-    # Debuggers
-    yes | sudo pacman -S delve
+# Debuggers
+yes | sudo pacman -S delve
 
-    # Tools
-    yes | sudo pacman -S python-black
-    yes | sudo pacman -S stylua
-    yes | sudo pacman -S shfmt
+# Tools
+yes | sudo pacman -S python-black
+yes | sudo pacman -S stylua
+yes | sudo pacman -S shfmt
 
-    # Rust Nightly (for blink.cmp)
-    yes | sudo pacman -S rustup
-    rustup update nightly
-  ]],
+# Rust Nightly (for blink.cmp)
+yes | sudo pacman -S rustup
+rustup update nightly]],
 }
 
 -- =============================================================================
@@ -568,7 +569,7 @@ end, { nargs = 1 })
 -- Tags: AU, AUTOCMD, AUTOCMDS
 -- =============================================================================
 -- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
-if remove_padding_around_neovim_instance then
+if global_config.remove_padding_around_neovim_instance then
   create_autocmd({ 'UIEnter', 'ColorScheme' }, {
     callback = function()
       local normal = api.nvim_get_hl(0, { name = 'Normal' })
@@ -664,7 +665,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- PopUp Menu
 -- Tags: POPUP, POPUPMENU
 -- =============================================================================
-if enabled_plugins then
+if global_config.enabled_plugins then
   vim.cmd[[
     amenu disable PopUp.How-to\ disable\ mouse
     anoremenu PopUp.References <cmd>FzfLua lsp_references<CR>
@@ -689,7 +690,7 @@ end
 --
 -- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
 -- =============================================================================
-if enabled_custom_statuscolumn then
+if global_config.statuscolumn.enabled then
   _G.GetStatusColumn = function()
     local text = ''
 
@@ -720,8 +721,8 @@ if enabled_custom_statuscolumn then
         local is_closed = foldclosed ~= -1 and foldclosed == vim.v.lnum
         local is_start = foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>'
         local is_end = (ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after
-        local foldopen_char = vim.opt.fillchars:get().foldopen or '-'
-        local foldclose_char = vim.opt.fillchars:get().foldopen or '+'
+        local foldopen_char = opt.fillchars:get().foldopen or '-'
+        local foldclose_char = opt.fillchars:get().foldopen or '+'
 
         local ts_get_fold_start = function(lnum)
           local level = vim.fn.foldlevel(lnum)
@@ -757,7 +758,7 @@ if enabled_custom_statuscolumn then
       '%s', -- SignColumn
       cursorline_hl(),
       get_line_number(),
-      get_fold(custom_statuscolumn_show_indent, custom_statuscolumn_show_current_fold),
+      get_fold(global_config.statuscolumn.indent, global_config.statuscolumn.current_fold),
     })
 
     return text
@@ -865,14 +866,14 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- =============================================================================
 
 -- LAZYNVIM
-local lazy_config = enabled_plugins and {
+local lazy_config = global_config.enabled_plugins and {
   install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
   checker = { enabled = true },
   change_detection = { notify = false },
   ui = {
     -- My font does not display the default icon properly
     -- Need Nerd Font
-    icons = plugins_config.nerd_font_circle_and_square and {
+    icons = global_config.plugins_config.nerd_font_circle_and_square and {
       debug = ' ',
       loaded = '',
       not_loaded = '',
@@ -887,7 +888,7 @@ local lazy_config = enabled_plugins and {
   },
 } or nil
 
-local plugins = enabled_plugins and {
+local plugins = global_config.enabled_plugins and {
 
   -- COLORSCHEME
   --- CATPPUCCIN
@@ -1050,7 +1051,7 @@ local plugins = enabled_plugins and {
               gray = p.gray,
             }
             set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
-            if plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+            if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
 
             -- Custom
             set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
@@ -1122,9 +1123,9 @@ local plugins = enabled_plugins and {
       require('gruvbox').setup({
         italic = {
           strings = false,
-          emphasis = plugins_config.gruvbox_italic,
-          comments = plugins_config.gruvbox_italic,
-          folds = plugins_config.gruvbox_italic,
+          emphasis = global_config.plugins_config.gruvbox_italic,
+          comments = global_config.plugins_config.gruvbox_italic,
+          folds = global_config.plugins_config.gruvbox_italic,
         },
         overrides = {
           LspReferenceText = { underline = true },
@@ -1179,13 +1180,14 @@ local plugins = enabled_plugins and {
       end
 
       local header = function()
-        return version() .. '\n\n' ..
-          'Nvim is open source and freely distributable\n' ..
-          'https://neovim.io/#chat'
+        return version() .. '\n\n' .. [[
+Nvim is open source and freely distributable
+https://neovim.io/#chat
 
-          -- 'Configured by gczcn\n' ..
-          -- 'https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua'
+This Configuration:
+https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       end
+
 
       local footer = function()
         return
@@ -1207,7 +1209,7 @@ local plugins = enabled_plugins and {
         if show_icon == true then
           show_icon = function(file_name)
             local icon, _ = require('nvim-web-devicons').get_icon(file_name)
-            if not icon then icon = plugins_config.ascii_icons and 'F' or '󰈔' end
+            if not icon then icon = global_config.plugins_config.ascii_icons and 'F' or '󰈔' end
             return icon .. ' '
           end
         end
@@ -1424,13 +1426,13 @@ local plugins = enabled_plugins and {
     'echasnovski/mini.icons',
     lazy = true,
     opts = {
-      style = plugins_config.ascii_icons and 'ascii' or 'glyph',
+      style = global_config.plugins_config.ascii_icons and 'ascii' or 'glyph',
       file = {
-        ['.keep'] = { glyph = plugins_config.ascii_icons and 'G' or '󰊢', hl = 'MiniIconsGrey' },
-        ['devcontainer.json'] = { glyph = plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsAzure' },
+        ['.keep'] = { glyph = global_config.plugins_config.ascii_icons and 'G' or '󰊢', hl = 'MiniIconsGrey' },
+        ['devcontainer.json'] = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsAzure' },
       },
       filetype = {
-        dotenv = { glyph = plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
+        dotenv = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
       },
     },
     init = function()
@@ -1527,7 +1529,7 @@ local plugins = enabled_plugins and {
           show_hidden = true,
         },
         confirmation = {
-          border = plugins_config.border,
+          border = global_config.plugins_config.border,
         },
       })
     end,
@@ -1666,9 +1668,9 @@ local plugins = enabled_plugins and {
       local fzf_lua = require('fzf-lua')
       fzf_lua.setup({
         winopts = {
-          border = plugins_config.border,
+          border = global_config.plugins_config.border,
           preview = {
-            border = plugins_config.border,
+            border = global_config.plugins_config.border,
           },
           backdrop = 100,
           on_create = function()
@@ -1718,7 +1720,7 @@ local plugins = enabled_plugins and {
       local actions = require('telescope.actions')
 
       local get_borderchars_table = function()
-        local b = plugins_config.border
+        local b = global_config.plugins_config.border
         return {
           b[2],
           b[4],
@@ -2247,7 +2249,7 @@ local plugins = enabled_plugins and {
       -- Buffers
       -- keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
       for i = 1, 9 do
-        keymap.set('n', (']%s'):format(middle_row_of_keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
+        keymap.set('n', (']%s'):format(global_config.middle_row_of_keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
       end
       keymap.set('n', ']f', function()
         vim.ui.input({ prompt = 'Buffer Index:' }, function(index)
@@ -2305,7 +2307,7 @@ local plugins = enabled_plugins and {
           },
           {
             text = function(buffer)
-              return buffer.is_modified and (plugins_config.nerd_font_circle_and_square and ' ' or '● ') or ''
+              return buffer.is_modified and (global_config.plugins_config.nerd_font_circle_and_square and ' ' or '● ') or ''
             end,
           },
           {
@@ -2457,7 +2459,7 @@ local plugins = enabled_plugins and {
         for _, client in pairs(clients) do
           c[#c] = client.name
         end
-        return plugins_config.ascii_icons and 'LS: ' or ' ' .. table.concat(c, ', ')
+        return global_config.plugins_config.ascii_icons and 'LS: ' or ' ' .. table.concat(c, ', ')
       end
 
       require('lualine').setup({
@@ -2728,7 +2730,7 @@ local plugins = enabled_plugins and {
     enabled = true,
     event = 'VeryLazy',
     opts = {
-      -- labels = 'asdfghjklqwertyuiopzxcvbnm',
+      -- labels = 'asdfghjklqwertyuiopzxcvbnm', -- Qwerty
       labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
       prompt = {
         prefix = { { ' Jump ', 'FlashPromptIcon' } },
@@ -3188,7 +3190,7 @@ local plugins = enabled_plugins and {
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter',
-    enabled = enabled_copilot,
+    enabled = global_config.enabled_copilot,
     config = function()
       require('copilot').setup({
         suggestion = {
@@ -3210,7 +3212,7 @@ local plugins = enabled_plugins and {
   -- TABNINE
   {
     'codota/tabnine-nvim',
-    enabled = enabled_tabnine,
+    enabled = global_config.enabled_tabnine,
     build = './dl_binaries.sh',
     config = function()
       require('tabnine').setup({
@@ -3693,8 +3695,8 @@ local plugins = enabled_plugins and {
     dependencies = {
       'rafamadriz/friendly-snippets',
       'L3MON4D3/LuaSnip',
-      { 'giuxtaposition/blink-cmp-copilot', enabled = enabled_copilot },
-      { 'zbirenbaum/copilot.lua', enabled = enabled_copilot },
+      { 'giuxtaposition/blink-cmp-copilot', enabled = global_config.enabled_copilot },
+      { 'zbirenbaum/copilot.lua', enabled = global_config.enabled_copilot },
       'folke/lazydev.nvim',
 
       {
@@ -3814,7 +3816,7 @@ local plugins = enabled_plugins and {
         snippets = { preset = 'luasnip' },
         sources = {
           default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer',
-            enabled_copilot and 'copilot' or nil,
+            global_config.enabled_copilot and 'copilot' or nil,
             -- enabled_tabnine and 'cmp_tabnine' or nil,
           },
           providers = {
@@ -3828,7 +3830,7 @@ local plugins = enabled_plugins and {
         },
       }
 
-      if enabled_copilot then
+      if global_config.enabled_copilot then
         opts.sources.provides.copilot = {
           name = 'copilot',
           module = 'blink-cmp-copilot',
@@ -3861,7 +3863,7 @@ local plugins = enabled_plugins and {
 } or nil
 
 -- =============== Lazy.nvim setup ===============
-if enabled_plugins then
+if global_config.enabled_plugins then
   -- Bootstrap lazy.nvim
   local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
   ---@diagnostic disable-next-line: undefined-field
@@ -3889,7 +3891,7 @@ if enabled_plugins then
 
   -- My font does not display the default icon properly.
   -- Need Nerd Font
-  vim.diagnostic.config(plugins_config.nerd_font_circle_and_square and {
+  vim.diagnostic.config(global_config.plugins_config.nerd_font_circle_and_square and {
     virtual_text = {
       prefix = '󰝤',
     },
