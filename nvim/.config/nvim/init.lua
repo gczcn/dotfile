@@ -960,6 +960,8 @@ local plugins = global_config.enabled_plugins and {
 						DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
 						FzfLuaHeaderText = { fg = colors.red },
 						FzfLuaHeaderBind = { fg = colors.pink },
+						Cokeline_focused_unique_prefix_fg = { fg = colors.surface1 },
+						Cokeline_notfocused_unique_prefix_fg = { fg = colors.overlay2 },
 
 						-- IlluminatedWordText = { underline = true },
 						-- IlluminatedWordRead = { underline = true },
@@ -1005,13 +1007,74 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
-		enabled = false,
+		enabled = true,
 		priority = 1000,
 		config = function()
+			create_autocmd('ColorScheme', {
+				group = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
+				pattern = 'gruvbox-material',
+				callback = function()
+					local config = vim.fn['gruvbox_material#get_configuration']()
+					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
+					local set_hl = vim.fn['gruvbox_material#highlight']
+
+					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
+					set_hl('StatusColumnFoldCurrent', palette.bg5, palette.bg0)
+					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
+					set_hl('StatusColumnFoldClose', palette.yellow, palette.bg1)
+					set_hl('StatusColumnFoldCursorLine', palette.bg4, palette.bg1)
+					set_hl('StatusColumnFoldCurrentCursorLine', palette.bg5, palette.bg1)
+					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, palette.bg1)
+					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
+					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
+					set_hl('BlinkCmpKind', palette.bg3, palette.yellow)
+					set_hl('BlinkCmpKindArray', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindBoolean', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindClass', palette.bg3, palette.red)
+					set_hl('BlinkCmpKindColor', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindConstant', palette.bg3, palette.blue)
+					set_hl('BlinkCmpKindConstructor', palette.bg3, palette.green)
+					set_hl('BlinkCmpKindDefault', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindEnum', palette.bg3, palette.yellow)
+					set_hl('BlinkCmpKindEnumMember', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindEvent', palette.bg3, palette.orange)
+					set_hl('BlinkCmpKindField', palette.bg3, palette.green)
+					set_hl('BlinkCmpKindFile', palette.bg3, palette.green)
+					set_hl('BlinkCmpKindFolder', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindFunction', palette.bg3, palette.green)
+					set_hl('BlinkCmpKindInterface', palette.bg3, palette.yellow)
+					set_hl('BlinkCmpKindKey', palette.bg3, palette.red)
+					set_hl('BlinkCmpKindKeyword', palette.bg3, palette.red)
+					set_hl('BlinkCmpKindMethod', palette.bg3, palette.green)
+					set_hl('BlinkCmpKindModule', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindNamespace', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindNull', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindNumber', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindObject', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindOperator', palette.bg3, palette.orange)
+					set_hl('BlinkCmpKindPackage', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindProperty', palette.bg3, palette.blue)
+					set_hl('BlinkCmpKindReference', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindSnippet', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindString', palette.bg3, palette.aqua)
+					set_hl('BlinkCmpKindStruct', palette.bg3, palette.yellow)
+					set_hl('BlinkCmpKindText', palette.bg3, palette.fg0)
+					set_hl('BlinkCmpKindTypeParameter', palette.bg3, palette.yellow)
+					set_hl('BlinkCmpKindUnit', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindValue', palette.bg3, palette.purple)
+					set_hl('BlinkCmpKindVariable', palette.bg3, palette.blue)
+					set_hl('Cokeline_focused_unique_prefix_fg', palette.bg3, palette.none)
+					set_hl('Cokeline_notfocused_unique_prefix_fg', palette.grey2, palette.none)
+				end,
+			})
 			opt.background = 'dark'
 			vim.g.gruvbox_material_enable_bold = true
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
 			vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_italic
+			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
+			vim.g.gruvbox_material_better_performance = 1
 			vim.cmd.colorscheme('gruvbox-material')
 		end,
 	},
@@ -1019,139 +1082,140 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
-		enabled = true,
+		enabled = false,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
-				pattern = '*',
+				group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+				pattern = 'gruvbox',
 				callback = function()
-					if vim.g.colors_name == 'gruvbox' then
-						local p = require('gruvbox').palette
-						local set_hl = api.nvim_set_hl
-						local colors = vim.o.background == 'dark' and {
-							bg0 = p.dark0,
-							bg1 = p.dark1,
-							bg2 = p.dark2,
-							bg3 = p.dark3,
-							bg4 = p.dark4,
-							fg0 = p.light0,
-							fg1 = p.light1,
-							fg2 = p.light2,
-							fg3 = p.light3,
-							fg4 = p.light4,
-							red = p.bright_red,
-							green = p.bright_green,
-							yellow = p.bright_yellow,
-							blue = p.bright_blue,
-							purple = p.bright_purple,
-							aqua = p.bright_aqua,
-							orange = p.bright_orange,
-							neutral_red = p.neutral_red,
-							neutral_green = p.neutral_green,
-							neutral_yellow = p.neutral_yellow,
-							neutral_blue = p.neutral_blue,
-							neutral_purple = p.neutral_purple,
-							neutral_aqua = p.neutral_aqua,
-							dark_red = p.dark_red,
-							dark_green = p.dark_green,
-							dark_aqua = p.dark_aqua,
-							gray = p.gray,
-						} or {
-							bg0 = p.light0,
-							bg1 = p.light1,
-							bg2 = p.light2,
-							bg3 = p.light3,
-							bg4 = p.light4,
-							fg0 = p.dark0,
-							fg1 = p.dark1,
-							fg2 = p.dark2,
-							fg3 = p.dark3,
-							fg4 = p.dark4,
-							red = p.faded_red,
-							green = p.faded_green,
-							yellow = p.faded_yellow,
-							blue = p.faded_blue,
-							purple = p.faded_purple,
-							aqua = p.faded_aqua,
-							orange = p.faded_orange,
-							neutral_red = p.neutral_red,
-							neutral_green = p.neutral_green,
-							neutral_yellow = p.neutral_yellow,
-							neutral_blue = p.neutral_blue,
-							neutral_purple = p.neutral_purple,
-							neutral_aqua = p.neutral_aqua,
-							dark_red = p.light_red,
-							dark_green = p.light_green,
-							dark_aqua = p.light_aqua,
-							gray = p.gray,
-						}
-						set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
-						if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+					local p = require('gruvbox').palette
+					local set_hl = api.nvim_set_hl
+					local colors = vim.o.background == 'dark' and {
+						bg0 = p.dark0,
+						bg1 = p.dark1,
+						bg2 = p.dark2,
+						bg3 = p.dark3,
+						bg4 = p.dark4,
+						fg0 = p.light0,
+						fg1 = p.light1,
+						fg2 = p.light2,
+						fg3 = p.light3,
+						fg4 = p.light4,
+						red = p.bright_red,
+						green = p.bright_green,
+						yellow = p.bright_yellow,
+						blue = p.bright_blue,
+						purple = p.bright_purple,
+						aqua = p.bright_aqua,
+						orange = p.bright_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.dark_red,
+						dark_green = p.dark_green,
+						dark_aqua = p.dark_aqua,
+						gray = p.gray,
+					} or {
+						bg0 = p.light0,
+						bg1 = p.light1,
+						bg2 = p.light2,
+						bg3 = p.light3,
+						bg4 = p.light4,
+						fg0 = p.dark0,
+						fg1 = p.dark1,
+						fg2 = p.dark2,
+						fg3 = p.dark3,
+						fg4 = p.dark4,
+						red = p.faded_red,
+						green = p.faded_green,
+						yellow = p.faded_yellow,
+						blue = p.faded_blue,
+						purple = p.faded_purple,
+						aqua = p.faded_aqua,
+						orange = p.faded_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.light_red,
+						dark_green = p.light_green,
+						dark_aqua = p.light_aqua,
+						gray = p.gray,
+					}
+					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
 
-						-- Custom
-						set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
-						set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
-						set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
-						set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
-						set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
+					-- Custom
+					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
+					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
+					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
+					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
+					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
+					set_hl(0, 'Cokeline_focused_unique_prefix_fg', { fg = colors.bg2 })
+					set_hl(0, 'Cokeline_notfocused_unique_prefix_fg', { fg = colors.fg3 })
 
-						-- Custom Status Column (Tags: column, statuscolumn, status_column )
-						set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
-						set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
-						set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
-						set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
-						set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
-						set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-						set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-						set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
+					-- Custom Status Column (Tags: column, statuscolumn, status_column )
+					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
+					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
+					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
 
-						set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
-						set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
-						set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
+					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
+					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
+					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
 
-						set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
-						set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
-						set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
-						set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
-						set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
-						set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
-						set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
-						set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
-						set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
-						set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
+					set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
+					set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
+					set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
+					set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
+					set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
+					set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
 
-						set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0 })
+					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0 })
 
-						set_hl(0, 'BlinkCmpKindClass', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindColor', { bg = colors.purple, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindConstant', { bg = colors.orange, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindConstructor', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindEnum', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindEnumMember', { bg = colors.aqua, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindEvent', { bg = colors.purple, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindField', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindFile', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindFolder', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindFunction', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindInterface', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindKeyword', { bg = colors.purple, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindMethod', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindModule', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindOperator', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindProperty', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindReference', { bg = colors.purple, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindSnippet', { bg = colors.green, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindStruct', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindText', { bg = colors.orange, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindTypeParameter', { bg = colors.yellow, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindUnit', { bg = colors.blue, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindValue', { bg = colors.orange, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindVariable', { bg = colors.orange, fg = colors.bg1 })
-						set_hl(0, 'BlinkCmpKindCopilot', { bg = colors.gray, fg = colors.bg1 })
-						set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
-						set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
-						set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
-					end
+					set_hl(0, 'BlinkCmpKindClass', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindColor', { bg = colors.purple, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindConstant', { bg = colors.orange, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindConstructor', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindEnum', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindEnumMember', { bg = colors.aqua, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindEvent', { bg = colors.purple, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindField', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindFile', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindFolder', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindFunction', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindInterface', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindKeyword', { bg = colors.purple, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindMethod', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindModule', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindOperator', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindProperty', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindReference', { bg = colors.purple, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindSnippet', { bg = colors.green, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindStruct', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindText', { bg = colors.orange, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindTypeParameter', { bg = colors.yellow, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindUnit', { bg = colors.blue, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindValue', { bg = colors.orange, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindVariable', { bg = colors.orange, fg = colors.bg1 })
+					set_hl(0, 'BlinkCmpKindCopilot', { bg = colors.gray, fg = colors.bg1 })
+					set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
 				end,
 			})
 			local palette = require('gruvbox').palette
@@ -1985,11 +2049,15 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	},
 
 	-- COKELINE, TABBAR, TABLINE
+	-- The following highlight groups need to be set manually
+	--   Cokeline_focused_unique_prefix_fg
+	--   Cokeline_notfocused_unique_prefix_fg
 	{
 		'willothy/nvim-cokeline',
 		enabled = true,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
+			'nvim-lualine/lualine.nvim',
 			'nvim-lua/plenary.nvim',
 			'echasnovski/mini.icons',
 			'stevearc/resession.nvim',
@@ -2014,234 +2082,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				},
 			}
 
-			local colors = {
-				default = 'gruvbox',
-				colorschemes = {
-					['catppuccin-mocha'] = {
-						dark = {
-							focused = {
-								normal = { bg = '#89b4fa', fg = '#181825', bold = true },
-								insert = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
-								command = { bg = '#fab387', fg = '#1e1e2e', bold = true },
-								visual = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
-								select = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
-								replace = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
-								term = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
-								normal_num = { bg = '#629cf8', fg = '#181825', bold = true },
-								insert_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
-								command_num = { bg = '#f49357', fg = '#1e1e2e', bold = true },
-								visual_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
-								select_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
-								replace_num = { bg = '#ee5983', fg = '#1e1e2e', bold = true },
-								term_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
-								unique_prefix_fg = '#45475a',
-								diagnostic_error = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
-								diagnostic_warn = { bg = '#f9e2af', fg = '#1e1e2e', bold = true },
-								diagnostic_info = { bg = '#89dceb', fg = '#1e1e2e', bold = true },
-								diagnostic_hint = { bg = '#94e2d5', fg = '#1e1e2e', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#313244', fg = '#89b4fa' },
-								insert = { bg = '#313244', fg = '#a6e3a1' },
-								command = { bg = '#313244', fg = '#fab387' },
-								visual = { bg = '#313244', fg = '#cba6f7' },
-								select = { bg = '#313244', fg = '#cba6f7' },
-								replace = { bg = '#313244', fg = '#f38ba8' },
-								term = { bg = '#313244', fg = '#a6e3a1' },
-								normal_num = { bg = '#45475a', fg = '#89b4fa' },
-								insert_num = { bg = '#45475a', fg = '#a6e3a1' },
-								command_num = { bg = '#45475a', fg = '#fab387' },
-								visual_num = { bg = '#45475a', fg = '#cba6f7' },
-								select_num = { bg = '#45475a', fg = '#cba6f7' },
-								replace_num = { bg = '#45475a', fg = '#f38ba8' },
-								term_num = { bg = '#45475a', fg = '#a6e3a1' },
-								unique_prefix_fg = '#9399b2',
-								diagnostic_error = { bg = '#313244', fg = '#f38ba8' },
-								diagnostic_warn = { bg = '#313244', fg = '#f9e2af' },
-								diagnostic_info = { bg = '#313244', fg = '#89dceb' },
-								diagnostic_hint = { bg = '#313244', fg = '#94e2d5' },
-							},
-							tablinefill = {
-								normal = { bg = '#181825', fg = '#cdd6f4' },
-								insert = { bg = '#181825', fg = '#cdd6f4' },
-								command = { bg = '#181825', fg = '#cdd6f4' },
-								visual = { bg = '#181825', fg = '#cdd6f4' },
-								select = { bg = '#181825', fg = '#cdd6f4' },
-								replace = { bg = '#181825', fg = '#cdd6f4' },
-								term = { bg = '#181825', fg = '#cdd6f4' },
-							},
-							quit = { bg = '#f38ba8', fg = '#1e1e2e', bold = true }
-						},
-					},
-					['catppuccin-latte'] = {
-						light = {
-							focused = {
-								normal = { bg = '#1e66f5', fg = '#e6e9ef', bold = true },
-								insert = { bg = '#40a02b', fg = '#eff1f5', bold = true },
-								command = { bg = '#fe640d', fg = '#eff1f5', bold = true },
-								visual = { bg = '#8839ef', fg = '#eff1f5', bold = true },
-								select = { bg = '#8839ef', fg = '#eff1f5', bold = true },
-								replace = { bg = '#d20f39', fg = '#eff1f5', bold = true },
-								term = { bg = '#40a02b', fg = '#eff1f5', bold = true },
-								normal_num = { bg = '#3c7af6', fg = '#e6e9ef', bold = true },
-								insert_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
-								command_num = { bg = '#fe7e34', fg = '#eff1f5', bold = true },
-								visual_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
-								select_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
-								replace_num = { bg = '#ee1141', fg = '#eff1f5', bold = true },
-								term_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
-								unique_prefix_fg = '#bcc0cc',
-								diagnostic_error = { bg = '#d20f39', fg = '#eff1f5', bold = true },
-								diagnostic_warn = { bg = '#df8e1d', fg = '#eff1f5', bold = true },
-								diagnostic_info = { bg = '#04a5e5', fg = '#eff1f5', bold = true },
-								diagnostic_hint = { bg = '#179299', fg = '#eff1f5', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#ccd0da', fg = '#1e66f5' },
-								insert = { bg = '#ccd0da', fg = '#40a02b' },
-								command = { bg = '#ccd0da', fg = '#fe640d' },
-								visual = { bg = '#ccd0da', fg = '#8839ef' },
-								select = { bg = '#ccd0da', fg = '#8839ef' },
-								replace = { bg = '#ccd0da', fg = '#d20f39' },
-								term = { bg = '#ccd0da', fg = '#40a02b' },
-								normal_num = { bg = '#bcc0cc', fg = '#1e66f5' },
-								insert_num = { bg = '#bcc0cc', fg = '#40a02b' },
-								command_num = { bg = '#bcc0cc', fg = '#fe640d' },
-								visual_num = { bg = '#bcc0cc', fg = '#8839ef' },
-								select_num = { bg = '#bcc0cc', fg = '#8839ef' },
-								replace_num = { bg = '#bcc0cc', fg = '#d20f39' },
-								term_num = { bg = '#bcc0cc', fg = '#40a02b' },
-								unique_prefix_fg = '#7c7f93',
-								diagnostic_error = { bg = '#ccd0da', fg = '#d20f39' },
-								diagnostic_warn = { bg = '#ccd0da', fg = '#df8e1d' },
-								diagnostic_info = { bg = '#ccd0da', fg = '#04a5e5' },
-								diagnostic_hint = { bg = '#ccd0da', fg = '#179299' },
-							},
-							tablinefill = {
-								normal = { bg = '#e6e9ef', fg = '#4c4f69' },
-								insert = { bg = '#e6e9ef', fg = '#4c4f69' },
-								command = { bg = '#e6e9ef', fg = '#4c4f69' },
-								visual = { bg = '#e6e9ef', fg = '#4c4f69' },
-								select = { bg = '#e6e9ef', fg = '#4c4f69' },
-								replace = { bg = '#e6e9ef', fg = '#4c4f69' },
-								term = { bg = '#e6e9ef', fg = '#4c4f69' },
-							},
-							quit = { bg = '#d20f39', fg = '#eff1f5', bold = true }
-						},
-					},
-					gruvbox = {
-						dark = {
-							focused = {
-								normal = { bg = '#a89984', fg = '#282828', bold = true },
-								insert = { bg = '#83a598', fg = '#282828', bold = true },
-								command = { bg = '#b8bb26', fg = '#282828', bold = true },
-								visual = { bg = '#fe8019', fg = '#282828', bold = true },
-								select = { bg = '#fe8019', fg = '#282828', bold = true },
-								replace = { bg = '#fb4934', fg = '#282828', bold = true },
-								term = { bg = '#a89984', fg = '#282828', bold = true },
-								normal_num = { bg = '#867869', fg = '#282828', bold = true },
-								insert_num = { bg = '#458588', fg = '#282828', bold = true },
-								command_num = { bg = '#98971a', fg = '#282828', bold = true },
-								visual_num = { bg = '#d65d0e', fg = '#282828', bold = true },
-								select_num = { bg = '#d65d0e', fg = '#282828', bold = true },
-								replace_num = { bg = '#cc241d', fg = '#282828', bold = true },
-								term_num = { bg = '#928374', fg = '#282828', bold = true },
-								unique_prefix_fg = '#504945',
-								diagnostic_error = { bg = '#fb4934', fg = '#282828', bold = true },
-								diagnostic_warn = { bg = '#fabd2f', fg = '#282828', bold = true },
-								diagnostic_info = { bg = '#83a598', fg = '#282828', bold = true },
-								diagnostic_hint = { bg = '#8ec07c', fg = '#282828', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#504945', fg = '#ebdbb2' },
-								insert = { bg = '#504945', fg = '#ebdbb2' },
-								command = { bg = '#504945', fg = '#ebdbb2' },
-								visual = { bg = '#504945', fg = '#ebdbb2' },
-								select = { bg = '#504945', fg = '#ebdbb2' },
-								replace = { bg = '#504945', fg = '#ebdbb2' },
-								term = { bg = '#504945', fg = '#ebdbb2' },
-								normal_num = { bg = '#665c54', fg = '#ebdbb2' },
-								insert_num = { bg = '#665c54', fg = '#ebdbb2' },
-								command_num = { bg = '#665c54', fg = '#ebdbb2' },
-								visual_num = { bg = '#665c54', fg = '#ebdbb2' },
-								select_num = { bg = '#665c54', fg = '#ebdbb2' },
-								replace_num = { bg = '#665c54', fg = '#ebdbb2' },
-								term_num = { bg = '#665c54', fg = '#ebdbb2' },
-								unique_prefix_fg = '#bdae93',
-								diagnostic_error = { bg = '#504945', fg = '#fb4934' },
-								diagnostic_warn = { bg = '#504945', fg = '#fabd2f' },
-								diagnostic_info = { bg = '#504945', fg = '#83a598' },
-								diagnostic_hint = { bg = '#504945', fg = '#8ec07c' },
-							},
-							tablinefill = {
-								normal = { bg = '#3c3836', fg = '#a89984' },
-								insert = { bg = '#504945', fg = '#ebdbb2' },
-								command = { bg = '#7c6f64', fg = '#282828' },
-								visual = { bg = '#7c6f64', fg = '#282828' },
-								select = { bg = '#7c6f64', fg = '#282828' },
-								replace = { bg = '#282828', fg = '#ebdbb2' },
-								term = { bg = '#3c3836', fg = '#a89984' },
-							},
-							quit = { bg = '#fb4934', fg = '#282828', bold = true }
-						},
-						light = {
-							focused = {
-								normal = { bg = '#7c6f64', fg = '#f9f5d7', bold = true },
-								insert = { bg = '#076678', fg = '#f9f5d7', bold = true },
-								command = { bg = '#79740e', fg = '#f9f5d7', bold = true },
-								visual = { bg = '#af3a03', fg = '#f9f5d7', bold = true },
-								select = { bg = '#af3a03', fg = '#f9f5d7', bold = true },
-								replace = { bg = '#9d0006', fg = '#f9f5d7', bold = true },
-								term = { bg = '#7c6f64', fg = '#f9f5d7', bold = true },
-								normal_num = { bg = '#928374', fg = '#f9f5d7', bold = true },
-								insert_num = { bg = '#458588', fg = '#f9f5d7', bold = true },
-								command_num = { bg = '#98971a', fg = '#f9f5d7', bold = true },
-								visual_num = { bg = '#d65d0e', fg = '#f9f5d7', bold = true },
-								select_num = { bg = '#d65d0e', fg = '#f9f5d7', bold = true },
-								replace_num = { bg = '#cc241d', fg = '#f9f5d7', bold = true },
-								term_num = { bg = '#928374', fg = '#f9f5d7', bold = true },
-								unique_prefix_fg = '#d5c4a1',
-								diagnostic_error = { bg = '#9d0006', fg = '#f9f5d7', bold = true },
-								diagnostic_warn = { bg = '#b57614', fg = '#f9f5d7', bold = true },
-								diagnostic_info = { bg = '#076678', fg = '#f9f5d7', bold = true },
-								diagnostic_hint = { bg = '#427b58', fg = '#f9f5d7', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#d5c4a1', fg = '#7c6f64' },
-								insert = { bg = '#d5c4a1', fg = '#7c6f64' },
-								command = { bg = '#d5c4a1', fg = '#7c6f64' },
-								visual = { bg = '#d5c4a1', fg = '#7c6f64' },
-								select = { bg = '#d5c4a1', fg = '#7c6f64' },
-								replace = { bg = '#d5c4a1', fg = '#7c6f64' },
-								term = { bg = '#d5c4a1', fg = '#7c6f64' },
-								normal_num = { bg = '#bdae93', fg = '#7c6f64' },
-								insert_num = { bg = '#bdae93', fg = '#7c6f64' },
-								command_num = { bg = '#bdae93', fg = '#7c6f64' },
-								visual_num = { bg = '#bdae93', fg = '#7c6f64' },
-								select_num = { bg = '#bdae93', fg = '#7c6f64' },
-								replace_num = { bg = '#bdae93', fg = '#7c6f64' },
-								term_num = { bg = '#bdae93', fg = '#7c6f64' },
-								unique_prefix_fg = '#bdae93',
-								diagnostic_error = { bg = '#d5c4a1', fg = '#9d0006' },
-								diagnostic_warn = { bg = '#d5c4a1', fg = '#b57614' },
-								diagnostic_info = { bg = '#d5c4a1', fg = '#076678' },
-								diagnostic_hint = { bg = '#d5c4a1', fg = '#427b58' },
-							},
-							tablinefill = {
-								normal = { bg = '#ebdbb2', fg = '#7c6f64' },
-								insert = { bg = '#d5c4a1', fg = '#3c3835' },
-								command = { bg = '#ebdbb2', fg = '#7c6f64' },
-								visual = { bg = '#7c6f64', fg = '#f9f5d7' },
-								select = { bg = '#7c6f64', fg = '#f9f5d7' },
-								replace = { bg = '#d5c4a1', fg = '#3c3836' },
-								term = { bg = '#ebdbb2', fg = '#7c6f64' },
-							},
-							quit = { bg = '#9d0006', fg = '#f9f5d7', bold = true }
-						},
-					},
-				},
-			}
-
 			local get_mode = function()
 				local mode = api.nvim_get_mode().mode or 'n'
 				local mode_first_char = string.sub(mode, 1, 1)
@@ -2251,36 +2091,34 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				elseif mode_first_char == 'i' then return 'insert'
 				elseif mode_first_char == 'R' then return 'replace'
 				elseif mode_first_char == 'c' then return 'command'
-				elseif mode_first_char == 't' then return 'term'
-				else return 'normal'
-				end
+				elseif mode_first_char == 't' then return 'terminal'
+				else return 'normal' end
 			end
 
-			local get_colors = function()
-				return colors['colorschemes'][
-					colors['colorschemes'][vim.g.colors_name]
-					and vim.g.colors_name
-					or colors.default
-					][(vim.o.background == 'dark' or vim.o.background == 'light') and vim.o.background or 'dark']
+			local get_color = function(a, b)
+				local color = api.nvim_get_hl(0, { name = string.format('lualine_%s_%s', a, b) })
+				if next(color) ~= nil then return color end
+				color = api.nvim_get_hl(0, { name = string.format('lualine_%s_normal', a) })
+				if next(color) ~= nil then return color end
 			end
 
-			local get_focus_colors = function(is_focused)
-				return get_colors()[is_focused and 'focused' or 'not_focused']
+			local get_color_simple = function(focused, c)
+				return get_color(focused and 'a' or 'b', get_mode())[c]
 			end
 
 			create_autocmd({ 'ModeChanged', 'ColorScheme', 'LspAttach' }, {
 				pattern = '*',
 				callback = function()
-					api.nvim_set_hl(0, 'TabLineFill', get_colors()['tablinefill'][get_mode()])
+					---@diagnostic disable-next-line: param-type-mismatch
+					api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
 				end
 			})
-			api.nvim_set_hl(0, 'TabLineFill', get_colors()['tablinefill'][get_mode()])
+			api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
 
 			-- Set keymaps
 			local opts = { noremap = true, silent = true }
 
 			-- Buffers
-			-- keymap.set('n', ']0', '<cmd>LualineBuffersJump $<CR>', opts)
 			for i = 1, 9 do
 				keymap.set('n', (']%s'):format(global_config.middle_row_of_keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
 			end
@@ -2298,24 +2136,17 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
 			require('cokeline').setup({
 				default_hl = {
-					fg = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['fg'] end,
-					bg = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['bg'] end,
-					bold = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['bold'] end,
-					italic = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['italic'] end,
-					underline = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['underline'] end,
-					undercurl = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['undercurl'] end,
-					strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode()]['strikethrough'] end,
+					fg = function(buffer) return get_color_simple(buffer.is_focused, 'fg') end,
+					bg = function(buffer) return get_color_simple(buffer.is_focused, 'bg') end,
+					bold = function(buffer) return get_color_simple(buffer.is_focused, 'bold') end,
+					italic = function(buffer) return get_color_simple(buffer.is_focused, 'italic') end,
+					underline = function(buffer) return get_color_simple(buffer.is_focused, 'underline') end,
+					undercurl = function(buffer) return get_color_simple(buffer.is_focused, 'undercurl') end,
+					strikethrough = function(buffer) return get_color_simple(buffer.is_focused, 'strikethrough') end,
 				},
 				components = {
 					{
-						text = function(buffer) return ' ' .. buffer.index .. ' ' end,
-						bg = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['bg'] end,
-						fg = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['fg'] end,
-						bold = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['bold'] end,
-						italic = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['italic'] end,
-						underline = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['underline'] end,
-						undercurl = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['undercurl'] end,
-						strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)[get_mode() .. '_num']['strikethrough'] end,
+						text = function(buffer) return ' ' .. buffer.index end,
 					},
 					{
 						text = function(buffer)
@@ -2330,7 +2161,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							return buffer.unique_prefix
 						end,
 						fg = function(buffer)
-							return get_colors()[buffer.is_focused and 'focused' or 'not_focused']['unique_prefix_fg']
+							return get_hl('Cokeline_' .. (buffer.is_focused and 'focused' or 'notfocused') .. '_unique_prefix_fg')
 						end,
 					},
 					{
@@ -2347,62 +2178,42 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						text = function(buffer)
 							return buffer.diagnostics.errors ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.errors .. ' ') or ''
 						end,
-						bg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['bg'] end,
-						fg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['fg'] end,
-						bold = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['bold'] end,
-						italic = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['italic'] end,
-						underline = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['underline'] end,
-						undercurl = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['undercurl'] end,
-						strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_error']['strikethrough'] end,
+						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticError') or get_color_simple(false, 'bg') end,
+						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticError') end,
 					},
 					{
 						text = function(buffer)
 							return buffer.diagnostics.warnings ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.warnings .. ' ') or ''
 						end,
-						bg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['bg'] end,
-						fg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['fg'] end,
-						bold = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['bold'] end,
-						italic = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['italic'] end,
-						underline = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['underline'] end,
-						undercurl = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['undercurl'] end,
-						strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_warn']['strikethrough'] end,
+						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticWarn') or get_color_simple(false, 'bg') end,
+						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticWarn') end,
 					},
 					{
 						text = function(buffer)
 							return buffer.diagnostics.hints ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.hints .. ' ') or ''
 						end,
-						bg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['bg'] end,
-						fg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['fg'] end,
-						bold = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['bold'] end,
-						italic = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['italic'] end,
-						underline = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['underline'] end,
-						undercurl = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['undercurl'] end,
-						strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_hint']['strikethrough'] end,
+						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticHint') or get_color_simple(false, 'bg') end,
+						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticHint') end,
 					},
 					{
 						text = function(buffer)
 							return buffer.diagnostics.infos ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.infos .. ' ') or ''
 						end,
-						bg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['bg'] end,
-						fg = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['fg'] end,
-						bold = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['bold'] end,
-						italic = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['italic'] end,
-						underline = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['underline'] end,
-						undercurl = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['undercurl'] end,
-						strikethrough = function(buffer) return get_focus_colors(buffer.is_focused)['diagnostic_info']['strikethrough'] end,
+						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticInfo') or get_color_simple(false, 'bg') end,
+						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticInfo') end,
 					},
 					{
 						text = function(buffer)
 							local text = buffer.is_last and config.special_file_type[vim.o.filetype]
 							return text and ' ' .. config.special_file_type_symbol .. text or ''
 						end,
-						bg = function() return get_colors()['tablinefill'][get_mode()]['bg'] end,
-						fg = function() return get_colors()['tablinefill'][get_mode()]['fg'] end,
-						bold = function() return get_colors()['tablinefill'][get_mode()]['bold'] end,
-						italic = function() return get_colors()['tablinefill'][get_mode()]['italic'] end,
-						underline = function() return get_colors()['tablinefill'][get_mode()]['underline'] end,
-						undercurl = function() return get_colors()['tablinefill'][get_mode()]['undercurl'] end,
-						strikethrough = function() return get_colors()['tablinefill'][get_mode()]['strikethrough'] end,
+						bg = function() return get_color('c', get_mode())['bg'] end,
+						fg = function() return get_color('c', get_mode())['fg'] end,
+						bold = function() return get_color('c', get_mode())['bold'] end,
+						italic = function() return get_color('c', get_mode())['italic'] end,
+						underline = function() return get_color('c', get_mode())['underline'] end,
+						undercurl = function() return get_color('c', get_mode())['undercurl'] end,
+						strikethrough = function() return get_color('c', get_mode())['strikethrough'] end,
 					},
 				},
 				tabs = {
@@ -2425,37 +2236,35 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 									end
 									return ' ' .. name .. ' ' .. icon
 								end
-								return ''
+								return ' '
 							end,
-							bg = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['bg'] end,
-							fg = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['fg'] end,
-							bold = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['bold'] end,
-							italic = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['italic'] end,
-							underline = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['underline'] end,
-							strikethrough = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode()]['strikethrough'] end,
+							fg = function(tabpage) return get_color_simple(tabpage.is_active, 'fg') end,
+							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
+							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
+							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
+							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
+							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
+							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
 						},
 						{
 							text = function(tabpage)
-								return ' ' .. tabpage.number .. ' '
+								return tabpage.number .. ' '
 							end,
-							bg = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['bg'] end,
-							fg = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['fg'] end,
-							bold = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['bold'] end,
-							italic = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['italic'] end,
-							underline = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['underline'] end,
-							strikethrough = function(tabpage) return get_focus_colors(tabpage.is_active)[get_mode() .. '_num']['strikethrough'] end,
+							fg = function(tabpage) return get_color_simple(tabpage.is_active, 'fg') end,
+							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
+							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
+							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
+							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
+							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
+							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
 						},
 						{
 							text = function(tabpage)
 								return tabpage.is_last and ' X ' or ''
 							end,
-							bg = function() return get_colors()['quit']['bg'] end,
-							fg = function() return get_colors()['quit']['fg'] end,
-							bold = function() return get_colors()['quit']['bold'] end,
-							italic = function() return get_colors()['quit']['italic'] end,
-							underline = function() return get_colors()['quit']['underline'] end,
-							undercurl = function() return get_colors()['quit']['undercurl'] end,
-							strikethrough = function() return get_colors()['quit']['strikethrough'] end,
+							bg = function() return get_hl('DiagnosticError') end,
+							fg = function() return get_color_simple(true, 'fg') end,
+							bold = true,
 							on_click = function()
 								vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
 									if input and (input == '' or string.lower(input) == 'y') then
@@ -2476,10 +2285,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = { 'echasnovski/mini.icons' },
 		config = function()
-			local get_date = function()
-				return os.date('%D %R')
-			end
-
 			local lsp_clients = function()
 				local bufnr = api.nvim_get_current_buf()
 
@@ -2550,7 +2355,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						{ 'progress', separator = ' ', padding = { left = 1, right = 0 } },
 						{ 'location', padding = { left = 0, right = 1 } },
 					},
-					lualine_z = { get_date },
+					lualine_z = { 'os.date("%D %R")' },
 				},
 			})
 		end,
