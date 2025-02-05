@@ -1006,7 +1006,7 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
-		enabled = false,
+		enabled = true,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -1081,7 +1081,7 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
-		enabled = true,
+		enabled = false,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -1569,168 +1569,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				},
 			})
 		end,
-	},
-
-	-- OIL
-	{
-		'stevearc/oil.nvim',
-		enabled = false,
-		keys = {
-			{
-				'<leader>e',
-				function()
-					if vim.o.filetype == 'oil' then
-						require('oil').close()
-					else
-						require('oil').open()
-					end
-				end,
-				mode = 'n',
-			},
-			{
-				'<leader>E',
-				function()
-					require('oil').open(vim.fn.stdpath('config'))
-				end,
-				mode = 'n',
-			},
-		},
-		cmd = 'Oil',
-		init = function()
-			local oil_open_folder = function(path) require('oil').open(path) end
-			autocmd_attach_file_browser('oil', oil_open_folder)
-		end,
-		config = function()
-			_G.get_oil_winbar = function()
-				local dir = require('oil').get_current_dir()
-				if dir then
-					return vim.fn.fnamemodify(dir, ':~')
-				else
-					-- If there is no current directory (e.g. over ssh), just show the buffer name
-					return api.nvim_buf_get_name(0)
-				end
-			end
-			require('oil').setup({
-				-- columns = {
-				-- 	'icon',
-				-- 	'permissions',
-				-- 	'size',
-				-- 	-- 'mtime',
-				-- },
-				win_options = {
-					winbar = '%!v:lua.get_oil_winbar()',
-				},
-				default_file_explorer = true,
-				view_options = {
-					show_hidden = true,
-				},
-				confirmation = {
-					border = global_config.plugins_config.border,
-				},
-			})
-		end,
-	},
-
-	-- NEOTREE (Disabled)
-	{
-		'nvim-neo-tree/neo-tree.nvim',
-		enabled = false,
-		branch = 'v3.x',
-		dependencies = {
-			'nvim-lua/plenary.nvim',
-			'echasnovski/mini.icons',
-			'MunifTanjim/nui.nvim',
-			-- '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
-
-			{
-				's1n7ax/nvim-window-picker',
-				version = '2.*',
-				config = function()
-					require 'window-picker'.setup({
-						filter_rules = {
-							include_current_win = false,
-							autoselect_one = true,
-							-- filter using buffer options
-							bo = {
-								-- if the file type is one of following, the window will be ignored
-								filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
-								-- if the buffer type is one of following, the window will be ignored
-								buftype = { 'terminal', 'quickfix' },
-							},
-						},
-					})
-				end,
-			},
-		},
-		keys = {
-			{ '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Explorer NeoTree (user dir)', remap = true },
-			{ '<leader>E', '<cmd>Neotree dir=%:p:h toggle<CR>', desc = 'Explorer NeoTree (%f)',       remap = true },
-			{
-				'<leader>ge',
-				function()
-					require('neo-tree.command').execute({ source = 'git_status', toggle = true })
-				end,
-				desc = 'Git explorer',
-			},
-			{
-				'<leader>be',
-				function()
-					require('neo-tree.command').execute({ source = 'buffers', toggle = true })
-				end,
-				desc = 'Buffer explorer',
-			},
-		},
-		init = function()
-			-- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
-			-- because `cwd` is not set up properly.
-			api.nvim_create_autocmd('BufEnter', {
-				group = api.nvim_create_augroup('Neotree_start_directory', { clear = true }),
-				desc = 'Start Neo-tree with directory',
-				once = true,
-				callback = function()
-					if package.loaded['neo-tree'] then
-						return
-					else
-						---@diagnostic disable-next-line: undefined-field
-						local stats = vim.uv.fs_stat(vim.fn.argv(0))
-						if stats and stats.type == 'directory' then
-							require('neo-tree')
-						end
-					end
-				end,
-			})
-		end,
-		config = function()
-			require('neo-tree').setup({
-				event_handlers = {
-					{
-						event = 'vim_buffer_enter',
-						handler = function()
-							if vim.bo.filetype == 'neo-tree' then
-								opt.number = true
-								opt.cursorcolumn = false
-								-- opt.relativenumber = true
-							end
-						end,
-					},
-				},
-				popup_border_style = 'single',
-				window = {
-					mappings = {
-						['e'] = 'none',
-						['o'] = 'open',
-						['h'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
-					},
-				},
-				filesystem = {
-					filtered_items = {
-						visible = true,
-						hide_dotfiles = false,
-						hijack_netrw_behavior = 'open_current'
-					},
-				},
-			})
-		end
 	},
 
 	-- FZFLUA
@@ -2599,142 +2437,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 	},
 
-	-- HLSLENS, SEARCH
-	{
-		'kevinhwang91/nvim-hlslens',
-		event = { 'User FileOpened', 'CmdlineEnter' },
-		keys = { 'j', 'J', '*', '#', 'g*', 'g#' },
-		config = function()
-			require('scrollbar.handlers.search').setup({
-				override_lens = function(render, posList, nearest, idx, relIdx)
-					local sfw = vim.v.searchforward == 1
-					local indicator, text, chunks
-					local absRelIdx = math.abs(relIdx)
-					if absRelIdx > 1 then
-						indicator = ('%d%s'):format(absRelIdx, sfw ~= (relIdx > 1) and 'J' or 'j')
-					elseif absRelIdx == 1 then
-						indicator = sfw ~= (relIdx == 1) and 'J' or 'j'
-					else
-						indicator = ''
-					end
-
-					local lnum, col = unpack(posList[idx])
-					if nearest then
-						local cnt = #posList
-						if indicator ~= '' then
-							text = ('[%s %d/%d]'):format(indicator, idx, cnt)
-						else
-							text = ('[%d/%d]'):format(idx, cnt)
-						end
-						chunks = {{' '}, {text, 'HlSearchLensNear'}}
-					else
-						text = ('[%s %d]'):format(indicator, idx)
-						chunks = {{' '}, {text, 'HlSearchLens'}}
-					end
-					render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
-				end
-			})
-
-			local kopts = { noremap = true, silent = true }
-
-			keymap.set('n', 'j', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'J', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-		end,
-	},
-
-	-- SCROLLBAR
-	{
-		'petertriho/nvim-scrollbar',
-		event = 'User FileOpened',
-		dependencies = {
-			'lewis6991/gitsigns.nvim',
-		},
-		config = function()
-			local set_hl = api.nvim_set_hl
-
-			local catppuccin_change_highlight = function(flavours)
-				local palette = require('catppuccin.palettes').get_palette(flavours)
-				local bg = palette.surface0
-
-				set_hl(0, 'ScrollbarHandle', { bg = bg, fg = palette.blue })
-				set_hl(0, 'ScrollbarCursor', { fg = palette.blue })
-				set_hl(0, 'ScrollbarCursorHandle', { bg = bg, fg = palette.blue })
-				set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = palette.peach })
-				set_hl(0, 'ScrollbarErrorHandle', { bg = bg, fg = palette.red })
-				set_hl(0, 'ScrollbarWarnHandle', { bg = bg, fg = palette.yellow })
-				set_hl(0, 'ScrollbarInfoHandle', { bg = bg, fg = palette.sky })
-				set_hl(0, 'ScrollbarHintHandle', { bg = bg, fg = palette.teal })
-				set_hl(0, 'ScrollbarMiscHandle', { bg = bg, fg = palette.text })
-				set_hl(0, 'ScrollbarGitDeleteHandle', { bg = bg, fg = palette.red })
-				set_hl(0, 'ScrollbarGitAddHandle', { bg = bg, fg = palette.green })
-				set_hl(0, 'ScrollbarGitChangeHandle', { bg = bg, fg = palette.yellow })
-			end
-
-			local change_highlight = function()
-				if vim.g.colors_name == 'gruvbox' then
-					-- local palette = require('gruvbox').palette
-					local bg = get_hl('GruvboxBg2')
-					set_hl(0, 'ScrollbarHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
-
-					set_hl(0, 'ScrollbarCursor', { fg = get_hl('GruvboxGreen') })
-					set_hl(0, 'ScrollbarCursorHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
-					set_hl(0, 'ScrollbarSearch', { fg = get_hl('GruvboxOrange') })
-					set_hl(0, 'ScrollbarSearchHandle', { bg = bg, fg = get_hl('GruvboxOrange') })
-					set_hl(0, 'ScrollbarErrorHandle', { bg = bg, fg = get_hl('GruvboxRed') })
-					set_hl(0, 'ScrollbarWarnHandle', { bg = bg, fg = get_hl('GruvboxYellow') })
-					set_hl(0, 'ScrollbarInfoHandle', { bg = bg, fg = get_hl('GruvboxBlue') })
-					set_hl(0, 'ScrollbarHintHandle', { bg = bg, fg = get_hl('GruvboxAqua') })
-					set_hl(0, 'ScrollbarMiscHandle', { bg = bg, fg = get_hl('GruvboxFg1') })
-					set_hl(0, 'ScrollbarGitDeleteHandle', { bg = bg, link = 'ScrollbarErrorHandle' })
-					set_hl(0, 'ScrollbarGitAddHandle', { bg = bg, fg = get_hl('GruvboxGreen') })
-					set_hl(0, 'ScrollbarGitChangeHandle', { bg = bg, fg = get_hl('GruvboxOrange') })
-				elseif vim.g.colors_name == 'catppuccin-mocha' then catppuccin_change_highlight('mocha')
-				elseif vim.g.colors_name == 'catppuccin-latte' then catppuccin_change_highlight('latte')
-				elseif vim.g.colors_name == 'catppuccin-macchiato' then catppuccin_change_highlight('macchiato')
-				elseif vim.g.colors_name == 'catppuccin-frappe' then catppuccin_change_highlight('frappe')
-				elseif vim.g.colors_name == 'onedark' then
-					set_hl(0, 'ScrollbarHandle', { bg = '#373d49', fg = '#4966A0' })
-					set_hl(0, 'ScrollbarCursor', { bg = '#373d49', fg = '#4966A0' })
-					set_hl(0, 'ScrollbarCursorHandle', { bg = '#373d49', fg = '#4966A0' })
-				end
-			end
-
-			require('scrollbar').setup({
-				marks = {
-					Cursor = { text = '▐' },
-					Search = { text = { '─', '═' }, },
-					Error = { text = { '─', '═' }, },
-					Warn = { text = { '─', '═' }, },
-					Info = { text = { '─', '═' }, },
-					Hint = { text = { '─', '═' }, },
-					Misc = { text = { '─', '═' }, },
-				},
-				excluded_filetypes = {
-					'ministarter',
-					'blink-cmp-menu',
-					'TelescopePrompt',
-					'TelescopeResults',
-					'TelescopePreview',
-					'dropbar_menu',
-				},
-				handlers = {
-					gitsigns = true,
-				},
-			})
-			change_highlight()
-			api.nvim_create_autocmd('ColorScheme', {
-				pattern = '*',
-				callback = function()
-					change_highlight()
-				end
-			})
-		end,
-	},
-
 	-- MARKDOWN-PREVIEW
 	{
 		'iamcco/markdown-preview.nvim',
@@ -2836,6 +2538,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	--- INDENT-BLANKLINE
 	{
 		'lukas-reineke/indent-blankline.nvim',
+		enabled = true,
 		main = 'ibl',
 		event = 'User FileOpened',
 		opts = {
@@ -2896,26 +2599,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		end,
 	},
 
-	-- LEARN
-	--- PRECOGNITION
-	{
-		'tris203/precognition.nvim',
-		keys = {
-			{ '<leader>ap', '<cmd>Precognition peek<CR>', mode = 'n' }
-		},
-		opts = {
-			startVisible = false,
-			highlightColor = { link = 'Comment' },
-			hints = {
-				Caret = { text = '|' },
-				Dollar = { text = 'I' },
-				Zero = { text = 'N' },
-				e = { text = 'h' },
-				E = { text = 'H' },
-			},
-		},
-	},
-
 	-- SUDA, SUDO
 	{
 		'lambdalisue/vim-suda',
@@ -2968,7 +2651,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- view = 'cmdline',
 			},
 			messages = {
-				view_search = false,
+				-- view_search = false,
 			},
 			views = {
 				cmdline_popup = { border = { style = 'single', } },
@@ -3214,12 +2897,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			'nvim-treesitter/nvim-treesitter',
 			'echasnovski/mini.icons',
 			'lewis6991/gitsigns.nvim',
-			{
-				'smjonas/inc-rename.nvim',
-				config = function()
-					require('inc_rename').setup()
-				end,
-			},
 		},
 		config = function()
 			local lspconfig = require('lspconfig')
@@ -3248,10 +2925,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
 				opts.desc = 'Smart rename'
-				-- keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-				keymap.set('n', '<leader>rn', function()
-					return ':IncRename ' .. vim.fn.expand('<cword>')
-				end, { noremap = true, expr = true })
+				keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
 
 				opts.desc = 'Show buffer diagnostics'
 				keymap.set('n', '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', opts) -- show  diagnostics for file
