@@ -318,6 +318,7 @@ opt.softtabstop = 4
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
 -- opt.tabstop = 4 -- Number of spaces tabs count for
+opt.termguicolors = true -- Enable true colors
 opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
@@ -891,6 +892,16 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
   -- COLORSCHEME
+  --- TEST, DARCULA
+  {
+    dir = '~/projects/darcula.nvim',
+    enabled = false,
+    priority = 1000,
+    config = function()
+      -- vim.cmd.colorscheme('darcula')
+    end,
+  },
+
   --- CATPPUCCIN
   --- Supported flavors: [mocha|latte ]
   {
@@ -1386,10 +1397,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           trim_right  = '>',
         },
         options = {
-          -- Whether to delete permanently or move into module-specific trash
           permanent_delete = true,
-          -- Whether to use for editing directories
-          use_as_default_explorer = true,
+          use_as_default_explorer = false,
         },
       })
     end,
@@ -3680,7 +3689,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       library = {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
-        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+        { path = '${3rd}/luv/libraryzzz', words = { 'vim%.uv' } },
         'lazy.nvim',
         'nvim-dap-ui',
       },
@@ -3722,7 +3731,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
             Text = '󰉿',
             Method = '󰆧',
             Function = '󰊕',
-            Constructor = '',
+            Construct3or = '',
             Field = '󰜢',
             Variable = '󰀫',
             Class = '󰠱',
