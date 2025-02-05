@@ -1017,6 +1017,9 @@ local plugins = global_config.enabled_plugins and {
 					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
+					set_hl('Directory', palette.green, palette.none, 'bold')
+					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
 					set_hl('StatusColumnFoldCurrent', palette.bg5, palette.bg0)
 					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
@@ -1025,8 +1028,6 @@ local plugins = global_config.enabled_plugins and {
 					set_hl('StatusColumnFoldCurrentCursorLine', palette.bg5, palette.bg1)
 					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, palette.bg1)
 					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
-					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
 					set_hl('BlinkCmpKind', palette.bg3, palette.yellow)
 					set_hl('BlinkCmpKindArray', palette.bg3, palette.aqua)
