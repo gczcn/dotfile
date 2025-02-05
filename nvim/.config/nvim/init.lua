@@ -1007,7 +1007,7 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
-		enabled = true,
+		enabled = false,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -1082,7 +1082,7 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
-		enabled = false,
+		enabled = true,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -2154,6 +2154,9 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						end,
 						style = function(_)
 							return (is_picking_focus() or is_picking_close()) and 'italic,bold' or nil
+						end,
+						fg = function(buffer)
+							return buffer.is_focused and get_color_simple(buffer.is_focused, 'fg') or buffer.devicon.color
 						end,
 					},
 					{
