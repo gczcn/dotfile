@@ -2051,7 +2051,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- COKELINE, TABBAR, TABLINE
 	-- The following highlight groups need to be set manually
 	--   Cokeline_focused_unique_prefix_fg
-	--   Cokeline_notfocused_unique_prefix_fg
+	--  Cokeline_notfocused_unique_prefix_fg
 	{
 		'willothy/nvim-cokeline',
 		enabled = true,
@@ -2069,6 +2069,12 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local get_tab_name = function(tabpage_handle)
 				local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage_handle))), '/')
 				return name[#name]
+			end
+
+			local get_file_icon = function(filename, filetype)
+				local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
+				local icon_filename, color_filename = require('nvim-web-devicons').get_icon_color(filename or '')
+				return icon_filename and icon_filename, color_filename or icon_filetype, color_filetype
 			end
 
 			local config = {
@@ -2113,6 +2119,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
 				end
 			})
+			---@diagnostic disable-next-line: param-type-mismatch
 			api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
 
 			-- Set keymaps
@@ -2224,22 +2231,28 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					components = {
 						{
 							text = function(tabpage)
-								local name = get_tab_name(tabpage.number)
-								if name then
-									local icon = ''
-									local icon_filename, _ = require('nvim-web-devicons').get_icon(name)
-									if icon_filename then
-										icon = icon_filename .. ' '
-									else
-										local icon_filetype, _ = require('nvim-web-devicons').get_icon_by_filetype(
-											api.nvim_buf_call(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage.number)), function()
-												return vim.o.filetype
-											end))
-										icon = icon_filetype and icon_filetype .. ' ' or ''
-									end
-									return ' ' .. name .. ' ' .. icon
+								local icon = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
+								return icon and ' ' .. icon .. ' ' or ' '
+							end,
+							fg = function(tabpage)
+								if tabpage.is_active then
+									return get_color_simple(true, 'fg')
+								else
+									local _, color = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
+									return color
 								end
-								return ' '
+							end,
+							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
+							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
+							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
+							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
+							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
+							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
+						},
+						{
+							text = function(tabpage)
+								local name = get_tab_name(tabpage.number)
+								return name and name .. ' ' or ''
 							end,
 							fg = function(tabpage) return get_color_simple(tabpage.is_active, 'fg') end,
 							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
