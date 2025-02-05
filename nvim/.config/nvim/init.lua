@@ -316,7 +316,6 @@ opt.smartcase = true -- Case sensitive searching
 opt.smartindent = true -- Insert indents automatically
 opt.smoothscroll = true
 -- opt.softtabstop = 8
-opt.spell = true
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
 opt.tabstop = 8 -- Number of spaces tabs count for
