@@ -74,6 +74,7 @@ local global_config = {
     nerd_font_circle_and_square = false,
     ascii_icons = false,
     gruvbox_italic = false,
+    gruvbox_material_italic = false,
   },
 }
 
@@ -315,6 +316,7 @@ opt.smartcase = true -- Case sensitive searching
 opt.smartindent = true -- Insert indents automatically
 opt.smoothscroll = true
 opt.softtabstop = 4
+opt.spell = true
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
 -- opt.tabstop = 4 -- Number of spaces tabs count for
@@ -990,6 +992,20 @@ local plugins = global_config.enabled_plugins and {
 
       vim.cmd.colorscheme('catppuccin-mocha')
     end
+  },
+
+  --- GRUVBOX-MATERIAL
+  {
+    'sainnhe/gruvbox-material',
+    enabled = false,
+    priority = 1000,
+    config = function()
+      opt.background = 'dark'
+      vim.g.gruvbox_material_enable_bold = true
+      vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
+      vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_italic
+      vim.cmd.colorscheme('gruvbox-material')
+    end,
   },
 
   --- GRUVBOX
@@ -3381,7 +3397,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       local lspconfig = require('lspconfig')
       local util = require('lspconfig.util')
       local opts = { noremap = true, silent = true }
-      local on_attach = function(_, bufnr)
+      local on_attach = function(client, bufnr)
         opts.buffer = bufnr
 
         -- set keybinds
@@ -3590,7 +3606,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
       -- configure lua server (with special settings)
       lspconfig['lua_ls'].setup({
-        capabilities = capabilities(),
+        -- capabilities = capabilities(),
         on_attach = on_attach,
         settings = { -- custom settings for lua
           Lua = {
