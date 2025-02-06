@@ -2010,8 +2010,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			'lewis6991/gitsigns.nvim',
 		},
 		config = function()
-			local set_hl = api.nvim_set_hl
-
 			local change_highlight = function()
 				if vim.g.colors_name == 'edge' then
 					local config = vim.fn['edge#get_configuration']()
