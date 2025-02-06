@@ -52,6 +52,24 @@ local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
 local create_user_command = api.nvim_create_user_command
 
+---@class PluginsConfig
+---@field border string[]
+---@field nerd_font_circle_and_square boolean
+---@field ascii_icons boolean
+
+---@class StatusColumnConfig
+---@field enabled boolean
+---@field indent boolean
+---@field current_fold boolean
+
+---@class global_config
+---@field middle_row_of_keyboard string[]
+---@field remove_padding_around_neovim_instance boolean
+---@field enabled_plugins boolean
+---@field enabled_copilot boolean
+---@field enabled_tabnine boolean
+---@field statuscolumn StatusColumnConfig
+---@field plugins_config PluginsConfig
 local global_config = {
 	--                       |  0    1    2    3    4    5    6    7    8    9  |
 	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
@@ -69,8 +87,6 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = false,
 		ascii_icons = false,
-		gruvbox_comments_italic = true,
-		gruvbox_italic = true,
 	},
 }
 
@@ -140,6 +156,7 @@ end
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
+---@type table<string, boolean>
 local keymaps_opts = { noremap = true, silent = true }
 
 vim.g.mapleader = ' '
@@ -300,6 +317,7 @@ end
 --
 -- Tags: SCRIPT, SCRIPTS, SHELLSCRIPT, SHELLSCRIPTS
 -- =============================================================================
+---@type table<string, string>
 local shell_scripts = {
 	install_deps_brew = [[
 #!/usr/bin/env bash
@@ -522,7 +540,9 @@ end, { nargs = 1 })
 -- =============================================================================
 -- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
 if global_config.remove_padding_around_neovim_instance then
+	local id = api.nvim_create_augroup('remove_padding_around_neovim_instance', {})
 	create_autocmd({ 'UIEnter', 'ColorScheme' }, {
+		group = id,
 		callback = function()
 			local normal = api.nvim_get_hl(0, { name = 'Normal' })
 			if not normal.bg then return end
@@ -532,6 +552,7 @@ if global_config.remove_padding_around_neovim_instance then
 	})
 
 	create_autocmd({ 'UILeave', 'VimLeave' }, {
+		group = id,
 		callback = function()
 			io.write('\027Ptmux;\027\027]111;\007\027\\')
 			io.write('\027]111\027\\')
