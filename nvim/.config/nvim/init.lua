@@ -64,10 +64,6 @@ local global_config = {
 		enabled = true,
 		indent = false,
 		current_fold = false,
-		fold_end = {
-			enabled = true,
-			text = '|'
-		},
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
@@ -82,57 +78,11 @@ local global_config = {
 -- Functions
 -- Tags: FUN, FUNC, FUNCTION, FUNCTIONS
 -- =============================================================================
-local merge_highlights = function(h1, h2, to)
-	local h1t = api.nvim_get_hl(0, { name = h1 })
-	local h2t = api.nvim_get_hl(0, { name = h2 })
-
-	for k, v in pairs(h2t) do
-		h1t[k] = h1t[k] or v
-	end
-
-	---@diagnostic disable-next-line: param-type-mismatch
-	api.nvim_set_hl(0, to, h1t)
-end
-
-local simple_mode = function()
-	local mode_map = {
-		['n'] = 'NOR',
-		['no'] = 'O-P',
-		['nov'] = 'O-P',
-		['noV'] = 'O-P',
-		['no\22'] = 'O-P',
-		['niI'] = 'N-I',
-		['niR'] = 'N-R',
-		['niV'] = 'N',
-		['nt'] = 'N-T',
-		['v'] = 'VIS',
-		['vs'] = 'V',
-		['V'] = 'V-L',
-		['Vs'] = 'V-L',
-		['\22'] = 'V-B',
-		['\22s'] = 'V-B',
-		['s'] = 'SEL',
-		['S'] = 'S-L',
-		['\19'] = 'S-B',
-		['i'] = 'INS',
-		['ic'] = 'I-C',
-		['ix'] = 'I-X',
-		['R'] = 'REP',
-		['Rc'] = 'R-C',
-		['Rx'] = 'R-X',
-		['Rv'] = 'V-R',
-		['Rvc'] = 'RVC',
-		['Rvx'] = 'RVX',
-		['c'] = 'CMD',
-		['cv'] = 'EX',
-		['ce'] = 'EX',
-		['r'] = 'R',
-		['rm'] = 'M',
-		['r?'] = 'C',
-		['!'] = 'SH',
-		['t'] = 'TERM',
-	}
-	return mode_map[api.nvim_get_mode().mode] or '__'
+-- Need nvim-web-devicons or mini.icons
+local get_file_icon = function(filename, filetype)
+	local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
+	local icon_filename, color_filename = require('nvim-web-devicons').get_icon_color(filename or '')
+	return icon_filename and icon_filename, color_filename or icon_filetype, color_filetype
 end
 
 -- Copy from https://github.com/LazyVim/LazyVim/blob/f11890bf99477898f9c003502397786026ba4287/lua/lazyvim/util/ui.lua#L171-L187
@@ -784,8 +734,8 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'FiraCode Nerd Font Mono'
-local gui_font_size = 11
+local gui_font = 'Consolas Nerd Font Mono'
+local gui_font_size = 12
 
 local gui_change_font_size = function(n)
 	gui_font_size = gui_font_size + n
@@ -904,185 +854,17 @@ local plugins = global_config.enabled_plugins and {
 	--- TEST, DARCULA
 	{
 		dir = '~/projects/darcula.nvim',
-		enabled = false,
+		enabled = true,
 		priority = 1000,
 		config = function()
 			-- vim.cmd.colorscheme('darcula')
 		end,
 	},
 
-	--- CATPPUCCIN
-	--- Supported flavors: [mocha|latte ]
-	{
-		'catppuccin/nvim',
-		name = 'catppuccin-nvim',
-		enabled = false,
-		priority = 1000,
-		config = function()
-			require('catppuccin').setup({
-				styles = {
-					functions = { 'bold' },
-				},
-				integrations = {
-					dropbar = { enabled = true, color_mode = true },
-					mason = true,
-					mini = { indentscope_color = 'overlay0' },
-					neotree = false,
-					noice = true,
-					lsp_trouble = true,
-				},
-				custom_highlights = function(colors)
-					local U = require('catppuccin.utils.colors')
-					return {
-						-- Custom Status Column (Tags: column, statuscolumn, status_column )
-						StatusColumnFold = { fg = colors.surface0 },
-						StatusColumnFoldCurrent = { fg = colors.overlay0 },
-						StatusColumnFoldOpen = { fg = colors.overlay0 },
-						StatusColumnFoldClose = { link = 'Folded' },
-						StatusColumnFoldCurrentCursorLine = { fg = colors.overlay0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						StatusColumnFoldCursorLine = { fg = colors.surface0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						StatusColumnFoldOpenCursorLine = { fg = colors.overlay0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						StatusColumnFoldCloseCursorLine = { link = 'Folded' },
-
-						CursorLineNr = {
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						DiagnosticNumHlError = { fg = colors.red, bold = true },
-						DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
-						DiagnosticNumHlHint = { fg = colors.teal, bold = true },
-						DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
-						FzfLuaHeaderText = { fg = colors.red },
-						FzfLuaHeaderBind = { fg = colors.pink },
-						Cokeline_focused_unique_prefix_fg = { fg = colors.surface1 },
-						Cokeline_notfocused_unique_prefix_fg = { fg = colors.overlay2 },
-
-						-- IlluminatedWordText = { underline = true },
-						-- IlluminatedWordRead = { underline = true },
-						-- IlluminatedWordWrite = { underline = true },
-						-- LspReferenceText = { underline = true },
-						-- LspReferenceRead = { underline = true },
-						-- LspReferenceWrite = { underline = true },
-
-						BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
-						BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
-						BlinkCmpKindConstant = { bg = colors.peach, fg = colors.base },
-						BlinkCmpKindConstructor = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindEnum = { bg = colors.green, fg = colors.base },
-						BlinkCmpKindEnumMember = { bg = colors.red, fg = colors.base },
-						BlinkCmpKindEvent = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindField = { bg = colors.green, fg = colors.base },
-						BlinkCmpKindFile = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindFolder = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindFunction = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindInterface = { bg = colors.yellow, fg = colors.base },
-						BlinkCmpKindKeyword = { bg = colors.red, fg = colors.base },
-						BlinkCmpKindMethod = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindModule = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindOperator = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindProperty = { bg = colors.green, fg = colors.base },
-						BlinkCmpKindReference = { bg = colors.red, fg = colors.base },
-						BlinkCmpKindSnippet = { bg = colors.mauve, fg = colors.base },
-						BlinkCmpKindStruct = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindText = { bg = colors.teal, fg = colors.base },
-						BlinkCmpKindTypeParameter = { bg = colors.blue, fg = colors.base },
-						BlinkCmpKindUnit = { bg = colors.green, fg = colors.base },
-						BlinkCmpKindValue = { bg = colors.peach, fg = colors.base },
-						BlinkCmpKindVariable = { bg = colors.flamingo, fg = colors.base },
-						BlinkCmpKindCopilot = { bg = colors.lavender, fg = colors.base },
-					}
-				end,
-			})
-
-			vim.cmd.colorscheme('catppuccin-mocha')
-		end
-	},
-
-	--- GRUVBOX-MATERIAL
-	{
-		'sainnhe/gruvbox-material',
-		enabled = true,
-		priority = 1000,
-		config = function()
-			create_autocmd('ColorScheme', {
-				group = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
-				pattern = 'gruvbox-material',
-				callback = function()
-					local config = vim.fn['gruvbox_material#get_configuration']()
-					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
-					local set_hl = vim.fn['gruvbox_material#highlight']
-
-					set_hl('Directory', palette.green, palette.none, 'bold')
-					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
-					set_hl('StatusColumnFoldCurrent', palette.bg5, palette.bg0)
-					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
-					set_hl('StatusColumnFoldClose', palette.yellow, palette.bg1)
-					set_hl('StatusColumnFoldCursorLine', palette.bg4, palette.bg1)
-					set_hl('StatusColumnFoldCurrentCursorLine', palette.bg5, palette.bg1)
-					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, palette.bg1)
-					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
-					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
-					set_hl('BlinkCmpKind', palette.bg3, palette.yellow)
-					set_hl('BlinkCmpKindArray', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindBoolean', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindClass', palette.bg3, palette.red)
-					set_hl('BlinkCmpKindColor', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindConstant', palette.bg3, palette.blue)
-					set_hl('BlinkCmpKindConstructor', palette.bg3, palette.green)
-					set_hl('BlinkCmpKindDefault', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindEnum', palette.bg3, palette.yellow)
-					set_hl('BlinkCmpKindEnumMember', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindEvent', palette.bg3, palette.orange)
-					set_hl('BlinkCmpKindField', palette.bg3, palette.green)
-					set_hl('BlinkCmpKindFile', palette.bg3, palette.green)
-					set_hl('BlinkCmpKindFolder', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindFunction', palette.bg3, palette.green)
-					set_hl('BlinkCmpKindInterface', palette.bg3, palette.yellow)
-					set_hl('BlinkCmpKindKey', palette.bg3, palette.red)
-					set_hl('BlinkCmpKindKeyword', palette.bg3, palette.red)
-					set_hl('BlinkCmpKindMethod', palette.bg3, palette.green)
-					set_hl('BlinkCmpKindModule', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindNamespace', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindNull', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindNumber', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindObject', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindOperator', palette.bg3, palette.orange)
-					set_hl('BlinkCmpKindPackage', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindProperty', palette.bg3, palette.blue)
-					set_hl('BlinkCmpKindReference', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindSnippet', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindString', palette.bg3, palette.aqua)
-					set_hl('BlinkCmpKindStruct', palette.bg3, palette.yellow)
-					set_hl('BlinkCmpKindText', palette.bg3, palette.fg0)
-					set_hl('BlinkCmpKindTypeParameter', palette.bg3, palette.yellow)
-					set_hl('BlinkCmpKindUnit', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindValue', palette.bg3, palette.purple)
-					set_hl('BlinkCmpKindVariable', palette.bg3, palette.blue)
-					set_hl('Cokeline_focused_unique_prefix_fg', palette.bg3, palette.none)
-					set_hl('Cokeline_notfocused_unique_prefix_fg', palette.grey2, palette.none)
-				end,
-			})
-			opt.background = 'dark'
-			vim.g.gruvbox_material_enable_bold = true
-			vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
-			vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_italic
-			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
-			vim.g.gruvbox_material_better_performance = 1
-			vim.cmd.colorscheme('gruvbox-material')
-		end,
-	},
-
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
-		enabled = false,
+		enabled = true,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -1157,8 +939,6 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
 					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
 					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
-					set_hl(0, 'Cokeline_focused_unique_prefix_fg', { fg = colors.bg2 })
-					set_hl(0, 'Cokeline_notfocused_unique_prefix_fg', { fg = colors.fg3 })
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column )
 					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
@@ -1886,253 +1666,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 	},
 
-	-- COKELINE, TABBAR, TABLINE
-	-- The following highlight groups need to be set manually
-	--   Cokeline_focused_unique_prefix_fg
-	--  Cokeline_notfocused_unique_prefix_fg
-	{
-		'willothy/nvim-cokeline',
-		enabled = true,
-		event = { 'User FileOpened', 'BufAdd' },
-		dependencies = {
-			'nvim-lualine/lualine.nvim',
-			'nvim-lua/plenary.nvim',
-			'echasnovski/mini.icons',
-			'stevearc/resession.nvim',
-		},
-		config = function()
-			local is_picking_focus = require('cokeline.mappings').is_picking_focus
-			local is_picking_close = require('cokeline.mappings').is_picking_close
-
-			local get_tab_name = function(tabpage_handle)
-				local name = vim.fn.split(api.nvim_buf_get_name(api.nvim_win_get_buf(api.nvim_tabpage_get_win(tabpage_handle))), '/')
-				return name[#name]
-			end
-
-			local get_file_icon = function(filename, filetype)
-				local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
-				local icon_filename, color_filename = require('nvim-web-devicons').get_icon_color(filename or '')
-				return icon_filename and icon_filename, color_filename or icon_filetype, color_filetype
-			end
-
-			local config = {
-				special_file_type_symbol = '$ ',
-				special_file_type = {
-					['TelescopePrompt'] = 'Telescope',
-					['fzf'] = 'FZF',
-					['lazy'] = 'Lazy',
-					['minifiles'] = 'Files',
-					['mason'] = 'Mason',
-				},
-			}
-
-			local get_mode = function()
-				local mode = api.nvim_get_mode().mode or 'n'
-				local mode_first_char = string.sub(mode, 1, 1)
-				if mode_first_char == 'n' then return 'normal'
-				elseif string.lower(mode_first_char) == 'v' or mode == '\22' or mode == '\22s' then return 'visual'
-				elseif string.lower(mode_first_char) == 's' or mode == '\19' then return 'select'
-				elseif mode_first_char == 'i' then return 'insert'
-				elseif mode_first_char == 'R' then return 'replace'
-				elseif mode_first_char == 'c' then return 'command'
-				elseif mode_first_char == 't' then return 'terminal'
-				else return 'normal' end
-			end
-
-			local get_color = function(a, b)
-				local color = api.nvim_get_hl(0, { name = string.format('lualine_%s_%s', a, b) })
-				if next(color) ~= nil then return color end
-				color = api.nvim_get_hl(0, { name = string.format('lualine_%s_normal', a) })
-				if next(color) ~= nil then return color end
-			end
-
-			local get_color_simple = function(focused, c)
-				return get_color(focused and 'a' or 'b', get_mode())[c]
-			end
-
-			create_autocmd({ 'ModeChanged', 'ColorScheme', 'LspAttach' }, {
-				pattern = '*',
-				callback = function()
-					---@diagnostic disable-next-line: param-type-mismatch
-					api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
-				end
-			})
-			---@diagnostic disable-next-line: param-type-mismatch
-			api.nvim_set_hl(0, 'TabLineFill', get_color('c', get_mode()))
-
-			-- Set keymaps
-			local opts = { noremap = true, silent = true }
-
-			-- Buffers
-			for i = 1, 9 do
-				keymap.set('n', (']%s'):format(global_config.middle_row_of_keyboard[i + 1]), ('<Plug>(cokeline-focus-%s)'):format(i), opts)
-			end
-			keymap.set('n', ']f', function()
-				vim.ui.input({ prompt = 'Buffer Index:' }, function(index)
-					if index then
-						vim.cmd(('call feedkeys("\\<Plug>\\(cokeline-focus-%s)")'):format(index))
-					end
-				end)
-			end)
-
-			-- Tabs
-			keymap.set('n', '<TAB>', '<cmd>tabnext<CR>', opts)
-			keymap.set('n', '<S-TAB>', '<cmd>tabprev<CR>', opts)
-
-			require('cokeline').setup({
-				default_hl = {
-					fg = function(buffer) return get_color_simple(buffer.is_focused, 'fg') end,
-					bg = function(buffer) return get_color_simple(buffer.is_focused, 'bg') end,
-					bold = function(buffer) return get_color_simple(buffer.is_focused, 'bold') end,
-					italic = function(buffer) return get_color_simple(buffer.is_focused, 'italic') end,
-					underline = function(buffer) return get_color_simple(buffer.is_focused, 'underline') end,
-					undercurl = function(buffer) return get_color_simple(buffer.is_focused, 'undercurl') end,
-					strikethrough = function(buffer) return get_color_simple(buffer.is_focused, 'strikethrough') end,
-				},
-				components = {
-					{
-						text = function(buffer) return ' ' .. buffer.index end,
-					},
-					{
-						text = function(buffer)
-							return ' ' .. ((is_picking_focus() or is_picking_close()) and buffer.pick_letter or buffer.devicon.icon)
-						end,
-						style = function(_)
-							return (is_picking_focus() or is_picking_close()) and 'italic,bold' or nil
-						end,
-						fg = function(buffer)
-							return buffer.is_focused and get_color_simple(buffer.is_focused, 'fg') or buffer.devicon.color
-						end,
-					},
-					{
-						text = function(buffer)
-							return buffer.unique_prefix
-						end,
-						fg = function(buffer)
-							return get_hl('Cokeline_' .. (buffer.is_focused and 'focused' or 'notfocused') .. '_unique_prefix_fg')
-						end,
-					},
-					{
-						text = function(buffer)
-							return buffer.filename .. ' '
-						end,
-					},
-					{
-						text = function(buffer)
-							return buffer.is_modified and (global_config.plugins_config.nerd_font_circle_and_square and ' ' or '● ') or ''
-						end,
-					},
-					{
-						text = function(buffer)
-							return buffer.diagnostics.errors ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.errors .. ' ') or ''
-						end,
-						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticError') or get_color_simple(false, 'bg') end,
-						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticError') end,
-					},
-					{
-						text = function(buffer)
-							return buffer.diagnostics.warnings ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.warnings .. ' ') or ''
-						end,
-						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticWarn') or get_color_simple(false, 'bg') end,
-						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticWarn') end,
-					},
-					{
-						text = function(buffer)
-							return buffer.diagnostics.hints ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.hints .. ' ') or ''
-						end,
-						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticHint') or get_color_simple(false, 'bg') end,
-						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticHint') end,
-					},
-					{
-						text = function(buffer)
-							return buffer.diagnostics.infos ~= 0 and ((buffer.is_focused and ' ' or '') .. buffer.diagnostics.infos .. ' ') or ''
-						end,
-						bg = function(buffer) return buffer.is_focused and get_hl('DiagnosticInfo') or get_color_simple(false, 'bg') end,
-						fg = function(buffer) return buffer.is_focused and get_color_simple(true, 'fg') or get_hl('DiagnosticInfo') end,
-					},
-					{
-						text = function(buffer)
-							local text = buffer.is_last and config.special_file_type[vim.o.filetype]
-							return text and ' ' .. config.special_file_type_symbol .. text or ''
-						end,
-						bg = function() return get_color('c', get_mode())['bg'] end,
-						fg = function() return get_color('c', get_mode())['fg'] end,
-						bold = function() return get_color('c', get_mode())['bold'] end,
-						italic = function() return get_color('c', get_mode())['italic'] end,
-						underline = function() return get_color('c', get_mode())['underline'] end,
-						undercurl = function() return get_color('c', get_mode())['undercurl'] end,
-						strikethrough = function() return get_color('c', get_mode())['strikethrough'] end,
-					},
-				},
-				tabs = {
-					placement = 'right',
-					components = {
-						{
-							text = function(tabpage)
-								local icon = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
-								return icon and ' ' .. icon .. ' ' or ' '
-							end,
-							fg = function(tabpage)
-								if tabpage.is_active then
-									return get_color_simple(true, 'fg')
-								else
-									local _, color = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
-									return color
-								end
-							end,
-							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
-							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
-							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
-							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
-							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
-							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
-						},
-						{
-							text = function(tabpage)
-								local name = get_tab_name(tabpage.number)
-								return name and name .. ' ' or ''
-							end,
-							fg = function(tabpage) return get_color_simple(tabpage.is_active, 'fg') end,
-							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
-							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
-							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
-							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
-							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
-							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
-						},
-						{
-							text = function(tabpage)
-								return tabpage.number .. ' '
-							end,
-							fg = function(tabpage) return get_color_simple(tabpage.is_active, 'fg') end,
-							bg = function(tabpage) return get_color_simple(tabpage.is_active, 'bg') end,
-							bold = function(tabpage) return get_color_simple(tabpage.is_active, 'bold') end,
-							italic = function(tabpage) return get_color_simple(tabpage.is_active, 'italic') end,
-							underline = function(tabpage) return get_color_simple(tabpage.is_active, 'underline') end,
-							undercurl = function(tabpage) return get_color_simple(tabpage.is_active, 'undercurl') end,
-							strikethrough = function(tabpage) return get_color_simple(tabpage.is_active, 'strikethrough') end,
-						},
-						{
-							text = function(tabpage)
-								return tabpage.is_last and ' X ' or ''
-							end,
-							bg = function() return get_hl('DiagnosticError') end,
-							fg = function() return get_color_simple(true, 'fg') end,
-							bold = true,
-							on_click = function()
-								vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
-									if input and (input == '' or string.lower(input) == 'y') then
-										vim.cmd.qa()
-									end
-								end)
-							end
-						}
-					},
-				},
-			})
-		end,
-	},
-
 	-- LUALINE, STATUSLINE
 	{
 		'nvim-lualine/lualine.nvim',
@@ -2162,7 +1695,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					globalstatus = true,
 				},
 				sections = {
-					lualine_a = { simple_mode },
+					lualine_a = { 'mode' },
 					lualine_b = { 'filename', 'searchcount', 'selectioncount' },
 					lualine_c = {
 						'branch',
@@ -2211,7 +1744,76 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					},
 					lualine_z = { 'os.date("%D %R")' },
 				},
+				tabline = {
+					lualine_a = {
+						{
+							'buffers',
+							mode = 2,
+							filetype_names = {
+								TelescopePrompt = 'Telescope',
+								packer = 'Packer',
+								fzf = 'FZF',
+								lazy = 'Lazy',
+								minifiles = 'Files',
+								mason = 'Mason',
+							},
+							use_mode_colors = true,
+							symbols = {
+								modified = ' +',
+							},
+							buffers_color = {
+								inactive = 'lualine_b_normal',
+							},
+						}
+					},
+					lualine_z = {
+						{
+							'tabs',
+							mode = 2,
+							use_mode_colors = true,
+							tabs_color = {
+								inactive = 'lualine_b_normal',
+							},
+							fmt = function(name, context)
+								-- Show + if buffer is modified in tab
+								local buflist = vim.fn.tabpagebuflist(context.tabnr)
+								local winnr = vim.fn.tabpagewinnr(context.tabnr)
+								local bufnr = buflist[winnr]
+								local icon = get_file_icon(api.nvim_buf_get_name(bufnr), api.nvim_buf_call(bufnr, function() return vim.o.filetype end))
+								local mod = vim.fn.getbufvar(bufnr, '&mod')
+
+								return (icon and icon .. ' ' or '') .. name .. (mod == 1 and ' +' or '')
+							end,
+						},
+					},
+				},
 			})
+
+			-- Keymaps
+			local opts = { noremap = true }
+
+			-- Buffers
+			for i = 1, 9 do
+				keymap.set('n', (']%s'):format(global_config.middle_row_of_keyboard[i + 1]), ('<cmd>LualineBuffersJump %s<CR>'):format(i), opts)
+			end
+			keymap.set('n', ']f', function()
+				vim.ui.input({ prompt = 'Buffer index:' }, function(index)
+					if index then
+						vim.cmd(('LualineBuffersJump %s'):format(index))
+					end
+				end)
+			end, opts)
+
+			-- Tabs
+			keymap.set('n', '<TAB>', '<cmd>tabnext<CR>', opts)
+			keymap.set('n', '<S-TAB>', '<cmd>tabprev<CR>', opts)
+			keymap.set('n', ']m', function()
+				vim.ui.input({ prompt = 'Rename the current tab to: ' }, function(new_name)
+					if new_name then
+						vim.cmd(('LualineRenameTab %s'):format(new_name))
+					end
+				end)
+			end, opts)
 		end,
 	},
 
@@ -2544,60 +2146,10 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = 'User FileOpened',
 		opts = {
 			indent = {
-				char = '│',
-				tab_char = '│',
+				char = '▏',
+				tab_char = '▏',
 			},
-			scope = { enabled = false },
 		},
-	},
-
-	--- MINI.INDENTSCOPE
-	{
-		'echasnovski/mini.indentscope',
-		event = 'User FileOpened',
-		init = function()
-			create_autocmd('FileType', {
-				pattern = {
-					'help',
-					'alpha',
-					'dashboard',
-					'ministarter',
-					'neo-tree',
-					'Trouble',
-					'trouble',
-					'lazy',
-					'mason',
-					'notify',
-					'toggleterm',
-					'lazyterm',
-				},
-				callback = function()
-					vim.b.miniindentscope_disable = true
-				end,
-			})
-		end,
-		config = function()
-			require('mini.indentscope').setup({
-				symbol = '│',
-				-- symbol = '▏',
-				options = {
-					indent_at_cursor = false,
-				},
-				draw = {
-					delay = 0,
-					animation = require('mini.indentscope').gen_animation.none(),
-				},
-				mappings = {
-					-- Textobjects
-					object_scope = 'kk',
-					object_scope_with_border = 'ak',
-
-					-- Motions (jump to respective border line; if not present - body line)
-					goto_top = '[i',
-					goto_bottom = ']i',
-				},
-			})
-		end,
 	},
 
 	-- SUDA, SUDO
