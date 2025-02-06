@@ -70,7 +70,6 @@ local global_config = {
 		nerd_font_circle_and_square = false,
 		ascii_icons = false,
 		gruvbox_italic = false,
-		gruvbox_material_italic = false,
 	},
 }
 
