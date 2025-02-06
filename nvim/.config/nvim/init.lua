@@ -67,7 +67,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = true,
+		nerd_font_circle_and_square = false,
 		ascii_icons = false,
 		gruvbox_comments_italic = true,
 		gruvbox_italic = true,
@@ -1083,7 +1083,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
 
 			api.nvim_create_autocmd('User', {
-				pattern = 'LazyVimStarted',
+				pattern = 'LzazyVimStarted',
 				callback = function()
 					local stats = require('lazy').stats()
 					local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
