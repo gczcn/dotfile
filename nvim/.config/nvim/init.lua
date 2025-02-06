@@ -69,7 +69,8 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = false,
 		ascii_icons = false,
-		gruvbox_italic = false,
+		gruvbox_comments_italic = true,
+		gruvbox_italic = true,
 	},
 }
 
@@ -733,8 +734,8 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'Consolas Nerd Font Mono'
-local gui_font_size = 12
+local gui_font = 'BlexMono Nerd Font Mono'
+local gui_font_size = 10.8
 
 local gui_change_font_size = function(n)
 	gui_font_size = gui_font_size + n
@@ -1002,7 +1003,7 @@ local plugins = global_config.enabled_plugins and {
 				italic = {
 					strings = false,
 					emphasis = global_config.plugins_config.gruvbox_italic,
-					comments = global_config.plugins_config.gruvbox_italic,
+					comments = global_config.plugins_config.gruvbox_comments_italic,
 					folds = global_config.plugins_config.gruvbox_italic,
 				},
 				overrides = {
