@@ -848,7 +848,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- =============================================================================
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
-	install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
+	install = { colorscheme = { 'edge', 'catppuccin', 'gruvbox', 'habamax' } },
 	checker = { enabled = true },
 	change_detection = { notify = false },
 	ui = {
@@ -1955,6 +1955,117 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 	},
 
+	-- HLSLENS, SEARCH
+	{
+		'kevinhwang91/nvim-hlslens',
+		event = { 'User FileOpened', 'CmdlineEnter' },
+		keys = { 'j', 'J', '*', '#', 'g*', 'g#' },
+		config = function()
+			require('scrollbar.handlers.search').setup({
+				override_lens = function(render, posList, nearest, idx, relIdx)
+					local sfw = vim.v.searchforward == 1
+					local indicator, text, chunks
+					local absRelIdx = math.abs(relIdx)
+					if absRelIdx > 1 then
+						indicator = ('%d%s'):format(absRelIdx, sfw ~= (relIdx > 1) and 'J' or 'j')
+					elseif absRelIdx == 1 then
+						indicator = sfw ~= (relIdx == 1) and 'J' or 'j'
+					else
+						indicator = ''
+					end
+
+					local lnum, col = unpack(posList[idx])
+					if nearest then
+						local cnt = #posList
+						if indicator ~= '' then
+							text = ('[%s %d/%d]'):format(indicator, idx, cnt)
+						else
+							text = ('[%d/%d]'):format(idx, cnt)
+						end
+						chunks = {{' '}, {text, 'HlSearchLensNear'}}
+					else
+						text = ('[%s %d]'):format(indicator, idx)
+						chunks = {{' '}, {text, 'HlSearchLens'}}
+					end
+					render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
+				end
+			})
+
+			local kopts = { noremap = true, silent = true }
+
+			keymap.set('n', 'j', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
+			keymap.set('n', 'J', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
+			keymap.set('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			keymap.set('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			keymap.set('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			keymap.set('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+		end,
+	},
+
+	-- SCROLLBAR
+	{
+		'petertriho/nvim-scrollbar',
+		event = 'User FileOpened',
+		dependencies = {
+			'lewis6991/gitsigns.nvim',
+		},
+		config = function()
+			local set_hl = api.nvim_set_hl
+
+			local change_highlight = function()
+				if vim.g.colors_name == 'edge' then
+					local config = vim.fn['edge#get_configuration']()
+					local palette = vim.fn['edge#get_palette'](config.style, config.dim_foreground, config.colors_override)
+					local set_hl = vim.fn['edge#highlight']
+					set_hl('ScrollbarHandle', palette.blue, palette.bg4)
+					set_hl('ScrollbarCursor', palette.blue, palette.none)
+					set_hl('ScrollbarCursorHandle', palette.blue, palette.bg4)
+					set_hl('ScrollbarSearch', palette.green, palette.none)
+					set_hl('ScrollbarSearchHandle', palette.green, palette.bg4)
+					set_hl('ScrollbarErrorHandle', palette.red, palette.bg4)
+					set_hl('ScrollbarWarnHandle', palette.yellow, palette.bg4)
+					set_hl('ScrollbarInfoHandle', palette.blue, palette.bg4)
+					set_hl('ScrollbarHintHandle', palette.green, palette.bg4)
+					set_hl('ScrollbarMiscHandle', palette.fg, palette.bg4)
+					set_hl('ScrollbarGitDeleteHandle', palette.red, palette.bg4)
+					set_hl('ScrollbarGitAddHandle', palette.green, palette.bg4)
+					set_hl('ScrollbarGitChangeHandle', palette.blue, palette.bg4)
+				end
+			end
+
+			require('scrollbar').setup({
+				marks = {
+					Cursor = { text = '▐' },
+					Search = { text = { '─', '═' }, },
+					Error = { text = { '─', '═' }, },
+					Warn = { text = { '─', '═' }, },
+					Info = { text = { '─', '═' }, },
+					Hint = { text = { '─', '═' }, },
+					Misc = { text = { '─', '═' }, },
+				},
+				excluded_filetypes = {
+					'ministarter',
+					'blink-cmp-menu',
+					'TelescopePrompt',
+					'TelescopeResults',
+					'TelescopePreview',
+					'dropbar_menu',
+				},
+				handlers = {
+					gitsigns = true,
+				},
+			})
+
+			change_highlight()
+			api.nvim_create_autocmd('ColorScheme', {
+				pattern = '*',
+				callback = function()
+					change_highlight()
+				end
+			})
+		end,
+	},
+
 	-- MARKDOWN-PREVIEW
 	{
 		'iamcco/markdown-preview.nvim',
@@ -2118,7 +2229,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- view = 'cmdline',
 			},
 			messages = {
-				-- view_search = false,
+				view_search = false,
 			},
 			views = {
 				cmdline_popup = { border = { style = 'single', } },
