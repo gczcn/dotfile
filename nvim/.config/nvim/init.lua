@@ -56,6 +56,8 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_icons boolean
+---@field gruvbox_comments_italic boolean
+---@field gruvbox_italic boolean
 
 ---@class StatusColumnConfig
 ---@field enabled boolean
@@ -87,6 +89,8 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = false,
 		ascii_icons = false,
+		gruvbox_comments_italic = true,
+		gruvbox_italic = false,
 	},
 }
 
@@ -254,7 +258,7 @@ vim.g.encoding = 'UTF-8'
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 -- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
-opt.colorcolumn = '80' -- Line number reminder
+-- opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting
@@ -872,89 +876,187 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEME
-	--- EDGE
+	--- GRUVBOX
 	{
-		'sainnhe/edge',
+		'ellisonleao/gruvbox.nvim',
 		enabled = true,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
-				group = api.nvim_create_augroup('custom_highlights_edge', {}),
-				pattern = 'edge',
+				group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+				pattern = 'gruvbox',
 				callback = function()
-					local config = vim.fn['edge#get_configuration']()
-					local palette = vim.fn['edge#get_palette'](config.style, config.dim_foreground, config.colors_override)
-					local set_hl = vim.fn['edge#highlight']
+					local p = require('gruvbox').palette
+					local set_hl = api.nvim_set_hl
+					local colors = vim.o.background == 'dark' and {
+						bg0 = p.dark0,
+						bg1 = p.dark1,
+						bg2 = p.dark2,
+						bg3 = p.dark3,
+						bg4 = p.dark4,
+						fg0 = p.light0,
+						fg1 = p.light1,
+						fg2 = p.light2,
+						fg3 = p.light3,
+						fg4 = p.light4,
+						red = p.bright_red,
+						green = p.bright_green,
+						yellow = p.bright_yellow,
+						blue = p.bright_blue,
+						purple = p.bright_purple,
+						aqua = p.bright_aqua,
+						orange = p.bright_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.dark_red,
+						dark_green = p.dark_green,
+						dark_aqua = p.dark_aqua,
+						gray = p.gray,
+					} or {
+						bg0 = p.light0,
+						bg1 = p.light1,
+						bg2 = p.light2,
+						bg3 = p.light3,
+						bg4 = p.light4,
+						fg0 = p.dark0,
+						fg1 = p.dark1,
+						fg2 = p.dark2,
+						fg3 = p.dark3,
+						fg4 = p.dark4,
+						red = p.faded_red,
+						green = p.faded_green,
+						yellow = p.faded_yellow,
+						blue = p.faded_blue,
+						purple = p.faded_purple,
+						aqua = p.faded_aqua,
+						orange = p.faded_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.light_red,
+						dark_green = p.light_green,
+						dark_aqua = p.light_aqua,
+						gray = p.gray,
+					}
+					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
 
-					set_hl('Directory', palette.green, palette.none, 'bold')
-					set_hl('CursorLineNr', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('WinBar', palette.fg, palette.bg2)
-					set_hl('Conditional', palette.purple, palette.none, 'italic')
-					set_hl('TSConditional', palette.purple, palette.none, 'italic')
+					-- Custom
+					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
+					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
+					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
+					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
+					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
+					set_hl(0, 'Cokeline_focused_unique_prefix_fg', { fg = colors.bg2 })
+					set_hl(0, 'Cokeline_notfocused_unique_prefix_fg', { fg = colors.fg3 })
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column )
-					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
-					set_hl('StatusColumnFoldCurrent', palette.grey, palette.bg0)
-					set_hl('StatusColumnFoldOpen', palette.grey_dim, palette.bg0)
-					set_hl('StatusColumnFoldClose', palette.blue, palette.bg1)
-					set_hl('StatusColumnFoldCursorLine', palette.bg4, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldCurrentCursorLine', palette.grey, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldOpenCursorLine', palette.grey_dim, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldCloseCursorLine', palette.blue, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
+					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
+					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
 
-					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
-					set_hl('BlinkCmpLabelDeprecated', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpLabelDetail', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpLabelDescription', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpSource', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpGhostText', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpLabelDescription', palette.grey_dim, palette.none)
-					set_hl('BlinkCmpKind', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindArray', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindBoolean', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindClass', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindColor', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindConstant', palette.bg2, palette.red)
-					set_hl('BlinkCmpKindConstructor', palette.bg2, palette.blue)
-					set_hl('BlinkCmpKindDefault', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindEnum', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindEnumMember', palette.bg2, palette.green)
-					set_hl('BlinkCmpKindEvent', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindField', palette.bg2, palette.blue)
-					set_hl('BlinkCmpKindFile', palette.bg2, palette.green)
-					set_hl('BlinkCmpKindFolder', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindFunction', palette.bg2, palette.green)
-					set_hl('BlinkCmpKindInterface', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindKey', palette.bg2, palette.red)
-					set_hl('BlinkCmpKindKeyword', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindMethod', palette.bg2, palette.blue)
-					set_hl('BlinkCmpKindModule', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindNamespace', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindNull', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindNumber', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindObject', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindOperator', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindPackage', palette.bg2, palette.purple)
-					set_hl('BlinkCmpKindProperty', palette.bg2, palette.red)
-					set_hl('BlinkCmpKindReference', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindSnippet', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindString', palette.bg2, palette.cyan)
-					set_hl('BlinkCmpKindStruct', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindText', palette.bg2, palette.fg)
-					set_hl('BlinkCmpKindTypeParameter', palette.bg2, palette.yellow)
-					set_hl('BlinkCmpKindUnit', palette.bg2, palette.green)
-					set_hl('BlinkCmpKindValue', palette.bg2, palette.green)
-					set_hl('BlinkCmpKindVariable', palette.bg2, palette.red)
+					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
+					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
+					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
+
+					set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
+					set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
+					set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
+					set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
+					set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
+					set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
+
+					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0 })
+
+					set_hl(0, 'BlinkCmpKindClass', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindColor', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindConstant', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindConstructor', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindEnum', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindEnumMember', { fg = colors.aqua })
+					set_hl(0, 'BlinkCmpKindEvent', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindField', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFile', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFolder', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFunction', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindInterface', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindKeyword', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindMethod', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindModule', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindOperator', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindProperty', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindReference', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindSnippet', { fg = colors.green })
+					set_hl(0, 'BlinkCmpKindStruct', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindText', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindTypeParameter', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindUnit', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindValue', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindVariable', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindCopilot', { fg = colors.gray })
+					set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
 				end,
 			})
+			local palette = require('gruvbox').palette
+			require('gruvbox').setup({
+				italic = {
+					strings = false,
+					emphasis = global_config.plugins_config.gruvbox_italic,
+					comments = global_config.plugins_config.gruvbox_comments_italic,
+					folds = global_config.plugins_config.gruvbox_italic,
+				},
+				overrides = {
+					LspReferenceText = { underline = true },
+					LspReferenceRead = { underline = true },
+					LspReferenceWrite = { underline = true },
 
+					-- noice.nvim
+					NoiceCmdlinePopupBorder = { link = 'Normal' },
+					NoiceCmdlinePopupTitle = { link = 'Normal' },
+
+					-- Lualine
+					-- check https://github.com/nvim-lualine/lualine.nvim/issues/1312 for more information
+					StatusLine = { reverse = false },
+					StatusLineNC = { reverse = false },
+
+					-- nvim-scrollbar
+					-- lua/plugins/nvim-scrollbar.lua change_highlight()
+
+					-- vim-illuminate
+					-- IlluminatedWordText = { link = 'GruvboxBg2' },
+					-- IlluminatedWordRead = { link = 'GruvboxBg2' },
+					-- IlluminatedWordWrite = { link = 'GruvboxBg2' },
+
+					-- gitsigns.nvim
+					GitSignsCurrentLineBlame = { fg = palette.dark4 },
+
+					-- blink.cmp
+					BlinkCmpSource = { link = 'GruvboxGray' },
+					BlinkCmpLabelDeprecated = { link = 'GruvboxGray' },
+					BlinkCmpLabelDetail = { link = 'GruvboxGray' },
+					BlinkCmpLabelDescription = { link = 'GruvboxGray' },
+				},
+			})
 			opt.background = 'dark'
-			vim.g.edge_style = 'aura'
-			vim.g.edge_diagnostic_virtual_text = 'highlighted'
-			vim.g.edge_inlay_hints_background = 'dimmed'
-			vim.g.edge_better_performance = 1
-			vim.cmd.colorscheme('edge')
+			vim.cmd.colorscheme('gruvbox')
 		end,
 	},
 
@@ -1431,6 +1533,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		'kevinhwang91/nvim-ufo',
 		enabled = true,
 		dependencies = {
+			'nvim-treesitter/nvim-treesitter',
 			'kevinhwang91/promise-async',
 		},
 		keys = { 'z' },
@@ -1735,6 +1838,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- TREESITTER
 	{
 		'nvim-treesitter/nvim-treesitter',
+		enabled = true,
 		version = false,
 		event = { 'User FileOpened', 'BufAdd', 'VeryLazy' },
 		cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
@@ -1955,115 +2059,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 	},
 
-	-- HLSLENS, SEARCH
-	{
-		'kevinhwang91/nvim-hlslens',
-		event = { 'User FileOpened', 'CmdlineEnter' },
-		keys = { 'j', 'J', '*', '#', 'g*', 'g#' },
-		config = function()
-			require('scrollbar.handlers.search').setup({
-				override_lens = function(render, posList, nearest, idx, relIdx)
-					local sfw = vim.v.searchforward == 1
-					local indicator, text, chunks
-					local absRelIdx = math.abs(relIdx)
-					if absRelIdx > 1 then
-						indicator = ('%d%s'):format(absRelIdx, sfw ~= (relIdx > 1) and 'J' or 'j')
-					elseif absRelIdx == 1 then
-						indicator = sfw ~= (relIdx == 1) and 'J' or 'j'
-					else
-						indicator = ''
-					end
-
-					local lnum, col = unpack(posList[idx])
-					if nearest then
-						local cnt = #posList
-						if indicator ~= '' then
-							text = ('[%s %d/%d]'):format(indicator, idx, cnt)
-						else
-							text = ('[%d/%d]'):format(idx, cnt)
-						end
-						chunks = {{' '}, {text, 'HlSearchLensNear'}}
-					else
-						text = ('[%s %d]'):format(indicator, idx)
-						chunks = {{' '}, {text, 'HlSearchLens'}}
-					end
-					render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
-				end
-			})
-
-			local kopts = { noremap = true, silent = true }
-
-			keymap.set('n', 'j', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'J', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			keymap.set('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-		end,
-	},
-
-	-- SCROLLBAR
-	{
-		'petertriho/nvim-scrollbar',
-		event = 'User FileOpened',
-		dependencies = {
-			'lewis6991/gitsigns.nvim',
-		},
-		config = function()
-			local change_highlight = function()
-				if vim.g.colors_name == 'edge' then
-					local config = vim.fn['edge#get_configuration']()
-					local palette = vim.fn['edge#get_palette'](config.style, config.dim_foreground, config.colors_override)
-					local set_hl = vim.fn['edge#highlight']
-					set_hl('ScrollbarHandle', palette.blue, palette.bg4)
-					set_hl('ScrollbarCursor', palette.blue, palette.none)
-					set_hl('ScrollbarCursorHandle', palette.blue, palette.bg4)
-					set_hl('ScrollbarSearch', palette.green, palette.none)
-					set_hl('ScrollbarSearchHandle', palette.green, palette.bg4)
-					set_hl('ScrollbarErrorHandle', palette.red, palette.bg4)
-					set_hl('ScrollbarWarnHandle', palette.yellow, palette.bg4)
-					set_hl('ScrollbarInfoHandle', palette.blue, palette.bg4)
-					set_hl('ScrollbarHintHandle', palette.green, palette.bg4)
-					set_hl('ScrollbarMiscHandle', palette.fg, palette.bg4)
-					set_hl('ScrollbarGitDeleteHandle', palette.red, palette.bg4)
-					set_hl('ScrollbarGitAddHandle', palette.green, palette.bg4)
-					set_hl('ScrollbarGitChangeHandle', palette.blue, palette.bg4)
-				end
-			end
-
-			require('scrollbar').setup({
-				marks = {
-					Cursor = { text = '▐' },
-					Search = { text = { '─', '═' }, },
-					Error = { text = { '─', '═' }, },
-					Warn = { text = { '─', '═' }, },
-					Info = { text = { '─', '═' }, },
-					Hint = { text = { '─', '═' }, },
-					Misc = { text = { '─', '═' }, },
-				},
-				excluded_filetypes = {
-					'ministarter',
-					'blink-cmp-menu',
-					'TelescopePrompt',
-					'TelescopeResults',
-					'TelescopePreview',
-					'dropbar_menu',
-				},
-				handlers = {
-					gitsigns = true,
-				},
-			})
-
-			change_highlight()
-			api.nvim_create_autocmd('ColorScheme', {
-				pattern = '*',
-				callback = function()
-					change_highlight()
-				end
-			})
-		end,
-	},
-
 	-- MARKDOWN-PREVIEW
 	{
 		'iamcco/markdown-preview.nvim',
@@ -2227,7 +2222,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- view = 'cmdline',
 			},
 			messages = {
-				view_search = false,
+				-- view_search = false,
 			},
 			views = {
 				cmdline_popup = { border = { style = 'single', } },
@@ -2790,7 +2785,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 	},
 
-	-- BLINK.CMP
+	-- BLINKCMP
 	{
 		'saghen/blink.cmp',
 		enabled = true,
@@ -2873,13 +2868,13 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					},
 					menu = {
 						draw = {
-							padding = { 0, 1 },
+							-- padding = { 0, 1 },
 							treesitter = { 'lsp', 'copilot', 'cmp_tabnine', 'snippets' },
 							columns = {
-								{ 'kind_icon' },
+								-- { 'kind_icon' },
 								-- { 'label', 'label_description', gap = 1 },
 								{ 'label', gap = 1 },
-								-- { 'kind_icon', 'kind', gap = 1 },
+								{ 'kind_icon', 'kind', gap = 1 },
 								{ 'source_name' },
 							},
 							components = {
@@ -2891,17 +2886,17 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 										return require('colorful-menu').blink_components_highlight(ctx)
 									end,
 								},
-								kind_icon = {
-									ellipsis = false,
-									text = function(ctx)
-										return ' ' .. ctx.kind_icon .. ' '
-									end,
-									highlight = function(ctx)
-										---@diagnostic disable-next-line: ambiguity-1
-										return require('blink.cmp.completion.windows.render.tailwind').get_hl(ctx)
-											or 'BlinkCmpKind' .. ctx.kind
-									end,
-								},
+								-- kind_icon = {
+								-- 	ellipsis = false,
+								-- 	text = function(ctx)
+								-- 		return ' ' .. ctx.kind_icon .. ' '
+								-- 	end,
+								-- 	highlight = function(ctx)
+								-- 		---@diagnostic disable-next-line: ambiguity-1
+								-- 		return require('blink.cmp.completion.windows.render.tailwind').get_hl(ctx)
+								-- 			or 'BlinkCmpKind' .. ctx.kind
+								-- 	end,
+								-- },
 								source_name = {
 									width = { max = 30 },
 									text = function(ctx)
