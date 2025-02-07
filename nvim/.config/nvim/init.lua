@@ -82,7 +82,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = false,
+		nerd_font_circle_and_square = true,
 		ascii_icons = false,
 		gruvbox_comments_italic = true,
 		gruvbox_italic = false,
@@ -476,7 +476,11 @@ vim.cmd.cabbrev('w1 w!')
 vim.cmd.cabbrev('Q! q!')
 vim.cmd.cabbrev('Q1 q!')
 vim.cmd.cabbrev('q1 q!')
+vim.cmd.cabbrev('qa1 qa!')
 vim.cmd.cabbrev('Qa! qa!')
+vim.cmd.cabbrev('Qa1 qa!')
+vim.cmd.cabbrev('QA! qa!')
+vim.cmd.cabbrev('QA1 qa!')
 vim.cmd.cabbrev('Qall! qall!')
 vim.cmd.cabbrev('Wa wa')
 vim.cmd.cabbrev('Wq wq')
@@ -2172,7 +2176,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			'MunifTanjim/nui.nvim',
 		},
 		keys = {
-			-- { '<leader>fn', '<cmd>NoiceFzf<CR>' },
+			{ '<leader>fn', '<cmd>NoiceFzf<CR>' },
+			{ '<leader>h', '<cmd>NoiceDismiss<CR>' },
 			{ '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end, mode = 'c', desc = 'Redirect Cmdline' },
 			{ '<leader>anl', function() require('noice').cmd('last') end, desc = 'Noice Last Message' },
 			{ '<leader>anh', function() require('noice').cmd('history') end, desc = 'Noice History' },
@@ -2186,15 +2191,15 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			cmdline = {
 				-- enabled = false,
 				format = {
-					cmdline = { pattern = '^:', icon = '>', lang = 'vim' },
+					cmdline = { pattern = '^:', icon = ' >', lang = 'vim' },
 					search_down = { kind = 'search', pattern = '^/', icon = ' Up', lang = 'regex' },
 					search_up = { kind = 'search', pattern = '^%?', icon = ' Down', lang = 'regex' },
-					-- filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash' },
-					-- lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' ', lang = 'lua' },
-					help = { pattern = '^:%s*he?l?p?%s+', icon = '?' },
-					-- input = { view = 'cmdline', icon = ' 󰥻 ' },
+					filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash' },
+					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' ', lang = 'lua' },
+					help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?' },
+					input = { view = 'cmdline', icon = ' 󰥻 ' },
 				},
-				-- view = 'cmdline',
+				view = 'cmdline',
 			},
 			messages = {
 				-- view_search = false,
@@ -2211,6 +2216,12 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				bottom_search = true,
 				-- command_palette = true,
 				long_message_to_split = true,
+			},
+			format = {
+				---@class NoiceFormatOptions.level
+				level = {
+					icons = { error = 'E:', warn = 'W:', info = 'I:' },
+				},
 			},
 		},
 	},
@@ -2240,7 +2251,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local Snacks = require('snacks')
 			Snacks.setup({
 				bigfile = {},
-				notifier = {},
+				-- notifier = {},
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
@@ -2261,8 +2272,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				},
 			})
 
-			keymap.set('n', '<leader>fn', Snacks.notifier.show_history)
-			keymap.set('n', '<leader>hn', Snacks.notifier.hide)
 			keymap.set('n', '<leader>ar', Snacks.rename.rename_file)
 		end,
 	},
