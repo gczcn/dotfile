@@ -2195,7 +2195,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					search_down = { kind = 'search', pattern = '^/', icon = ' Up', lang = 'regex' },
 					search_up = { kind = 'search', pattern = '^%?', icon = ' Down', lang = 'regex' },
 					filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash' },
-					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' ', lang = 'lua' },
+					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = global_config.plugins_config.ascii_icons and ' L' or ' ', lang = 'lua' },
 					help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?' },
 					input = { view = 'cmdline', icon = ' 󰥻 ' },
 				},
@@ -2814,8 +2814,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							columns = {
 								-- { 'kind_icon' },
 								-- { 'label', 'label_description', gap = 1 },
-								{ 'label', gap = 1 },
-								{ 'kind_icon', 'kind', gap = 1 },
+								{ 'label' },
+								global_config.plugins_config.ascii_icons and { 'kind' } or { 'kind_icon', 'kind', gap = 1 },
 								{ 'source_name' },
 							},
 							components = {
