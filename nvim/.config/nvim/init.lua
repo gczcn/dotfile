@@ -20,13 +20,8 @@
 --     basedpyright
 --     lua-language-server
 --     gopls
---     tailwindcss-language-server
 --     bash-language-server
 --     vscode-langservers-extracted
---     graphql-language-service-cli
---     svelte-language-server
---     emmet-ls
---     prisma-language-server
 --     vim-language-server
 --
 --   Debuggers:
@@ -343,13 +338,8 @@ brew install typescript-language-server  # Typescript
 brew install basedpyright  # Python
 brew install lua-language-server  # Lua
 brew install gopls  # Go
-brew install tailwindcss-language-server
 brew install bash-language-server
 npm install -g vscode-langservers-extracted  # Html, Css...
-npm install -g graphql-language-service-cli
-npm install -g svelte-language-server
-npm install -g emmet-ls
-npm install -g @prisma/language-server
 npm install -g vim-language-server
 
 # Debuggers
@@ -383,13 +373,8 @@ brew upgrade typescript-language-server
 brew install basedpyright
 brew upgrade lua-language-server
 brew upgrade gopls
-brew upgrade tailwindcss-language-server
 brew upgrade bash-language-server
 npm update -g vscode-langservers-extracted
-npm update -g svelte-language-server
-npm update -g graphql-language-service-cli
-npm update -g emmet-ls
-npm update -g @prisma/language-server
 npm update -g vim-language-server
 
 # Debuggers
@@ -424,15 +409,10 @@ yes | sudo pacman -S typescript-language-server
 yay -S basedpyright
 yes | sudo pacman -S lua-language-server
 yes | sudo pacman -S gopls
-yes | sudo pacman -S tailwindcss-language-server
 yes | sudo pacman -S bash-language-server
 yes | sudo pacman -S vscode-css-languageserver
 yes | sudo pacman -S vscode-html-languageserver
 yes | sudo pacman -S vscode-json-languageserver
-yes | sudo pacman -S svelte-language-server
-yes | sudo pacman -S graphql-client-cli
-sudo npm install -g emmet-ls
-sudo npm install -g @prisma/language-server
 sudo npm install -g vim-language-server
 
 # Debuggers
@@ -467,15 +447,10 @@ yes | sudo pacman -S typescript-language-server
 yay -S basedpyright
 yes | sudo pacman -S lua-language-server
 yes | sudo pacman -S gopls
-yes | sudo pacman -S tailwindcss-language-server
 yes | sudo pacman -S bash-language-server
 yes | sudo pacman -S vscode-css-languageserver
 yes | sudo pacman -S vscode-html-languageserver
 yes | sudo pacman -S vscode-json-languageserver
-yes | sudo pacman -S svelte-language-server
-yes | sudo pacman -S graphql-client-cli
-sudo npm update -g @prisma/language-server
-sudo npm update -g emmet-ls
 sudo npm update -g vim-language-server
 
 # Debuggers
@@ -2616,49 +2591,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			lspconfig['cssls'].setup({
 				capabilities = capabilities(),
 				on_attach = on_attach,
-			})
-
-			-- configure tailwindcss server
-			lspconfig['tailwindcss'].setup({
-				capabilities = capabilities(),
-				on_attach = on_attach,
-			})
-
-			-- configure svelte server
-			lspconfig['svelte'].setup({
-				capabilities = capabilities(),
-				on_attach = function(client, bufnr)
-					on_attach(client, bufnr)
-
-					create_autocmd('BufWritePost', {
-						pattern = { '*.js', '*.ts' },
-						callback = function(ctx)
-							if client.name == 'svelte' then
-								client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.file })
-							end
-						end,
-					})
-				end,
-			})
-
-			-- configure prisma orm server
-			lspconfig['prismals'].setup({
-				capabilities = capabilities(),
-				on_attach = on_attach,
-			})
-
-			-- configure graphql language server
-			lspconfig['graphql'].setup({
-				capabilities = capabilities(),
-				on_attach = on_attach,
-				filetypes = { 'graphql', 'gql', 'svelte', 'typescriptreact', 'javascriptreact' },
-			})
-
-			-- configure emmet language server
-			lspconfig['emmet_ls'].setup({
-				capabilities = capabilities(),
-				on_attach = on_attach,
-				filetype = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'svelte' },
 			})
 
 			-- configure python server
