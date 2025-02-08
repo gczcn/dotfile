@@ -272,7 +272,7 @@ opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
 opt.number = true
-opt.pumblend = 15
+opt.pumblend = 10
 opt.pumheight = 30
 -- opt.relativenumber = true
 opt.scrolloff = 8 -- Lines of context
@@ -292,7 +292,7 @@ opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
-opt.winblend = 15
+-- opt.winblend = 15
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
@@ -870,18 +870,19 @@ local plugins = global_config.enabled_plugins and {
 					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
-					set_hl('Directory', palette.green, palette.none, 'bold')
+					set_hl('Directory', palette.green, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
 					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('CursorLineNr', palette.yellow, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('WinBar', palette.fg1, palette.bg1)
 					set_hl('Conditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
 					set_hl('TSConditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
 
 					-- Custom
-					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
-					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
-					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
-					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
+					set_hl('DiagnosticNumHlError', palette.red, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
+					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
+					set_hl('DiagnosticNumHlHint', palette.green, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
+					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column)
 					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
@@ -894,6 +895,7 @@ local plugins = global_config.enabled_plugins and {
 					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
 
 					-- Plugins
+					set_hl('TelescopeSelection', palette.fg1, palette.bg1, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
 					set_hl('MiniFilesCursorLine', palette.none, palette.bg5)
 					set_hl('BlinkCmpLabelDeprecated', palette.grey0, palette.none)
 					set_hl('BlinkCmpLabelDetail', palette.grey0, palette.none)
@@ -1035,8 +1037,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- items = nil,
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
-					-- starter.gen_hook.adding_bullet('│ '),
-					starter.gen_hook.adding_bullet('▏ '),
+					starter.gen_hook.adding_bullet('│ '),
+					-- starter.gen_hook.adding_bullet('▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -1138,6 +1140,10 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				options = {
 					permanent_delete = true,
 					use_as_default_explorer = false,
+				},
+				windows = {
+					preview = true,
+					width_preview = 50,
 				},
 			})
 		end,
@@ -1254,12 +1260,16 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local fzf_lua = require('fzf-lua')
 			fzf_lua.setup({
 				winopts = {
-					row = 0.5,
-					border = global_config.plugins_config.border,
-					preview = {
-						border = global_config.plugins_config.border,
-					},
+					height = 0.5,
+					width = 1,
+					row = 0.9999999,
+					border = { '─', '─', '', '', '', '', '', '' },
 					backdrop = 100,
+					title_pos = 'left',
+					preview = {
+						border = { '┬', '─', '', '', '', '', '', '│' },
+						title_pos = 'left',
+					},
 					on_create = function()
 						keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })
 						keymap.set('t', '<C-u>', '<up>', { silent = true, buffer = true })
@@ -1276,14 +1286,17 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		'nvim-telescope/telescope.nvim',
 		branch = 'master',
 		cmd = 'Telescope',
-		keys = {
-			{ '<leader>fo', '<cmd>Telescope emoji<CR>' },
-			{ '<leader>fg', '<cmd>Telescope glyph<CR>' },
-			{ '<leader>fe', '<cmd>Telescope file_browser<CR>' },
-			{ '<leader>fu', '<cmd>Telescope undo<CR>' },
-			{ '<leader>fp', '<cmd>Telescope neoclip<CR>' },
-			{ '<leader>fG', '<cmd>Telescope nerdy<CR>' },
-		},
+		keys = function()
+			local theme = 'ivy'
+			return {
+				{ '<leader>fo', string.format('<cmd>Telescope emoji theme=%s<CR>', theme) },
+				{ '<leader>fg', string.format('<cmd>Telescope glyph theme=%s<CR>', theme) },
+				{ '<leader>fe', string.format('<cmd>Telescope file_browser theme=%s<CR>', theme) },
+				{ '<leader>fu', string.format('<cmd>Telescope undo theme=%s<CR>', theme) },
+				{ '<leader>fp', string.format('<cmd>Telescope neoclip theme=%s<CR>', theme) },
+				{ '<leader>fG', string.format('<cmd>Telescope nerdy theme=%s<CR>', theme) },
+			}
+		end,
 		dependencies = {
 			'nvim-lua/popup.nvim',
 			'nvim-lua/plenary.nvim',
@@ -1334,6 +1347,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						},
 					},
 					winblend = vim.o.winblend,
+				},
+				pickers = {
+					find_files = {
+						theme = 'ivy',
+					}
 				},
 				extensions = {
 					file_browser = {
@@ -2019,8 +2037,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = 'User FileOpened',
 		opts = {
 			indent = {
-				char = '▏',
-				tab_char = '▏',
+				char = '│',
+				tab_char = '│',
 			},
 		},
 	},
@@ -2668,9 +2686,18 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					['<M-.>'] = { 'show', 'show_documentation', 'hide_documentation' },
 					['<S-TAB>'] = { 'select_prev', 'fallback' },
 					['<TAB>'] = { 'select_next', 'fallback' },
-					['<M-y>'] = { 'accept' },
+					['<M-y>'] = { 'accept', 'fallback' },
 					['<Up>'] = { 'fallback' },
 					['<Down>'] = { 'fallback' },
+					cmdline = {
+						preset = 'default',
+						['<M-.>'] = { 'show', 'show_documentation', 'hide_documentation' },
+						['<S-TAB>'] = { 'select_prev', 'fallback' },
+						['<TAB>'] = { 'select_next', 'show', 'fallback' },
+						['<M-y>'] = { 'accept', 'fallback' },
+						['<Up>'] = { 'fallback' },
+						['<Down>'] = { 'fallback' },
+					},
 				},
 				completion = {
 					list = {
