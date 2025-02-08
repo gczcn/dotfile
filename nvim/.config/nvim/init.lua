@@ -738,8 +738,8 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'BlexMono Nerd Font Mono'
-local gui_font_size = 10.8
+local gui_font = 'JetBrainsMono Nerd Font Mono'
+local gui_font_size = 10.9
 
 local gui_change_font_size = function(n)
 	gui_font_size = gui_font_size + n
@@ -855,187 +855,56 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEME
-	--- GRUVBOX
+	--- EVERFOREST
 	{
-		'ellisonleao/gruvbox.nvim',
-		enabled = true,
+		'sainnhe/everforest',
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
-				group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
-				pattern = 'gruvbox',
+				group = vim.api.nvim_create_augroup('custom_highlights_everforest', {}),
+				pattern = 'everforest',
 				callback = function()
-					local p = require('gruvbox').palette
-					local set_hl = api.nvim_set_hl
-					local colors = vim.o.background == 'dark' and {
-						bg0 = p.dark0,
-						bg1 = p.dark1,
-						bg2 = p.dark2,
-						bg3 = p.dark3,
-						bg4 = p.dark4,
-						fg0 = p.light0,
-						fg1 = p.light1,
-						fg2 = p.light2,
-						fg3 = p.light3,
-						fg4 = p.light4,
-						red = p.bright_red,
-						green = p.bright_green,
-						yellow = p.bright_yellow,
-						blue = p.bright_blue,
-						purple = p.bright_purple,
-						aqua = p.bright_aqua,
-						orange = p.bright_orange,
-						neutral_red = p.neutral_red,
-						neutral_green = p.neutral_green,
-						neutral_yellow = p.neutral_yellow,
-						neutral_blue = p.neutral_blue,
-						neutral_purple = p.neutral_purple,
-						neutral_aqua = p.neutral_aqua,
-						dark_red = p.dark_red,
-						dark_green = p.dark_green,
-						dark_aqua = p.dark_aqua,
-						gray = p.gray,
-					} or {
-						bg0 = p.light0,
-						bg1 = p.light1,
-						bg2 = p.light2,
-						bg3 = p.light3,
-						bg4 = p.light4,
-						fg0 = p.dark0,
-						fg1 = p.dark1,
-						fg2 = p.dark2,
-						fg3 = p.dark3,
-						fg4 = p.dark4,
-						red = p.faded_red,
-						green = p.faded_green,
-						yellow = p.faded_yellow,
-						blue = p.faded_blue,
-						purple = p.faded_purple,
-						aqua = p.faded_aqua,
-						orange = p.faded_orange,
-						neutral_red = p.neutral_red,
-						neutral_green = p.neutral_green,
-						neutral_yellow = p.neutral_yellow,
-						neutral_blue = p.neutral_blue,
-						neutral_purple = p.neutral_purple,
-						neutral_aqua = p.neutral_aqua,
-						dark_red = p.light_red,
-						dark_green = p.light_green,
-						dark_aqua = p.light_aqua,
-						gray = p.gray,
-					}
-					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
-					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+					local config = vim.fn['everforest#get_configuration']()
+					local palette = vim.fn['everforest#get_palette'](config.background, config.colors_override)
+					local set_hl = vim.fn['everforest#highlight']
 
-					-- Custom
-					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
-					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
-					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
-					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
-					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
-					set_hl(0, 'Cokeline_focused_unique_prefix_fg', { fg = colors.bg2 })
-					set_hl(0, 'Cokeline_notfocused_unique_prefix_fg', { fg = colors.fg3 })
+					set_hl('Directory', palette.green, palette.none, 'bold')
+					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('CursorLineSign', palette.fg, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('WinBar', palette.grey1, palette.bg2)
+					set_hl('Conditional', palette.red, palette.none, 'italic')
+					set_hl('TSConditional', palette.red, palette.none, 'italic')
 
-					-- Custom Status Column (Tags: column, statuscolumn, status_column )
-					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
-					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
-					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
-					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
-					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
+					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
+					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
+					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
+					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
 
-					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
-					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
-					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
+					-- Custom Status Column (Tags: column, statuscolumn, status_column)
+					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
+					set_hl('StatusColumnFoldCurrent', palette.grey0, palette.bg0)
+					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
+					set_hl('StatusColumnFoldClose', palette.yellow, palette.bg1)
+					set_hl('StatusColumnFoldCursorLine', palette.bg4, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldCurrentCursorLine', palette.grey0, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, vim.o.cursorline and palette.bg1 or palette.none)
 
-					set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
-					set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
-					set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
-					set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
-					set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
-					set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
-					set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
-					set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
-					set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
-					set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
-
-					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0 })
-
-					set_hl(0, 'BlinkCmpKindClass', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindColor', { fg = colors.purple })
-					set_hl(0, 'BlinkCmpKindConstant', { fg = colors.orange })
-					set_hl(0, 'BlinkCmpKindConstructor', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindEnum', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindEnumMember', { fg = colors.aqua })
-					set_hl(0, 'BlinkCmpKindEvent', { fg = colors.purple })
-					set_hl(0, 'BlinkCmpKindField', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindFile', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindFolder', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindFunction', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindInterface', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindKeyword', { fg = colors.purple })
-					set_hl(0, 'BlinkCmpKindMethod', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindModule', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindOperator', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindProperty', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindReference', { fg = colors.purple })
-					set_hl(0, 'BlinkCmpKindSnippet', { fg = colors.green })
-					set_hl(0, 'BlinkCmpKindStruct', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindText', { fg = colors.orange })
-					set_hl(0, 'BlinkCmpKindTypeParameter', { fg = colors.yellow })
-					set_hl(0, 'BlinkCmpKindUnit', { fg = colors.blue })
-					set_hl(0, 'BlinkCmpKindValue', { fg = colors.orange })
-					set_hl(0, 'BlinkCmpKindVariable', { fg = colors.orange })
-					set_hl(0, 'BlinkCmpKindCopilot', { fg = colors.gray })
-					set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
-					set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
-					set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
+					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
+					set_hl('BlinkCmpLabelDeprecated', palette.grey0, palette.none)
+					set_hl('BlinkCmpLabelDetail', palette.grey0, palette.none)
+					set_hl('BlinkCmpLabelDescription', palette.grey0, palette.none)
+					set_hl('BlinkCmpSource', palette.grey0, palette.none)
+					set_hl('BlinkCmpGhostText', palette.grey0, palette.none)
+					set_hl('BlinkCmpLabelDescription', palette.grey0, palette.none)
 				end,
 			})
-			local palette = require('gruvbox').palette
-			require('gruvbox').setup({
-				italic = {
-					strings = false,
-					emphasis = global_config.plugins_config.gruvbox_italic,
-					comments = global_config.plugins_config.gruvbox_comments_italic,
-					folds = global_config.plugins_config.gruvbox_italic,
-				},
-				overrides = {
-					LspReferenceText = { underline = true },
-					LspReferenceRead = { underline = true },
-					LspReferenceWrite = { underline = true },
 
-					-- noice.nvim
-					NoiceCmdlinePopupBorder = { link = 'Normal' },
-					NoiceCmdlinePopupTitle = { link = 'Normal' },
-
-					-- Lualine
-					-- check https://github.com/nvim-lualine/lualine.nvim/issues/1312 for more information
-					StatusLine = { reverse = false },
-					StatusLineNC = { reverse = false },
-
-					-- nvim-scrollbar
-					-- lua/plugins/nvim-scrollbar.lua change_highlight()
-
-					-- vim-illuminate
-					-- IlluminatedWordText = { link = 'GruvboxBg2' },
-					-- IlluminatedWordRead = { link = 'GruvboxBg2' },
-					-- IlluminatedWordWrite = { link = 'GruvboxBg2' },
-
-					-- gitsigns.nvim
-					GitSignsCurrentLineBlame = { fg = palette.dark4 },
-
-					-- blink.cmp
-					BlinkCmpSource = { link = 'GruvboxGray' },
-					BlinkCmpLabelDeprecated = { link = 'GruvboxGray' },
-					BlinkCmpLabelDetail = { link = 'GruvboxGray' },
-					BlinkCmpLabelDescription = { link = 'GruvboxGray' },
-				},
-			})
 			opt.background = 'dark'
-			vim.cmd.colorscheme('gruvbox')
+			vim.g.everforest_diagnostic_virtual_text = 'highlighted'
+			vim.g.everforest_inlay_hints_background = 'dimmed'
+			vim.g.everforest_better_performance = 1
+			vim.cmd.colorscheme('everforest')
 		end,
 	},
 
