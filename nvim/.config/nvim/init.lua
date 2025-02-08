@@ -1037,8 +1037,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- items = nil,
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
-					starter.gen_hook.adding_bullet('│ '),
-					-- starter.gen_hook.adding_bullet('▏ '),
+					-- starter.gen_hook.adding_bullet('│ '),
+					starter.gen_hook.adding_bullet('▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -2037,8 +2037,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = 'User FileOpened',
 		opts = {
 			indent = {
-				char = '│',
-				tab_char = '│',
+				char = '▏',
+				tab_char = '▏',
 			},
 		},
 	},
