@@ -2078,6 +2078,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				cmdline_input = { border = { style = 'single', } },
 				confirm = { border = { style = 'single', } },
 				popup_menu = { border = { style = 'single', } },
+				mini = { timeout = 3000 },
 				-- hover = { border = { style = 'single', padding = { 0, 2 } } },
 			},
 			presets = {
