@@ -51,8 +51,9 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_icons boolean
----@field gruvbox_comments_italic boolean
----@field gruvbox_italic boolean
+---@field gruvbox_material_comments_italic boolean
+---@field gruvbox_material_conditional_italic boolean
+---@field gruvbox_material_bold boolean
 
 ---@class StatusColumnConfig
 ---@field enabled boolean
@@ -84,8 +85,9 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_icons = false,
-		gruvbox_comments_italic = true,
-		gruvbox_italic = false,
+		gruvbox_material_comments_italic = true,
+		gruvbox_material_conditional_italic = true,
+		gruvbox_material_bold = true,
 	},
 }
 
@@ -738,7 +740,7 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'JetBrainsMono Nerd Font Mono'
+local gui_font = 'BlexMono Nerd Font Mono'
 local gui_font_size = 10.9
 
 local gui_change_font_size = function(n)
@@ -855,26 +857,27 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEME
-	--- EVERFOREST
+	--- GRUVBOX-MATERIAL
 	{
-		'sainnhe/everforest',
+		'sainnhe/gruvbox-material',
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
-				group = vim.api.nvim_create_augroup('custom_highlights_everforest', {}),
-				pattern = 'everforest',
+				group = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
+				pattern = 'gruvbox-material',
 				callback = function()
-					local config = vim.fn['everforest#get_configuration']()
-					local palette = vim.fn['everforest#get_palette'](config.background, config.colors_override)
-					local set_hl = vim.fn['everforest#highlight']
+					local config = vim.fn['gruvbox_material#get_configuration']()
+					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
+					local set_hl = vim.fn['gruvbox_material#highlight']
 
 					set_hl('Directory', palette.green, palette.none, 'bold')
 					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.fg, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('WinBar', palette.grey1, palette.bg2)
-					set_hl('Conditional', palette.red, palette.none, 'italic')
-					set_hl('TSConditional', palette.red, palette.none, 'italic')
+					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('WinBar', palette.fg1, palette.bg1)
+					set_hl('Conditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
+					set_hl('TSConditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
 
+					-- Custom
 					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
 					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
 					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
@@ -882,15 +885,16 @@ local plugins = global_config.enabled_plugins and {
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column)
 					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
-					set_hl('StatusColumnFoldCurrent', palette.grey0, palette.bg0)
+					set_hl('StatusColumnFoldCurrent', palette.bg5, palette.bg0)
 					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
 					set_hl('StatusColumnFoldClose', palette.yellow, palette.bg1)
-					set_hl('StatusColumnFoldCursorLine', palette.bg4, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldCurrentCursorLine', palette.grey0, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldCursorLine', palette.bg4, palette.bg1)
+					set_hl('StatusColumnFoldCurrentCursorLine', palette.bg5, palette.bg1)
+					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, palette.bg1)
+					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
 
-					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
+					-- Plugins
+					set_hl('MiniFilesCursorLine', palette.none, palette.bg5)
 					set_hl('BlinkCmpLabelDeprecated', palette.grey0, palette.none)
 					set_hl('BlinkCmpLabelDetail', palette.grey0, palette.none)
 					set_hl('BlinkCmpLabelDescription', palette.grey0, palette.none)
@@ -900,11 +904,12 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
-			opt.background = 'dark'
-			vim.g.everforest_diagnostic_virtual_text = 'highlighted'
-			vim.g.everforest_inlay_hints_background = 'dimmed'
-			vim.g.everforest_better_performance = 1
-			vim.cmd.colorscheme('everforest')
+			vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_comments_italic
+			vim.g.gruvbox_material_enable_bold = global_config.plugins_config.gruvbox_material_bold
+			vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
+			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
+			vim.g.gruvbox_material_better_performance = 1
+			vim.cmd.colorscheme('gruvbox-material')
 		end,
 	},
 
@@ -1030,7 +1035,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- items = nil,
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
-					starter.gen_hook.adding_bullet('│ '),
+					-- starter.gen_hook.adding_bullet('│ '),
+					starter.gen_hook.adding_bullet('▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -1248,6 +1254,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local fzf_lua = require('fzf-lua')
 			fzf_lua.setup({
 				winopts = {
+					row = 0.5,
 					border = global_config.plugins_config.border,
 					preview = {
 						border = global_config.plugins_config.border,
@@ -2012,8 +2019,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = 'User FileOpened',
 		opts = {
 			indent = {
-				char = '│',
-				tab_char = '│',
+				char = '▏',
+				tab_char = '▏',
 			},
 		},
 	},

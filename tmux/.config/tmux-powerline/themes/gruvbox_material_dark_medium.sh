@@ -98,19 +98,19 @@ fi
 # shellcheck disable=SC1143,SC2128
 if [ -z "$TMUX_POWERLINE_LEFT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-		"tmux_session_info #83a598 #282828"
-		# "hostname #504945 #ebdbb2"
-		# "mode_indicator #b8bb26 #282828"
+		"tmux_session_info #7daea3 #282828"
+		# "hostname #504945 #ddc7a1"
+		# "mode_indicator #a9b665 #282828"
 		# "ifstat 30 255"
-		"lan_ip #504945 #ebdbb2 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
+		"lan_ip #504945 #ddc7a1 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
 		# "vpn 24 255 ${TMUX_POWERLINE_SEPARATOR_RIGHT_THIN}"
-		# "wan_ip #504945 #ebdbb2"
-		"vcs_branch #b8bb26 #282828"
+		# "wan_ip #504945 #ddc7a1"
+		"vcs_branch #a9b665 #282828"
 		"vcs_compare #d3869b #282828"
-		"vcs_staged #b8bb26 #282828"
-		"vcs_modified #fb4934 #282828"
+		"vcs_staged #a9b665 #282828"
+		"vcs_modified #ea6962 #282828"
 		"vcs_others #a89984 #282828"
-		# "ifstat_sys #504945 #ebdbb2"
+		# "ifstat_sys #504945 #ddc7a1"
 	)
 fi
 
@@ -118,10 +118,10 @@ fi
 if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 	TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=(
 		#"earthquake 3 0"
-		"pwd #504945 #ebdbb2"
+		"pwd #504945 #ddc7a1"
 		#"macos_notification_count 29 255"
 		#"mailcount 9 255"
-		"now_playing #504945 #83a598"
+		"now_playing #504945 #7daea3"
 		#"cpu 240 136"
 		# "load 237 167"
 		# "tmux_mem_cpu_load 234 136"
@@ -132,8 +132,8 @@ if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 		#"xkb_layout 125 117"
 		# "date_day 235 136"
 		# "date 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
-		"rainbarf"
-		"time #b8bb26 #282828 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
+		"rainbarf_rgb"
+		"time #a9b665 #282828 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 		#"utc_time 235 136 ${TMUX_POWERLINE_SEPARATOR_LEFT_THIN}"
 	)
 fi
