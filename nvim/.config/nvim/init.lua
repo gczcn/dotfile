@@ -2035,12 +2035,18 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		enabled = true,
 		main = 'ibl',
 		event = 'User FileOpened',
-		opts = {
-			indent = {
-				char = '▏',
-				tab_char = '▏',
-			},
-		},
+		config = function()
+			require('ibl').setup({
+				indent = {
+					char = '▏',
+					tab_char = '▏',
+				},
+				scope = {
+					enabled = true,
+					char = '▎',
+				},
+			})
+		end,
 	},
 
 	-- SUDA, SUDO
