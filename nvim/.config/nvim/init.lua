@@ -2041,10 +2041,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					char = '▏',
 					tab_char = '▏',
 				},
-				scope = {
-					enabled = true,
-					char = '▎',
-				},
 			})
 		end,
 	},
