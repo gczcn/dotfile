@@ -272,10 +272,9 @@ opt.guicursor = vim.fn.has('nvim-0.11') == 1
 	and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
 	or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
-
-opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
+opt.listchars = { tab = '> ', trail = '-', extends = '>', precedes = '<', nbsp = '+' }
 opt.number = true
 opt.pumblend = 10
 opt.pumheight = 30
@@ -2026,6 +2025,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		'lukas-reineke/indent-blankline.nvim',
 		main = 'ibl',
 		event = 'User FileOpened',
+		enabled = true,
 		config = function()
 			require('ibl').setup({
 				indent = {
