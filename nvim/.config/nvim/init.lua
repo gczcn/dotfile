@@ -206,6 +206,10 @@ keymap.set('n', '<M-down>', '<cmd>resize -5<CR>', keymaps_opts)
 keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
+-- Commenting
+keymap.set('n', 'gco', function() vim.cmd([[noautocmd exe "norm o.\<esc>gcc$x" | call feedkeys("a")]]) end, { desc = 'Add Comment Below' })
+keymap.set('n', 'gcO', function() vim.cmd([[noautocmd exe "norm O.\<esc>gcc$x" | call feedkeys("a")]]) end, { desc = 'Add Comment Above' })
+
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
 keymap.set({ 'n', 'v' }, '<M-Y>', '"+Y', keymaps_opts)
@@ -255,7 +259,7 @@ vim.g.encoding = 'UTF-8'
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 -- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
--- opt.colorcolumn = '80' -- Line number reminder
+opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting
@@ -268,12 +272,14 @@ opt.guicursor = vim.fn.has('nvim-0.11') == 1
 	and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
 	or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
+
 opt.linebreak = true -- Wrap lines at 'breakat'
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
 opt.number = true
 opt.pumblend = 10
 opt.pumheight = 30
+
 -- opt.relativenumber = true
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
@@ -574,8 +580,11 @@ create_autocmd('User', {
 })
 
 -- https://github.com/sitiom/nvim-numbertoggle/blob/main/plugin/numbertoggle.lua
+local numbertoggleaugroup = api.nvim_create_augroup("numbertoggle", {})
+
 create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
 	pattern = '*',
+	group = numbertoggleaugroup,
 	callback = function()
 		if vim.o.nu and api.nvim_get_mode().mode ~= 'i' then
 			opt.relativenumber = true
@@ -585,6 +594,7 @@ create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinE
 
 create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
 	pattern = '*',
+	group = numbertoggleaugroup,
 	callback = function()
 		if vim.o.nu then
 			opt.relativenumber = false
@@ -1822,24 +1832,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		end,
 	},
 
-	-- COMMENT
-	-- NOTE: neovim nightly version already has built-in commenting.
-	{
-		'numToStr/Comment.nvim',
-		keys = {
-			{ 'gc', mode = { 'n', 'v' } },
-			{ 'gb', mode = { 'n', 'v' } },
-
-			-- normal mode
-			{ 'gcc', mode = 'n' },
-			{ 'gbc', mode = 'n' },
-			{ 'gco', mode = 'n' },
-			{ 'gcO', mode = 'n' },
-			{ 'gcA', mode = 'n' },
-		},
-		config = function() require('Comment').setup() end,
-	},
-
 	-- MOVE
 	{
 		'fedepujol/move.nvim',
@@ -2032,7 +2024,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- INDENT-BLANKLINE
 	{
 		'lukas-reineke/indent-blankline.nvim',
-		enabled = true,
 		main = 'ibl',
 		event = 'User FileOpened',
 		config = function()
