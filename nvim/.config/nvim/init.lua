@@ -91,7 +91,7 @@ local global_config = {
 		gruvbox_material_comments_italic = false,
 		gruvbox_material_conditional_italic = false,
 		gruvbox_material_bold = true,
-		ivy_layout = false,
+		ivy_layout = true,
 	},
 }
 
