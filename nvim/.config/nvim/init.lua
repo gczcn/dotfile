@@ -214,13 +214,20 @@ keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 local operator_rhs = function()
 	return require('vim._comment').operator() .. '_'
 end
-keymap.set('n', 'gco', function() vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], operator_rhs())) end, { desc = 'Add comment on the line below' })
-keymap.set('n', 'gcO', function() vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], operator_rhs())) end, { desc = 'Add comment on the line above' })
+
+keymap.set('n', 'gco', function()
+	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
+end, { desc = 'Add comment on the line below' })
+keymap.set('n', 'gcO', function()
+	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
+end, { desc = 'Add comment on the line above' })
+
 keymap.set('n', 'gcA', function()
 	local line = vim.api.nvim_get_current_line()
 	local commentstring = vim.bo.commentstring
 	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
 end, { desc = 'Add Comment at the end of line' })
+
 keymap.set('n', 'gcc', function()
 	local line = vim.api.nvim_get_current_line()
 	if line:find('%S') then
