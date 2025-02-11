@@ -85,8 +85,8 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_icons = false,
-		gruvbox_material_comments_italic = true,
-		gruvbox_material_conditional_italic = true,
+		gruvbox_material_comments_italic = false,
+		gruvbox_material_conditional_italic = false,
 		gruvbox_material_bold = true,
 	},
 }
@@ -207,8 +207,24 @@ keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Commenting
-keymap.set('n', 'gco', function() vim.cmd([[noautocmd exe "norm o.\<esc>gcc$x" | call feedkeys("a")]]) end, { desc = 'Add Comment Below' })
-keymap.set('n', 'gcO', function() vim.cmd([[noautocmd exe "norm O.\<esc>gcc$x" | call feedkeys("a")]]) end, { desc = 'Add Comment Above' })
+local operator_rhs = function()
+	return require('vim._comment').operator() .. '_'
+end
+keymap.set('n', 'gco', function() vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], operator_rhs())) end, { desc = 'Add comment on the line below' })
+keymap.set('n', 'gcO', function() vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], operator_rhs())) end, { desc = 'Add comment on the line above' })
+keymap.set('n', 'gcA', function()
+	local line = vim.api.nvim_get_current_line()
+	local commentstring = vim.bo.commentstring
+	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
+end, { desc = 'Add Comment at the end of line' })
+keymap.set('n', 'gcc', function()
+	local line = vim.api.nvim_get_current_line()
+	if line:find('%S') then
+		api.nvim_feedkeys(operator_rhs(), 'n', false)
+	else
+		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
+	end
+end, { desc = 'Toggle comment line' })
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
@@ -259,7 +275,7 @@ vim.g.encoding = 'UTF-8'
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 -- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
-opt.colorcolumn = '80' -- Line number reminder
+-- opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting
@@ -749,8 +765,8 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
-local gui_font = 'BlexMono Nerd Font Mono'
-local gui_font_size = 10.9
+local gui_font = 'FiraCode Nerd Font Mono'
+local gui_font_size = 11.2
 
 local gui_change_font_size = function(n)
 	gui_font_size = gui_font_size + n
@@ -865,7 +881,7 @@ local lazy_config = global_config.enabled_plugins and {
 
 local plugins = global_config.enabled_plugins and {
 
-	-- COLORSCHEME
+	-- COLORSCHEMES
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
@@ -879,19 +895,31 @@ local plugins = global_config.enabled_plugins and {
 					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
-					set_hl('Directory', palette.green, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
 					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('CursorLineNr', palette.yellow, vim.o.cursorline and palette.bg1 or palette.none)
 					set_hl('WinBar', palette.fg1, palette.bg1)
-					set_hl('Conditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
-					set_hl('TSConditional', palette.red, palette.none, global_config.plugins_config.gruvbox_material_conditional_italic and 'italic' or nil)
 
-					-- Custom
-					set_hl('DiagnosticNumHlError', palette.red, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
-					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
-					set_hl('DiagnosticNumHlHint', palette.green, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
-					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
+					if global_config.plugins_config.gruvbox_material_bold then
+						set_hl('Directory', palette.green, palette.none, 'bold')
+						set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
+						set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
+						set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
+						set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
+						set_hl('TelescopeSelection', palette.fg1, palette.bg1, 'bold')
+					else
+						set_hl('DiagnosticNumHlError', palette.red, palette.none)
+						set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none)
+						set_hl('DiagnosticNumHlHint', palette.green, palette.none)
+						set_hl('DiagnosticNumHlInfo', palette.blue, palette.none)
+						set_hl('TelescopeSelection', palette.fg1, palette.bg1)
+					end
+
+					if global_config.plugins_config.gruvbox_material_conditional_italic then
+						set_hl('Conditional', palette.red, palette.none, 'italic')
+						set_hl('TSConditional', palette.red, palette.none, 'italic')
+					end
+
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column)
 					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
@@ -904,7 +932,6 @@ local plugins = global_config.enabled_plugins and {
 					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
 
 					-- Plugins
-					set_hl('TelescopeSelection', palette.fg1, palette.bg1, global_config.plugins_config.gruvbox_material_bold and 'bold' or nil)
 					set_hl('MiniFilesCursorLine', palette.none, palette.bg5)
 					set_hl('BlinkCmpLabelDeprecated', palette.grey0, palette.none)
 					set_hl('BlinkCmpLabelDetail', palette.grey0, palette.none)
@@ -915,8 +942,10 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
+			vim.g.gruvbox_material_foreground = 'material'
 			vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_comments_italic
 			vim.g.gruvbox_material_enable_bold = global_config.plugins_config.gruvbox_material_bold
+			vim.g.gruvbox_material_menu_selection_background = 'blue'
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
 			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
 			vim.g.gruvbox_material_better_performance = 1
@@ -1149,10 +1178,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				options = {
 					permanent_delete = true,
 					use_as_default_explorer = false,
-				},
-				windows = {
-					preview = true,
-					width_preview = 50,
 				},
 			})
 		end,
@@ -1732,7 +1757,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'nvim-treesitter/nvim-treesitter-context',
-			'HiPhish/rainbow-delimiters.nvim',
+			-- 'HiPhish/rainbow-delimiters.nvim',
 		},
 		init = function(plugin)
 			require('lazy.core.loader').add_to_rtp(plugin)
@@ -2644,7 +2669,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
 			local opts = {
 				appearance = {
-					-- use_nvim_cmp_as_default = true,
 					kind_icons = {
 						Text = '󰉿',
 						Method = '󰆧',
