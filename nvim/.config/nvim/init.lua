@@ -51,9 +51,11 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_icons boolean
+---@field gruvbox_italic boolean
 ---@field gruvbox_material_comments_italic boolean
 ---@field gruvbox_material_conditional_italic boolean
 ---@field gruvbox_material_bold boolean
+---@field ivy_layout boolean
 
 ---@class StatusColumnConfig
 ---@field enabled boolean
@@ -85,9 +87,11 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_icons = false,
+		gruvbox_italic = true,
 		gruvbox_material_comments_italic = false,
 		gruvbox_material_conditional_italic = false,
 		gruvbox_material_bold = true,
+		ivy_layout = false,
 	},
 }
 
@@ -301,6 +305,7 @@ opt.shiftround = true -- Round indent
 opt.shiftwidth = 8 -- Number of space inserted for indentation
 opt.showmode = false -- No display mode
 opt.sidescrolloff = 8 -- Columns of context
+opt.signcolumn = 'auto'
 opt.smartcase = true -- Case sensitive searching
 opt.smartindent = true -- Insert indents automatically
 opt.smoothscroll = true
@@ -882,9 +887,192 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEMES
+	--- GRUVBOX
+	{
+		'ellisonleao/gruvbox.nvim',
+		lazy = false,
+		priority = 1000,
+		config = function()
+			create_autocmd('ColorScheme', {
+				group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+				pattern = 'gruvbox',
+				callback = function()
+					local p = require('gruvbox').palette
+					local set_hl = api.nvim_set_hl
+					local colors = vim.o.background == 'dark' and {
+						bg0 = p.dark0,
+						bg1 = p.dark1,
+						bg2 = p.dark2,
+						bg3 = p.dark3,
+						bg4 = p.dark4,
+						fg0 = p.light0,
+						fg1 = p.light1,
+						fg2 = p.light2,
+						fg3 = p.light3,
+						fg4 = p.light4,
+						red = p.bright_red,
+						green = p.bright_green,
+						yellow = p.bright_yellow,
+						blue = p.bright_blue,
+						purple = p.bright_purple,
+						aqua = p.bright_aqua,
+						orange = p.bright_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.dark_red,
+						dark_green = p.dark_green,
+						dark_aqua = p.dark_aqua,
+						gray = p.gray,
+					} or {
+						bg0 = p.light0,
+						bg1 = p.light1,
+						bg2 = p.light2,
+						bg3 = p.light3,
+						bg4 = p.light4,
+						fg0 = p.dark0,
+						fg1 = p.dark1,
+						fg2 = p.dark2,
+						fg3 = p.dark3,
+						fg4 = p.dark4,
+						red = p.faded_red,
+						green = p.faded_green,
+						yellow = p.faded_yellow,
+						blue = p.faded_blue,
+						purple = p.faded_purple,
+						aqua = p.faded_aqua,
+						orange = p.faded_orange,
+						neutral_red = p.neutral_red,
+						neutral_green = p.neutral_green,
+						neutral_yellow = p.neutral_yellow,
+						neutral_blue = p.neutral_blue,
+						neutral_purple = p.neutral_purple,
+						neutral_aqua = p.neutral_aqua,
+						dark_red = p.light_red,
+						dark_green = p.light_green,
+						dark_aqua = p.light_aqua,
+						gray = p.gray,
+					}
+					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+
+					-- Custom
+					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
+					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
+					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
+					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
+					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
+
+					-- Custom Status Column (Tags: column, statuscolumn, status_column )
+					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
+					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
+					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
+					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
+
+					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
+					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
+					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
+
+					set_hl(0, 'FzfLuaHeaderText', { fg = colors.red })
+					set_hl(0, 'FzfLuaHeaderBind', { fg = colors.orange })
+					set_hl(0, 'FzfLuaPathColNr', { fg = colors.blue })
+					set_hl(0, 'FzfLuaPathLineNr', { fg = colors.aqua })
+					set_hl(0, 'FzfLuaLiveSym', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufNr', { fg = colors.fg1 })
+					set_hl(0, 'FzfLuaBufFlagCur', { fg = colors.red })
+					set_hl(0, 'FzfLuaBufFlagAlt', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
+					set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
+
+					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0, bold = true })
+
+					set_hl(0, 'BlinkCmpKindClass', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindColor', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindConstant', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindConstructor', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindEnum', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindEnumMember', { fg = colors.aqua })
+					set_hl(0, 'BlinkCmpKindEvent', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindField', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFile', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFolder', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindFunction', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindInterface', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindKeyword', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindMethod', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindModule', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindOperator', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindProperty', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindReference', { fg = colors.purple })
+					set_hl(0, 'BlinkCmpKindSnippet', { fg = colors.green })
+					set_hl(0, 'BlinkCmpKindStruct', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindText', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindTypeParameter', { fg = colors.yellow })
+					set_hl(0, 'BlinkCmpKindUnit', { fg = colors.blue })
+					set_hl(0, 'BlinkCmpKindValue', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindVariable', { fg = colors.orange })
+					set_hl(0, 'BlinkCmpKindCopilot', { fg = colors.gray })
+					set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
+					set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
+				end,
+			})
+			local palette = require('gruvbox').palette
+			require('gruvbox').setup({
+				italic = {
+					strings = false,
+					emphasis = global_config.plugins_config.gruvbox_italic,
+					comments = global_config.plugins_config.gruvbox_italic,
+					folds = global_config.plugins_config.gruvbox_italic,
+				},
+				overrides = {
+					LspReferenceText = { underline = true },
+					LspReferenceRead = { underline = true },
+					LspReferenceWrite = { underline = true },
+
+					-- noice.nvim
+					NoiceCmdlinePopupBorder = { link = 'Normal' },
+					NoiceCmdlinePopupTitle = { link = 'Normal' },
+
+					-- Lualine
+					-- check https://github.com/nvim-lualine/lualine.nvim/issues/1312 for more information
+					StatusLine = { reverse = false },
+					StatusLineNC = { reverse = false },
+
+					-- nvim-scrollbar
+					-- lua/plugins/nvim-scrollbar.lua change_highlight()
+
+					-- vim-illuminate
+					-- IlluminatedWordText = { link = 'GruvboxBg2' },
+					-- IlluminatedWordRead = { link = 'GruvboxBg2' },
+					-- IlluminatedWordWrite = { link = 'GruvboxBg2' },
+
+					-- gitsigns.nvim
+					GitSignsCurrentLineBlame = { fg = palette.dark4 },
+
+					-- blink.cmp
+					BlinkCmpSource = { link = 'GruvboxGray' },
+					BlinkCmpLabelDeprecated = { link = 'GruvboxGray' },
+					BlinkCmpLabelDetail = { link = 'GruvboxGray' },
+					BlinkCmpLabelDescription = { link = 'GruvboxGray' },
+				},
+			})
+			opt.background = 'dark'
+			vim.cmd.colorscheme('gruvbox')
+		end,
+	},
+
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
+		lazy = true,
 		priority = 1000,
 		config = function()
 			create_autocmd('ColorScheme', {
@@ -976,7 +1164,6 @@ https://neovim.io/#chat
 This Configuration:
 https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			end
-
 
 			local footer = function()
 				return
@@ -1075,8 +1262,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- items = nil,
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
-					-- starter.gen_hook.adding_bullet('│ '),
-					starter.gen_hook.adding_bullet('▏ '),
+					starter.gen_hook.adding_bullet('│ '),
+					-- starter.gen_hook.adding_bullet('▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -1294,15 +1481,15 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local fzf_lua = require('fzf-lua')
 			fzf_lua.setup({
 				winopts = {
-					height = 0.5,
-					width = 1,
-					row = 0.9999999,
-					border = { '─', '─', '', '', '', '', '', '' },
+					height = global_config.plugins_config.ivy_layout and 0.5 or 0.85,
+					width = global_config.plugins_config.ivy_layout and 1 or 0.80,
+					row = global_config.plugins_config.ivy_layout and 0.9999999 or 0.50,
+					border = global_config.plugins_config.ivy_layout and { '─', '─', '', '', '', '', '', '' } or global_config.plugins_config.border,
 					backdrop = 100,
-					title_pos = 'left',
+					title_pos = global_config.plugins_config.ivy_layout and 'left' or 'center',
 					preview = {
-						border = { '┬', '─', '', '', '', '', '', '│' },
-						title_pos = 'left',
+						border = global_config.plugins_config.ivy_layout and { '┬', '─', '', '', '', '', '', '│' } or global_config.plugins_config.border,
+						title_pos = global_config.plugins_config.ivy_layout and 'left' or 'center',
 					},
 					on_create = function()
 						keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })
@@ -1321,7 +1508,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		branch = 'master',
 		cmd = 'Telescope',
 		keys = function()
-			local theme = 'ivy'
+			local theme = global_config.plugins_config.ivy_layout and 'ivy' or ''
 			return {
 				{ '<leader>fo', string.format('<cmd>Telescope emoji theme=%s<CR>', theme) },
 				{ '<leader>fg', string.format('<cmd>Telescope glyph theme=%s<CR>', theme) },
@@ -1757,7 +1944,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'nvim-treesitter/nvim-treesitter-context',
-			-- 'HiPhish/rainbow-delimiters.nvim',
+			'HiPhish/rainbow-delimiters.nvim',
 		},
 		init = function(plugin)
 			require('lazy.core.loader').add_to_rtp(plugin)
@@ -2054,8 +2241,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		config = function()
 			require('ibl').setup({
 				indent = {
-					char = '▏',
-					tab_char = '▏',
+					char = '│',
+					tab_char = '│',
 				},
 			})
 		end,
@@ -2844,7 +3031,6 @@ if global_config.enabled_plugins then
 
 	opt.cmdheight = 0
 	opt.laststatus = 0
-	opt.signcolumn = 'yes'
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
 	opt.foldenable = true

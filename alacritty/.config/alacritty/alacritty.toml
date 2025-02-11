@@ -8,19 +8,19 @@ size = 10.9
 # JetBrains Mono
 offset = { x = 0, y = -1 }
 [font.bold]
-family = "BlexMono Nerd Font Mono"
+family = "Mononoki Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "BlexMono Nerd Font Mono"
+family = "Mononoki Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "BlexMono Nerd Font Mono"
+family = "Mononoki Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "BlexMono Nerd Font Mono"
+family = "Mononoki Nerd Font Mono"
 style = "Regular"
 
 # Noto Sans Mono
