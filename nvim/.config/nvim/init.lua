@@ -313,7 +313,7 @@ opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
 -- opt.virtualedit = 'block' -- Allow cursor to move where there is no text in visual block mode
--- opt.winblend = 15
+opt.winblend = 10
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
@@ -1517,7 +1517,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		config = function(_, opts)
 			require('illuminate').configure(opts)
 
-			local function map(key, dir, buffer)
+			local map = function(key, dir, buffer)
 				keymap.set('n', key, function()
 					require('illuminate')['goto_' .. dir .. '_reference'](false)
 				end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. ' reference', buffer = buffer })
@@ -2293,7 +2293,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				on_attach = function(buffer)
 					local gs = package.loaded.gitsigns
 
-					local function map(mode, l, r, desc)
+					local map = function(mode, l, r, desc)
 						keymap.set(mode, l, r, { buffer = buffer, desc = desc })
 					end
 
