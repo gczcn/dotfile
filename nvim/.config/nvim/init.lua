@@ -1635,7 +1635,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							-- { name='', value='', cagegory='', description='' }
 
 							vim.fn.setreg('+', emoji.value)
-							print([[Press "+p or <M-p> to paste this emoji]] .. emoji.value)
+							print([[Press "+p or <M-p> to paste this emoji ]] .. emoji.value)
 
 							-- insert emoji when picked
 							-- api.nvim_put({ emoji.value }, 'c', false, true)

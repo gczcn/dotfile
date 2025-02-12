@@ -1,17 +1,10 @@
 # Test:
 # hello.
 # 你好。
-font-family = JetBrainsMono Nerd Font Mono
-# font-family = BlexMono Nerd Font Mono
-# font-family = Mononoki Nerd Font Mono
-# font-family = Cascadia Code NF
+font-family = FiraCode Nerd Font Mono
 font-family = Noto Sans SC
-# font-feature = onum
-font-feature = ss01
-# font-size = 15.3
-# font-size = 14.3
-font-size = 15
-# font-size = 15.8
+font-feature = cv10
+font-size = 12
 theme = GruvboxDark
 mouse-hide-while-typing = true
 window-padding-x = 0
