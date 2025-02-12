@@ -65,16 +65,17 @@ local create_user_command = api.nvim_create_user_command
 ---@class global_config
 ---@field middle_row_of_keyboard string[]
 ---@field remove_padding_around_neovim_instance boolean
+---@field auto_toggle_relativenumber boolean
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
 ---@field statuscolumn StatusColumnConfig
 ---@field plugins_config PluginsConfig
 local global_config = {
-	--                       |  0    1    2    3    4    5    6    7    8    9  |
+	-- 0, 1, 2, ..., 9
 	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
-	-- middle_row_of_keyboard = { ';', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' }, -- Qwerty
 	remove_padding_around_neovim_instance = false,
+	auto_toggle_relativenumber = false, -- WARN: There are performance issues, such as slowing down macro functions
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
@@ -87,7 +88,7 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_icons = false,
-		gruvbox_italic = true,
+		gruvbox_italic = false,
 		gruvbox_material_comments_italic = false,
 		gruvbox_material_conditional_italic = false,
 		gruvbox_material_bold = true,
@@ -99,6 +100,74 @@ local global_config = {
 -- Functions
 -- Tags: FUN, FUNC, FUNCTION, FUNCTIONS
 -- =============================================================================
+
+table.indexOf = function(t, v)
+	if type(t) == 'table' then
+		for i = 1, #t do
+			if v == t[i] then
+				return i
+			end
+		end
+	end
+
+	return nil
+end
+
+local do_sth_with_middle_row_of_keyboard = function(k)
+	vim.cmd([[exe "normal! :set relativenumber\<cr>"]])
+	---@type number?
+	local char
+	local index
+	local count = ''
+	while true do
+		---@diagnostic disable-next-line: param-type-mismatch
+		char = tonumber(vim.fn.getchar())
+		if char == 27 then goto stop end
+		if char == 32 then goto continue end
+		index = table.indexOf(global_config.middle_row_of_keyboard, tostring(vim.fn.nr2char(char or 0)))
+		index = index and index - 1 or nil
+		if not index then goto stop end
+		count = count .. tostring(index)
+	end
+	---@diagnostic disable-next-line: unreachable-code
+	::continue::
+	api.nvim_feedkeys(count .. k, 'n', false)
+	::stop::
+	vim.o.relativenumber = false
+end
+
+-- vim/_defaults.lua
+local commenting_operator_rhs = function()
+	return require('vim._comment').operator() .. '_'
+end
+
+-- Add comment at the end of line
+local commenting_line_end = function()
+	local line = api.nvim_get_current_line()
+	local commentstring = vim.bo.commentstring
+	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
+end
+
+-- Add comment on the line above
+local commenting_above = function()
+	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+end
+
+-- Add comment on the line below
+local commenting_below = function()
+	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+end
+
+-- Toggle comment line
+local commenting_toggle_line = function()
+	local line = api.nvim_get_current_line()
+	if line:find('%S') then
+		api.nvim_feedkeys(commenting_operator_rhs(), 'n', false)
+	else
+		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+	end
+end
+
 -- Need nvim-web-devicons or mini.icons
 local get_file_icon = function(filename, filetype)
 	local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
@@ -162,7 +231,7 @@ end
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
 ---@type table<string, boolean>
-local keymaps_opts = { noremap = true, silent = true }
+local keymaps_opts = { noremap = true }
 
 vim.g.mapleader = ' '
 
@@ -211,31 +280,10 @@ keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Commenting
-local operator_rhs = function()
-	return require('vim._comment').operator() .. '_'
-end
-
-keymap.set('n', 'gco', function()
-	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
-end, { desc = 'Add comment on the line below' })
-keymap.set('n', 'gcO', function()
-	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
-end, { desc = 'Add comment on the line above' })
-
-keymap.set('n', 'gcA', function()
-	local line = vim.api.nvim_get_current_line()
-	local commentstring = vim.bo.commentstring
-	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
-end, { desc = 'Add Comment at the end of line' })
-
-keymap.set('n', 'gcc', function()
-	local line = vim.api.nvim_get_current_line()
-	if line:find('%S') then
-		api.nvim_feedkeys(operator_rhs(), 'n', false)
-	else
-		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], operator_rhs()))
-	end
-end, { desc = 'Toggle comment line' })
+keymap.set('n', 'gcO', function() commenting_above() end, { desc = 'Add comment on the line above' })
+keymap.set('n', 'gco', function() commenting_below() end, { desc = 'Add comment on the line below' })
+keymap.set('n', 'gcA', function() commenting_line_end() end, { desc = 'Add comment at the end of line' })
+keymap.set('n', 'gcc', function() commenting_toggle_line() end, { desc = 'Toggle comment line' })
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
@@ -253,17 +301,8 @@ keymap.set('o', '<M-D>', 'D', keymaps_opts)
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
 -- Cursor
-local keys = ''
-local number = ''
-for i = 1, 199 do
-	number = tostring(i)
-	keys = ''
-	for j = 1, #number do
-		keys = keys .. global_config.middle_row_of_keyboard[tonumber(string.sub(number, j, j)) + 1]
-	end
-	keymap.set({ 'n', 'v', 'o' }, "'" .. keys .. '<leader>', number .. 'j', keymaps_opts)
-	keymap.set({ 'n', 'v', 'o' }, '[' .. keys .. '<leader>', number .. 'k', keymaps_opts)
-end
+keymap.set({ 'n', 'v', 'o' }, "<leader>'", function() do_sth_with_middle_row_of_keyboard('j') end)
+keymap.set({ 'n', 'v', 'o' }, "<leader>[", function() do_sth_with_middle_row_of_keyboard('k') end)
 
 -- Other
 --- Toggle background [ dark | light ]
@@ -607,28 +646,30 @@ create_autocmd('User', {
 })
 
 -- https://github.com/sitiom/nvim-numbertoggle/blob/main/plugin/numbertoggle.lua
-local numbertoggleaugroup = api.nvim_create_augroup("numbertoggle", {})
+if global_config.auto_toggle_relativenumber then
+	local numbertoggleaugroup = api.nvim_create_augroup("numbertoggle", {})
 
-create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
-	pattern = '*',
-	group = numbertoggleaugroup,
-	callback = function()
-		if vim.o.nu and api.nvim_get_mode().mode ~= 'i' then
-			opt.relativenumber = true
-		end
-	end,
-})
+	create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
+		pattern = '*',
+		group = numbertoggleaugroup,
+		callback = function()
+			if vim.o.nu and api.nvim_get_mode().mode ~= 'i' then
+				opt.relativenumber = true
+			end
+		end,
+	})
 
-create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
-	pattern = '*',
-	group = numbertoggleaugroup,
-	callback = function()
-		if vim.o.nu then
-			opt.relativenumber = false
-			vim.cmd('redraw')
-		end
-	end,
-})
+	create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
+		pattern = '*',
+		group = numbertoggleaugroup,
+		callback = function()
+			if vim.o.nu then
+				opt.relativenumber = false
+				vim.cmd('redraw')
+			end
+		end,
+	})
+end
 
 create_autocmd('FileType', {
 	pattern = { 'json', 'json5', 'jsonc', 'lsonc', 'markdown' },
@@ -1395,10 +1436,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					around_last = 'al',
 					inside_last = 'kl',
 
-					-- Move cursor to corresponding edge of `a` textobject
+					-- Move to corresponding edge of `a` textobject
 					goto_left = 'g[',
 					goto_right = 'g]',
 				},
+				n_lines = 500,
 			})
 		end,
 	},
@@ -1595,7 +1637,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							print([[Press "+p or <M-p> to paste this emoji]] .. emoji.value)
 
 							-- insert emoji when picked
-							-- vim.api.nvim_put({ emoji.value }, 'c', false, true)
+							-- api.nvim_put({ emoji.value }, 'c', false, true)
 						end,
 					},
 				},
@@ -1753,7 +1795,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- TODO-COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		cmd = { 'TodoTrouble', 'TodoTelescope' },
+		cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
 		event = 'User FileOpened',
 		opts = {},
 		-- stylua: ignore
@@ -1762,7 +1804,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			{ '[c', function() require('todo-comments').jump_prev() end, desc = 'Previous Todo Comment' },
 			-- { '<leader>xt', '<cmd>Trouble todo toggle<cr>', desc = 'Todo (Trouble)' },
 			-- { '<leader>xT', '<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>', desc = 'Todo/Fix/Fixme (Trouble)' },
-			{ '<leader>ft', '<cmd>TodoTelescope<cr>', desc = 'Todo' },
+			{ '<leader>ft', string.format('<cmd>TodoTelescope theme=%s<cr>', global_config.plugins_config.ivy_layout and 'ivy' or ''), desc = 'Todo' },
 			{ '<leader>fT', '<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>', desc = 'Todo/Fix/Fixme' },
 		},
 	},
@@ -2025,7 +2067,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			})
 
 			-- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
-			-- 	group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+			-- 	group = api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
 			-- 	callback = function()
 			-- 		if require("nvim-treesitter.parsers").has_parser() then
 			-- 			opt.foldmethod = "expr"
