@@ -1,7 +1,7 @@
 # Test:
 # hello.
 # 你好。
-font-family = Consolas Nerd Font Mono
+font-family = JetBrainsMono Nerd Font Mono
 # font-family = BlexMono Nerd Font Mono
 # font-family = Mononoki Nerd Font Mono
 # font-family = Cascadia Code NF
@@ -10,7 +10,7 @@ font-family = Noto Sans SC
 font-feature = ss01
 # font-size = 15.3
 # font-size = 14.3
-font-size = 15.7
+font-size = 15
 # font-size = 15.8
 theme = GruvboxDark
 mouse-hide-while-typing = true
