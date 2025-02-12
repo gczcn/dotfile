@@ -1006,6 +1006,7 @@ local plugins = global_config.enabled_plugins and {
 					}
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+					set_hl(0, '@keyword.function', { fg = colors.aqua })
 
 					-- Custom
 					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
