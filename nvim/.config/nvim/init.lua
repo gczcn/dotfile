@@ -658,18 +658,6 @@ create_autocmd('TextYankPost', {
 	end,
 })
 
-create_autocmd('User', {
-	pattern = 'FileOpened',
-	desc = 'Ghostty configuration file commentstring',
-	callback = function()
-		local buf_name = api.nvim_buf_get_name(0)
-		local path = vim.fn.split(buf_name, '/')
-		if path[3] == '.config' and path[4] == 'ghostty' and path[5] == 'config' then
-			vim.bo.commentstring = '#%s'
-		end
-	end,
-})
-
 -- https://github.com/sitiom/nvim-numbertoggle/blob/main/plugin/numbertoggle.lua
 if global_config.auto_toggle_relativenumber then
 	local numbertoggleaugroup = api.nvim_create_augroup("numbertoggle", {})
