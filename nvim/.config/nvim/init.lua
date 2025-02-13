@@ -32,6 +32,11 @@
 --     stylua
 --     shfmt
 --
+-- Run :RunShellScripgt <install|update>_deps_<package_manager>
+-- Supported package managers:
+--   pacman and yay
+--   dnf
+--
 -- Jump to somewhere by searching for an uppercase tag.
 --
 -- I hope I can read the code later :)

@@ -1,10 +1,10 @@
 # Test:
 # hello.
 # 你好。
-font-family = FiraCode Nerd Font Mono
+font-family = JetBrainsMono Nerd Font Mono
 font-family = Noto Sans SC
-font-feature = cv10
-font-size = 12
+font-feature = ss01
+font-size = 13.7
 theme = GruvboxDark
 mouse-hide-while-typing = true
 window-padding-x = 0
