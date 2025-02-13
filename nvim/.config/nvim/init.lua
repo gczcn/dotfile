@@ -1411,7 +1411,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			},
 			filetype = {
 				dotenv = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
-				go = { glyph = global_config.plugins_config.ascii_icons and 'G' or '', hl = 'MiniIconsBlue' },
+				go = { glyph = global_config.plugins_config.ascii_icons and 'G' or '', hl = 'MiniIconsBlue' },
 			},
 		},
 		init = function()
