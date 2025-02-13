@@ -1428,7 +1428,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = { 'InsertEnter', 'CmdlineEnter' },
 		config = function()
 			require('mini.pairs').setup({
-				-- modes = { insert = true, command = true, terminal = false },
+				modes = { insert = true, command = true, terminal = false },
 			})
 		end,
 	},
