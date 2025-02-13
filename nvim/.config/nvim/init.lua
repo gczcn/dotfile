@@ -97,11 +97,15 @@ local global_config = {
 }
 
 -- =============================================================================
--- Functions
--- Tags: FUN, FUNC, FUNCTION, FUNCTIONS
+-- Utils
+-- Tags: UTIL, UTILS
 -- =============================================================================
+_G.Utils = {}
 
-table.indexOf = function(t, v)
+---@param t any[]
+---@param v any
+---@return integer|nil
+Utils.table_indexof = function(t, v)
 	if type(t) == 'table' then
 		for i = 1, #t do
 			if v == t[i] then
@@ -113,8 +117,10 @@ table.indexOf = function(t, v)
 	return nil
 end
 
-local do_sth_with_middle_row_of_keyboard = function(k)
-	vim.cmd([[exe "normal! :set relativenumber\<cr>"]])
+---@param k string
+Utils.do_sth_with_middle_row_of_keyboard = function(k)
+	vim.o.relativenumber = true
+	vim.cmd.redraw()
 	---@type number?
 	local char
 	local index
@@ -124,7 +130,7 @@ local do_sth_with_middle_row_of_keyboard = function(k)
 		char = tonumber(vim.fn.getchar())
 		if char == 27 then goto stop end
 		if char == 32 then goto continue end
-		index = table.indexOf(global_config.middle_row_of_keyboard, tostring(vim.fn.nr2char(char or 0)))
+		index = Utils.table_indexof(global_config.middle_row_of_keyboard, tostring(vim.fn.nr2char(char or 0)))
 		index = index and index - 1 or nil
 		if not index then goto stop end
 		count = count .. tostring(index)
@@ -136,47 +142,59 @@ local do_sth_with_middle_row_of_keyboard = function(k)
 	vim.o.relativenumber = false
 end
 
+-- Commenting
+Utils.commenting = {}
+
 -- vim/_defaults.lua
-local commenting_operator_rhs = function()
+---@return string
+Utils.commenting.operator_rhs = function()
 	return require('vim._comment').operator() .. '_'
 end
 
 -- Add comment at the end of line
-local commenting_line_end = function()
+Utils.commenting.line_end = function()
 	local line = api.nvim_get_current_line()
 	local commentstring = vim.bo.commentstring
 	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
 end
 
 -- Add comment on the line above
-local commenting_above = function()
-	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+Utils.commenting.above = function()
+	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
 end
 
 -- Add comment on the line below
-local commenting_below = function()
-	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+Utils.commenting.below = function()
+	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
 end
 
 -- Toggle comment line
-local commenting_toggle_line = function()
+Utils.commenting.toggle_line = function()
 	local line = api.nvim_get_current_line()
 	if line:find('%S') then
-		api.nvim_feedkeys(commenting_operator_rhs(), 'n', false)
+		api.nvim_feedkeys(Utils.commenting.operator_rhs(), 'n', false)
 	else
-		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], commenting_operator_rhs()))
+		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
 	end
 end
 
+-- Get icon from file name or file type
 -- Need nvim-web-devicons or mini.icons
-local get_file_icon = function(filename, filetype)
+---@param filename string?
+---@param filetype string?
+---@return string|nil, string|nil
+Utils.get_file_icon = function(filename, filetype)
 	local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
 	local icon_filename, color_filename = require('nvim-web-devicons').get_icon_color(filename or '')
-	return icon_filename and icon_filename, color_filename or icon_filetype, color_filetype
+	if icon_filename then return icon_filename, color_filename end
+	return icon_filetype, color_filetype
 end
 
 -- Copy from https://github.com/LazyVim/LazyVim/blob/f11890bf99477898f9c003502397786026ba4287/lua/lazyvim/util/ui.lua#L171-L187
-local get_hl = function(name, bg)
+---@param name string
+---@param bg boolean?
+---@return string|nil
+Utils.get_hl = function(name, bg)
 	---@type {foreground?:number}?
 	local hl = api.nvim_get_hl and api.nvim_get_hl(0, { name = name, link = false })
 		---@diagnostic disable-next-line: deprecated
@@ -197,7 +215,9 @@ local get_hl = function(name, bg)
 end
 
 -- https://www.reddit.com/r/neovim/comments/1egmpag/comment/lg2epw8/
-local autocmd_attach_file_browser = function(plugin_name, plugin_open)
+---@param plugin_name string
+---@param plugin_open function
+Utils.autocmd_attach_file_browser = function(plugin_name, plugin_open)
 	local previous_buffer_name
 	api.nvim_create_autocmd('BufEnter', {
 		desc = string.format('[%s] replacement for Netrw', plugin_name),
@@ -280,10 +300,10 @@ keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Commenting
-keymap.set('n', 'gcO', function() commenting_above() end, { desc = 'Add comment on the line above' })
-keymap.set('n', 'gco', function() commenting_below() end, { desc = 'Add comment on the line below' })
-keymap.set('n', 'gcA', function() commenting_line_end() end, { desc = 'Add comment at the end of line' })
-keymap.set('n', 'gcc', function() commenting_toggle_line() end, { desc = 'Toggle comment line' })
+keymap.set('n', 'gcO', function() Utils.commenting.above() end, { desc = 'Add comment on the line above', silent = true })
+keymap.set('n', 'gco', function() Utils.commenting.below() end, { desc = 'Add comment on the line below', silent = true })
+keymap.set('n', 'gcA', function() Utils.commenting.line_end() end, { desc = 'Add comment at the end of line', silent = true })
+keymap.set('n', 'gcc', function() Utils.commenting.toggle_line() end, { desc = 'Toggle comment line', silent = true })
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
@@ -301,8 +321,8 @@ keymap.set('o', '<M-D>', 'D', keymaps_opts)
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
 -- Cursor
-keymap.set({ 'n', 'v', 'o' }, "<leader>'", function() do_sth_with_middle_row_of_keyboard('j') end)
-keymap.set({ 'n', 'v', 'o' }, "<leader>[", function() do_sth_with_middle_row_of_keyboard('k') end)
+keymap.set({ 'n', 'v', 'o' }, "<leader>'", function() Utils.do_sth_with_middle_row_of_keyboard('j') end)
+keymap.set({ 'n', 'v', 'o' }, "<leader>[", function() Utils.do_sth_with_middle_row_of_keyboard('k') end)
 
 -- Other
 --- Toggle background [ dark | light ]
@@ -1012,17 +1032,17 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
 					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
 					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
-					set_hl(0, 'SignColumn', { bg = get_hl('Normal', true) })
+					set_hl(0, 'SignColumn', { bg = Utils.get_hl('Normal', true) })
 
 					-- Custom Status Column (Tags: column, statuscolumn, status_column )
 					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
 					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
 					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
-					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = get_hl('Folded', true) })
-					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = Utils.get_hl('Folded', true) })
+					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = Utils.get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = Utils.get_hl('CursorLine', true) })
 
 					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
@@ -1115,78 +1135,6 @@ local plugins = global_config.enabled_plugins and {
 			})
 			opt.background = 'dark'
 			vim.cmd.colorscheme('gruvbox')
-		end,
-	},
-
-	--- GRUVBOX-MATERIAL
-	{
-		'sainnhe/gruvbox-material',
-		lazy = true,
-		priority = 1000,
-		config = function()
-			create_autocmd('ColorScheme', {
-				group = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
-				pattern = 'gruvbox-material',
-				callback = function()
-					local config = vim.fn['gruvbox_material#get_configuration']()
-					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
-					local set_hl = vim.fn['gruvbox_material#highlight']
-
-					set_hl('CursorLineNr', palette.grey1, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.none, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineNr', palette.yellow, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('WinBar', palette.fg1, palette.bg1)
-
-					if global_config.plugins_config.gruvbox_material_bold then
-						set_hl('Directory', palette.green, palette.none, 'bold')
-						set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
-						set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
-						set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
-						set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
-						set_hl('TelescopeSelection', palette.fg1, palette.bg1, 'bold')
-					else
-						set_hl('DiagnosticNumHlError', palette.red, palette.none)
-						set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none)
-						set_hl('DiagnosticNumHlHint', palette.green, palette.none)
-						set_hl('DiagnosticNumHlInfo', palette.blue, palette.none)
-						set_hl('TelescopeSelection', palette.fg1, palette.bg1)
-					end
-
-					if global_config.plugins_config.gruvbox_material_conditional_italic then
-						set_hl('Conditional', palette.red, palette.none, 'italic')
-						set_hl('TSConditional', palette.red, palette.none, 'italic')
-					end
-
-
-					-- Custom Status Column (Tags: column, statuscolumn, status_column)
-					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
-					set_hl('StatusColumnFoldCurrent', palette.bg5, palette.bg0)
-					set_hl('StatusColumnFoldOpen', palette.bg5, palette.bg0)
-					set_hl('StatusColumnFoldClose', palette.yellow, palette.bg1)
-					set_hl('StatusColumnFoldCursorLine', palette.bg4, palette.bg1)
-					set_hl('StatusColumnFoldCurrentCursorLine', palette.bg5, palette.bg1)
-					set_hl('StatusColumnFoldOpenCursorLine', palette.bg5, palette.bg1)
-					set_hl('StatusColumnFoldCloseCursorLine', palette.yellow, palette.bg1)
-
-					-- Plugins
-					set_hl('MiniFilesCursorLine', palette.none, palette.bg5)
-					set_hl('BlinkCmpLabelDeprecated', palette.grey0, palette.none)
-					set_hl('BlinkCmpLabelDetail', palette.grey0, palette.none)
-					set_hl('BlinkCmpLabelDescription', palette.grey0, palette.none)
-					set_hl('BlinkCmpSource', palette.grey0, palette.none)
-					set_hl('BlinkCmpGhostText', palette.grey0, palette.none)
-					set_hl('BlinkCmpLabelDescription', palette.grey0, palette.none)
-				end,
-			})
-
-			vim.g.gruvbox_material_foreground = 'material'
-			vim.g.gruvbox_material_disable_italic_comment = not global_config.plugins_config.gruvbox_material_comments_italic
-			vim.g.gruvbox_material_enable_bold = global_config.plugins_config.gruvbox_material_bold
-			vim.g.gruvbox_material_menu_selection_background = 'blue'
-			vim.g.gruvbox_material_diagnostic_virtual_text = 'highlighted'
-			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
-			vim.g.gruvbox_material_better_performance = 1
-			vim.cmd.colorscheme('gruvbox-material')
 		end,
 	},
 
@@ -1385,7 +1333,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		},
 		init = function()
 			local mini_files_open_folder = function(path) require('mini.files').open(path) end
-			autocmd_attach_file_browser('mini.files', mini_files_open_folder)
+			Utils.autocmd_attach_file_browser('mini.files', mini_files_open_folder)
 		end,
 		config = function()
 			api.nvim_create_autocmd('User', {
@@ -1458,6 +1406,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			},
 			filetype = {
 				dotenv = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
+				go = { glyph = global_config.plugins_config.ascii_icons and 'G' or '', hl = 'MiniIconsBlue' },
 			},
 		},
 		init = function()
@@ -2145,14 +2094,14 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					components = {
 						{
 							text = function(tabpage)
-								local icon = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
+								local icon = Utils.get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
 								return icon and ' ' .. icon .. ' ' or ''
 							end,
 							fg = function(tabpage)
 								if tabpage.is_active then
 									return get_focus_colors(tabpage.is_active)[get_mode()]['fg']
 								else
-									local _, color = get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
+									local _, color = Utils.get_file_icon(get_tab_name(tabpage.number), api.nvim_win_call(api.nvim_tabpage_get_win(tabpage.number), function() return vim.o.filetype end))
 									return color
 								end
 							end,
@@ -2197,7 +2146,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							undercurl = function() return get_colors()['quit']['undercurl'] end,
 							strikethrough = function() return get_colors()['quit']['strikethrough'] end,
 							on_click = function()
-								vim.ui.input({ prompt = 'Quit Neovim? Y/n' }, function(input)
+								vim.ui.input({ prompt = 'Quit Neovim? Y/n: ' }, function(input)
 									if input and (input == '' or string.lower(input) == 'y') then
 										vim.cmd.qa()
 									end
@@ -2265,7 +2214,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							function() return require('noice').api.status.command.get() end,
 							cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
 							color = function()
-								return { fg = get_hl('Statement') }
+								return { fg = Utils.get_hl('Statement') }
 							end
 						},
 
@@ -2274,7 +2223,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 							function() return require('noice').api.status.mode.get() end,
 							cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
 							color = function()
-								return { fg = get_hl('Constant') }
+								return { fg = Utils.get_hl('Constant') }
 							end
 						},
 						lsp_clients,
@@ -2774,7 +2723,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				accept_keymap = '<M-a>',
 				dismiss_keymap = '<C-]>',
 				debounce_ms = 800,
-				suggestion_color = { gui = require('utils.get_hl')('Comment'), cterm = 244 },
+				suggestion_color = { gui = Utils.get_hl('Comment'), cterm = 244 },
 				exclude_filetypes = { 'TelescopePrompt', 'NvimTree', 'fzf' },
 				log_file_path = nil, -- absolute path to Tabnine log file
 				ignore_certificate_errors = false,
