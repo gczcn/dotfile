@@ -91,7 +91,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = true,
+		nerd_font_circle_and_square = false,
 		ascii_icons = false,
 		gruvbox_italic = false,
 		gruvbox_material_comments_italic = false,
