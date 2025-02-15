@@ -1,5 +1,8 @@
 # Colors (Gruvbox light)
 
+[colors]
+cursor = { text = '#fbf1c7', cursor = '#3c3836' }
+
 # Default colors
 [colors.primary]
 # hard contrast background = = '#f9f5d7'
