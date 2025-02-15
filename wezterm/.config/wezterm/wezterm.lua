@@ -6,7 +6,7 @@ local config = {}
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
   -- 'JetBrainsMono Nerd Font mono',
-  'Consolig Nerd Font Mono',
+  'FiraCode Nerd Font Mono',
   -- 'JetBrainsMono Nerd Font mono',
   'Noto Sans SC',
 })
@@ -21,15 +21,7 @@ config.font_rules = {
     intensity = 'Bold',
     italic = false,
     font = wezterm.font_with_fallback({
-      { family = 'Consolig Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
-      { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
-    }),
-  },
-  {
-    intensity = 'Bold',
-    italic = true,
-    font = wezterm.font_with_fallback({
-      { family = 'Consolig Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
+      { family = 'FiraCode Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
       { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
     }),
   },

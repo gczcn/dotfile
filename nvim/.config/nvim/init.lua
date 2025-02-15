@@ -735,13 +735,13 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- Tags: POPUP, POPUPMENU
 -- =============================================================================
 if global_config.enabled_plugins then
-	vim.cmd[[
+	vim.cmd([[
 amenu disable PopUp.How-to\ disable\ mouse
 anoremenu PopUp.References <cmd>FzfLua lsp_references<CR>
 anoremenu PopUp.Declarations <cmd>FzfLua lsp_declarations<CR>
 anoremenu PopUp.Definitions <cmd>FzfLua lsp_definitions<CR>
 anoremenu PopUp.Implementations <cmd>FzfLua lsp_implementations<CR>
-anoremenu PopUp.TypeDefs <cmd>FzfLua lsp_typedefs<CR>]]
+anoremenu PopUp.TypeDefs <cmd>FzfLua lsp_typedefs<CR>]])
 end
 
 -- =============================================================================
