@@ -42,6 +42,12 @@
 -- I hope I can read the code later :)
 -- =============================================================================
 
+-- This configuration is only supported on Unix-Like systems.
+if vim.fn.has('win32') == 1 then
+	vim.notify('Error: This configuration is only supported on Unix-Like systems.', vim.log.levels.ERROR)
+	vim.cmd.q()
+end
+
 -- =============================================================================
 -- Globar vars
 -- Tags: VAR, VARS, GLOBAL
@@ -93,7 +99,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = false,
+		nerd_font_circle_and_square = true,
 		ascii_icons = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
@@ -1290,32 +1296,13 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
 
 			api.nvim_create_autocmd('User', {
-				pattern = 'LzazyVimStarted',
-				callback = function()
+				pattern = 'LazyVimStarted',
+				callback = function(ev)
 					local stats = require('lazy').stats()
 					local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-
-					local get_startuptime = function()
-						return 'loaded '
-							.. stats.loaded
-							.. '/'
-							.. stats.count
-							.. ' plugins in '
-							.. ms
-							.. 'ms'
-					end
-
-					local ft = function()
-						-- stylua: ignore
-						return
-							get_startuptime() .. '\n' ..
-							footer()
-					end
-
-					starter.config.footer = ft
-
-					if vim.o.filetype == 'ministarter' then
-						starter.refresh()
+					starter.config.footer = 'loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms\n' .. footer()
+					if vim.bo[ev.buf].filetype == 'ministarter' then
+						pcall(starter.refresh)
 					end
 				end
 			})
