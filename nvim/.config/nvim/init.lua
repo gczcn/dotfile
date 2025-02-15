@@ -46,6 +46,7 @@
 -- Globar vars
 -- Tags: VAR, VARS, GLOBAL
 -- =============================================================================
+
 local keymap = vim.keymap
 local api = vim.api
 local opt = vim.opt
@@ -56,6 +57,7 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_icons boolean
+---@field gruvbox_comments_italic boolean
 ---@field gruvbox_italic boolean
 ---@field gruvbox_material_comments_italic boolean
 ---@field gruvbox_material_conditional_italic boolean
@@ -93,6 +95,7 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = false,
 		ascii_icons = false,
+		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
 		gruvbox_material_comments_italic = false,
 		gruvbox_material_conditional_italic = false,
@@ -105,6 +108,7 @@ local global_config = {
 -- Utils
 -- Tags: UTIL, UTILS
 -- =============================================================================
+
 _G.Utils = {}
 
 ---@param t any[]
@@ -255,6 +259,7 @@ end
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
+
 ---@type table<string, boolean>
 local keymaps_opts = { noremap = true }
 
@@ -345,6 +350,7 @@ keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lu
 -- Options
 -- Tags: OPT, OPTS, OPTION, OPTIONS
 -- =============================================================================
+
 vim.g.encoding = 'UTF-8'
 
 opt.autowrite = true
@@ -415,6 +421,7 @@ end
 --
 -- Tags: SCRIPT, SCRIPTS, SHELLSCRIPT, SHELLSCRIPTS
 -- =============================================================================
+
 ---@type table<string, string>
 local shell_scripts = {
 	install_deps_brew = [[
@@ -569,6 +576,7 @@ rustup update nightly]],
 -- Commands
 -- Tags: CMD, COMMAND, COMMANDS
 -- =============================================================================
+
 vim.cmd.cabbrev('W! w!')
 vim.cmd.cabbrev('W1 w!')
 vim.cmd.cabbrev('w1 w!')
@@ -620,6 +628,7 @@ end, { nargs = 1 })
 -- Autocmds
 -- Tags: AU, AUTOCMD, AUTOCMDS
 -- =============================================================================
+
 -- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
 if global_config.remove_padding_around_neovim_instance then
 	local id = api.nvim_create_augroup('remove_padding_around_neovim_instance', {})
@@ -749,6 +758,7 @@ end
 --
 -- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
 -- =============================================================================
+
 if global_config.statuscolumn.enabled then
 	_G.GetStatusColumn = function()
 		local text = ''
@@ -831,6 +841,7 @@ end
 -- Gui
 -- Tags: GUI
 -- =============================================================================
+
 local gui_font = 'FiraCode Nerd Font Mono'
 local gui_font_size = 11.2
 
@@ -890,6 +901,7 @@ end
 -- Features
 -- Tags: FEATURES
 -- =============================================================================
+
 -- Translate shell (trans)
 local translate = function(t, to)
 	vim.cmd.split()
@@ -922,6 +934,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- Plugins
 -- Tags: PLUG, PLUGIN, PLUGINS
 -- =============================================================================
+
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
 	install = { colorscheme = { 'edge', 'catppuccin', 'gruvbox', 'habamax' } },
@@ -1090,7 +1103,7 @@ local plugins = global_config.enabled_plugins and {
 				italic = {
 					strings = false,
 					emphasis = global_config.plugins_config.gruvbox_italic,
-					comments = global_config.plugins_config.gruvbox_italic,
+					comments = global_config.plugins_config.gruvbox_comments_italic,
 					folds = global_config.plugins_config.gruvbox_italic,
 				},
 				overrides = {
