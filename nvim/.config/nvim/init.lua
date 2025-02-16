@@ -42,12 +42,6 @@
 -- I hope I can read the code later :)
 -- =============================================================================
 
--- This configuration is only supported on Unix-Like systems.
-if vim.fn.has('win32') == 1 then
-	vim.notify('Error: This configuration is only supported on Unix-Like systems.', vim.log.levels.ERROR)
-	vim.cmd.q()
-end
-
 -- =============================================================================
 -- Globar vars
 -- Tags: VAR, VARS, GLOBAL
