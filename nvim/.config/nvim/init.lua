@@ -35,7 +35,7 @@
 -- Run :RunShellScripgt <install|update>_deps_<package_manager>
 -- Supported package managers:
 --   pacman and yay
---   dnf
+--   homebrew
 --
 -- Jump to somewhere by searching for an uppercase tag.
 --
