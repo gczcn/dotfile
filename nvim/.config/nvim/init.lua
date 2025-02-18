@@ -111,6 +111,12 @@ local global_config = {
 
 _G.Utils = {}
 
+-- Access GitHub using username/reponame like gczcn/dotfile
+---@param s string|nil
+Utils.goto_github = function(s)
+	vim.ui.open('https://github.com/' .. s)
+end
+
 ---@param t any[]
 ---@param v any
 ---@return integer|nil
@@ -345,6 +351,7 @@ end, keymaps_opts)
 keymap.set({ 'n', 'v' }, 'U', 'K', keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
+keymap.set('n', '<leader>gg', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
 
 -- =============================================================================
 -- Options
@@ -1266,7 +1273,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
 					-- starter.gen_hook.adding_bullet('│ '),
-					starter.gen_hook.adding_bullet('▏ '),
+					starter.gen_hook.adding_bullet(global_config.plugins_config.ascii_icons and '│ ' or '▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -2540,8 +2547,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		config = function()
 			require('ibl').setup({
 				indent = {
-					char = '▏',
-					tab_char = '▏',
+					char = global_config.plugins_config.ascii_icons and '│' or '▏',
+					tab_char = global_config.plugins_config.ascii_icons and '│' or '▏',
 				},
 			})
 		end,
@@ -3192,7 +3199,9 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					['<M-y>'] = { 'accept', 'fallback' },
 					['<Up>'] = { 'fallback' },
 					['<Down>'] = { 'fallback' },
-					cmdline = {
+				},
+				cmdline = {
+					keymap = {
 						preset = 'default',
 						['<M-.>'] = { 'show', 'show_documentation', 'hide_documentation' },
 						['<S-TAB>'] = { 'select_prev', 'fallback' },
@@ -3200,7 +3209,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						['<M-y>'] = { 'accept', 'fallback' },
 						['<Up>'] = { 'fallback' },
 						['<Down>'] = { 'fallback' },
-					},
+					}
 				},
 				completion = {
 					list = {
