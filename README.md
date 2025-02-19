@@ -16,7 +16,7 @@ cd dotfile
 - [nodejs](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 - [fzf](junegunn/fzf) for fzf.lua
-- and some language servers and formatters
+- and some language servers, formatters and debuggers
 
 ### Installation
 Run `stow nvim` to create an symlink for the neovim configuration
