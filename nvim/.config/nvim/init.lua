@@ -2235,6 +2235,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		end,
 	},
 
+	-- WENYAN
+	{
+		'voldikss/vim-wenyan',
+	},
+
 	-- TREESITTER
 	{
 		'nvim-treesitter/nvim-treesitter',
