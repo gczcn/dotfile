@@ -1158,6 +1158,8 @@ local plugins = global_config.enabled_plugins and {
 			'echasnovski/mini.icons',
 		},
 		config = function()
+			vim.cmd([[autocmd User MiniStarterOpened setlocal nofoldenable fillchars=eob:\ ]])
+
 			local starter = require('mini.starter')
 			local v = vim.version()
 			local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
@@ -1285,7 +1287,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
 			starter.setup(opts)
 
-			api.nvim_create_user_command('MiniStarterToggle', function()
+			create_user_command('MiniStarterToggle', function()
 				if vim.o.filetype == 'ministarter' then
 					require('mini.starter').close()
 				else
@@ -1295,7 +1297,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
 			keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
 
-			api.nvim_create_autocmd('User', {
+			create_autocmd('User', {
 				pattern = 'LazyVimStarted',
 				callback = function(ev)
 					local stats = require('lazy').stats()
@@ -1306,9 +1308,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					end
 				end
 			})
-
-			-- Disable folding on Starter buffer
-			vim.cmd([[ autocmd FileType Starter setlocal nofoldenable ]])
 		end
 	},
 
