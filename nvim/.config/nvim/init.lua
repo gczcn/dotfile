@@ -56,7 +56,7 @@ local create_user_command = api.nvim_create_user_command
 ---@class PluginsConfig
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
----@field ascii_icons boolean
+---@field ascii_mode boolean
 ---@field gruvbox_comments_italic boolean
 ---@field gruvbox_italic boolean
 ---@field gruvbox_material_comments_italic boolean
@@ -94,7 +94,7 @@ local global_config = {
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
-		ascii_icons = false,
+		ascii_mode = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
 		gruvbox_material_comments_italic = false,
@@ -1195,7 +1195,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				if show_icon == true then
 					show_icon = function(file_name)
 						local icon, _ = require('nvim-web-devicons').get_icon(file_name)
-						if not icon then icon = global_config.plugins_config.ascii_icons and 'F' or '󰈔' end
+						if not icon then icon = global_config.plugins_config.ascii_mode and 'F' or '󰈔' end
 						return icon .. ' '
 					end
 				end
@@ -1272,8 +1272,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				-- items = nil,
 				content_hooks = {
 					starter.gen_hook.padding(7, 3),
-					-- starter.gen_hook.adding_bullet('│ '),
-					starter.gen_hook.adding_bullet(global_config.plugins_config.ascii_icons and '│ ' or '▏ '),
+					starter.gen_hook.adding_bullet(global_config.plugins_config.ascii_mode and '| ' or '▏ '),
 					-- starter.gen_hook.adding_bullet('░ '),
 				},
 				header = header(),
@@ -1393,14 +1392,14 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		'echasnovski/mini.icons',
 		lazy = true,
 		opts = {
-			style = global_config.plugins_config.ascii_icons and 'ascii' or 'glyph',
+			style = global_config.plugins_config.ascii_mode and 'ascii' or 'glyph',
 			file = {
-				['.keep'] = { glyph = global_config.plugins_config.ascii_icons and 'G' or '󰊢', hl = 'MiniIconsGrey' },
-				['devcontainer.json'] = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsAzure' },
+				['.keep'] = { glyph = global_config.plugins_config.ascii_mode and 'G' or '󰊢', hl = 'MiniIconsGrey' },
+				['devcontainer.json'] = { glyph = global_config.plugins_config.ascii_mode and 'D' or '', hl = 'MiniIconsAzure' },
 			},
 			filetype = {
-				dotenv = { glyph = global_config.plugins_config.ascii_icons and 'D' or '', hl = 'MiniIconsYellow' },
-				go = { glyph = global_config.plugins_config.ascii_icons and 'G' or '', hl = 'MiniIconsBlue' },
+				dotenv = { glyph = global_config.plugins_config.ascii_mode and 'D' or '', hl = 'MiniIconsYellow' },
+				go = { glyph = global_config.plugins_config.ascii_mode and 'G' or '', hl = 'MiniIconsBlue' },
 			},
 		},
 		init = function()
@@ -2171,7 +2170,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				for _, client in pairs(clients) do
 					c[#c] = client.name
 				end
-				return global_config.plugins_config.ascii_icons and 'LS: ' or ' ' .. table.concat(c, ', ')
+				return global_config.plugins_config.ascii_mode and 'LS: ' or ' ' .. table.concat(c, ', ')
 			end
 
 			require('lualine').setup({
@@ -2552,8 +2551,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		config = function()
 			require('ibl').setup({
 				indent = {
-					char = global_config.plugins_config.ascii_icons and '│' or '▏',
-					tab_char = global_config.plugins_config.ascii_icons and '│' or '▏',
+					char = global_config.plugins_config.ascii_mode and '|' or '▏',
+					tab_char = global_config.plugins_config.ascii_mode and '|' or '▏',
 				},
 			})
 		end,
@@ -2605,7 +2604,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					search_down = { kind = 'search', pattern = '^/', icon = ' Up', lang = 'regex' },
 					search_up = { kind = 'search', pattern = '^%?', icon = ' Down', lang = 'regex' },
 					filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash' },
-					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = global_config.plugins_config.ascii_icons and ' L' or ' ', lang = 'lua' },
+					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = global_config.plugins_config.ascii_mode and ' L' or ' ', lang = 'lua' },
 					help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?' },
 					input = { view = 'cmdline', icon = ' 󰥻 ' },
 				},
@@ -3236,7 +3235,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 								-- { 'kind_icon' },
 								-- { 'label', 'label_description', gap = 1 },
 								{ 'label' },
-								global_config.plugins_config.ascii_icons and { 'kind' } or { 'kind_icon', 'kind', gap = 1 },
+								global_config.plugins_config.ascii_mode and { 'kind' } or { 'kind_icon', 'kind', gap = 1 },
 								{ 'source_name' },
 							},
 							components = {
