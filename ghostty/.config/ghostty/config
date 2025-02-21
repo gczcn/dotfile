@@ -21,12 +21,12 @@
 # font-size = 12
 
 # IBM Plex Mono
-font-family = BlexMono Nerd Font Mono
-font-size = 13.5
+# font-family = BlexMono Nerd Font Mono
+# font-size = 13.5
 
 # Source Code Pro
-# font-family = SauceCodePro Nerd Font Mono
-# font-size = 14
+font-family = SauceCodePro Nerd Font Mono
+font-size = 14
 
 # Noto Sans SC (CJK)
 font-family = Noto Sans SC
