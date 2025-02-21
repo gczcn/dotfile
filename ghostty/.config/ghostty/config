@@ -25,13 +25,13 @@
 # font-size = 13.5
 
 # Source Code Pro
-# font-family = SauceCodePro Nerd Font Mono
-# font-size = 14
+font-family = SauceCodePro Nerd Font Mono
+font-size = 14
 
 # JetBrains Mono
-font-family = JetBrainsMono Nerd Font Mono
-font-feature = ss01
-font-size = 13.3
+# font-family = JetBrainsMono Nerd Font Mono
+# font-feature = ss01
+# font-size = 13.3
 
 # Noto Sans SC (CJK)
 font-family = Noto Sans SC
