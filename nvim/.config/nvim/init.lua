@@ -234,7 +234,7 @@ end
 ---@param plugin_open function
 Utils.autocmd_attach_file_browser = function(plugin_name, plugin_open)
 	local previous_buffer_name
-	api.nvim_create_autocmd('BufEnter', {
+	create_autocmd('BufEnter', {
 		desc = string.format('[%s] replacement for Netrw', plugin_name),
 		pattern = '*',
 		callback = function()
@@ -1328,7 +1328,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			Utils.autocmd_attach_file_browser('mini.files', mini_files_open_folder)
 		end,
 		config = function()
-			api.nvim_create_autocmd('User', {
+			create_autocmd('User', {
 				pattern = 'MiniFilesActionRename',
 				callback = function(event)
 					---@diagnostic disable-next-line: undefined-global
