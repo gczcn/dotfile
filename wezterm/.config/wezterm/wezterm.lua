@@ -5,32 +5,13 @@ local config = {}
 -- Test: English: Hello
 --       中文：   你好
 config.font = wezterm.font_with_fallback({
-  -- 'JetBrainsMono Nerd Font mono',
-  'FiraCode Nerd Font Mono',
-  -- 'JetBrainsMono Nerd Font mono',
-  'Noto Sans SC',
+	'Terminus (TTF)',
+	'Terminess Nerd Font Mono',
+	{ family = 'Noto Sans SC', weight = 'Light' },
 })
 
--- config.harfbuzz_features = { 'ss01' }  -- JetBrains Mono
--- config.harfbuzz_features = { 'ss06', 'cv10' }  -- Fira Code
--- config.harfbuzz_features = { 'ss04' }  -- Source Code Pro
-
--- Bold
-config.font_rules = {
-  {
-    intensity = 'Bold',
-    italic = false,
-    font = wezterm.font_with_fallback({
-      { family = 'FiraCode Nerd Font Mono', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
-      { family = 'Noto Sans SC', weight = 'Bold', stretch = 'Normal', style = 'Normal' },
-    }),
-  },
-}
-
-config.font_size = 16
--- config.font_size = 14.4
--- config.font_size = 11
--- config.font_size = 14
+config.font_size = 32
+config.dpi = 72
 
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = true
@@ -41,12 +22,12 @@ config.max_fps = 120
 config.animation_fps = 120
 
 -- Window
-config.window_decorations = 'RESIZE'
+-- config.window_decorations = 'RESIZE'
 config.window_padding = {
-  left = 0,
-  right = 0,
-  top = 0,
-  bottom = 0,
+	left = 0,
+	right = 0,
+	top = 0,
+	bottom = 0,
 }
 
 -- Color Scheme
