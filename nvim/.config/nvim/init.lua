@@ -2477,6 +2477,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					if args ~= nil then
 						vim.g.code_runner_run_args = args
 						vim.cmd.RunCode()
+						vim.g.code_runner_run_args = ''
 					end
 				end)
 			end },
