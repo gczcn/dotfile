@@ -85,7 +85,7 @@ local create_user_command = api.nvim_create_user_command
 local global_config = {
 	-- 0, 1, 2, ..., 9
 	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
-	remove_padding_around_neovim_instance = true,
+	remove_padding_around_neovim_instance = false,
 	auto_toggle_relativenumber = false, -- WARN: There are performance issues, such as slowing down macro functions
 	enabled_plugins = true,
 	enabled_copilot = false,
@@ -95,7 +95,7 @@ local global_config = {
 		indent = false,
 		indent_fold_char = '│',
 		indent_fold_end = '└',
-		current_fold = false,
+		current_fold = false, -- WARN: There are performance issues.
 		show_fold_end = false,
 		fold_end_char = '^',
 	},
