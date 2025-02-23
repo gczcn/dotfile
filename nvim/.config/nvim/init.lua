@@ -464,6 +464,7 @@ brew install basedpyright  # Python
 brew install lua-language-server  # Lua
 brew install gopls  # Go
 brew install bash-language-server
+brew install fish-lsp
 npm install -g vscode-langservers-extracted  # Html, Css...
 npm install -g vim-language-server
 
@@ -499,6 +500,7 @@ brew install basedpyright
 brew upgrade lua-language-server
 brew upgrade gopls
 brew upgrade bash-language-server
+brew upgrade fish-lsp
 npm update -g vscode-langservers-extracted
 npm update -g vim-language-server
 
@@ -539,6 +541,7 @@ yes | sudo pacman -S vscode-css-languageserver
 yes | sudo pacman -S vscode-html-languageserver
 yes | sudo pacman -S vscode-json-languageserver
 sudo npm install -g vim-language-server
+sudo npm install -g fish-lsp
 
 # Debuggers
 yes | sudo pacman -S delve
@@ -577,6 +580,7 @@ yes | sudo pacman -S vscode-css-languageserver
 yes | sudo pacman -S vscode-html-languageserver
 yes | sudo pacman -S vscode-json-languageserver
 sudo npm update -g vim-language-server
+sudo npm update -g fish-lsp
 
 # Debuggers
 yes | sudo pacman -S delve
@@ -2957,6 +2961,22 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		end,
 	},
 
+	-- LINT, LINTER
+	{
+		'mfussenegger/nvim-lint',
+		event = { 'User FileOpened' },
+		config = function()
+			require('lint').linters_by_ft = {
+				fish = { 'fish' },
+				-- Use the '*' filetype to run linters on all filetypes.
+				-- ['*'] = { 'global linter' },
+				-- Use the '_' filetype to run linters on filetypes that don't have other linters configured.
+				-- ['_'] = { 'fallback linter' },
+				-- ['*'] = { 'typos' },
+			}
+		end,
+	},
+
 	-- LSP (Language Server Protocol)
 	{
 		'neovim/nvim-lspconfig',
@@ -3173,6 +3193,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				capabilities = capabilities(),
 				on_attach = on_attach,
 				cmd = { 'bash-language-server', 'start' },
+			})
+
+			lspconfig['fish_lsp'].setup({
+				capabilities = capabilities(),
+				on_attach = on_attach,
 			})
 
 			lspconfig['vimls'].setup({
