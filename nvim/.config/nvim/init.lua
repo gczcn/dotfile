@@ -67,7 +67,11 @@ local create_user_command = api.nvim_create_user_command
 ---@class StatusColumnConfig
 ---@field enabled boolean
 ---@field indent boolean
+---@field indent_fold_char string
+---@field indent_fold_end string
 ---@field current_fold boolean
+---@field show_fold_end boolean
+---@field fold_end_char string
 
 ---@class global_config
 ---@field middle_row_of_keyboard string[]
@@ -89,7 +93,11 @@ local global_config = {
 	statuscolumn = {
 		enabled = true,
 		indent = false,
+		indent_fold_char = '│',
+		indent_fold_end = '└',
 		current_fold = false,
+		show_fold_end = false,
+		fold_end_char = '^',
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
@@ -412,11 +420,15 @@ if not global_config.enabled_plugins then
 
 	-- Custom Status Column (Tags: column, statuscolumn, status_column)
 	set_hl(0, 'StatusColumnFold', { link = 'FoldColumn' })
+	set_hl(0, 'StatusColumnFoldCurrent', { link = 'FoldColumn' })
 	set_hl(0, 'StatusColumnFoldOpen', { link = 'FoldColumn' })
 	set_hl(0, 'StatusColumnFoldClose', { link = 'Normal' })
+	set_hl(0, 'StatusColumnFoldEnd', { link = 'FoldColumn' })
 	set_hl(0, 'StatusColumnFoldCursorLine', { link = 'FoldColumn' })
+	set_hl(0, 'StatusColumnFoldCurrentCursorLine', { link = 'FoldColumn' })
 	set_hl(0, 'StatusColumnFoldOpenCursorLine', { link = 'FoldColumn' })
 	set_hl(0, 'StatusColumnFoldCloseCursorLine', { link = 'Normal' })
+	set_hl(0, 'StatusColumnFoldEndCursorLine', { link = 'FoldColumn' })
 end
 
 -- =============================================================================
@@ -758,10 +770,12 @@ end
 --   StatusColumnFoldCurrent
 --   StatusColumnFoldOpen
 --   StatusColumnFoldClose
+--   StatusColumnFoldEnd
 --   StatusColumnFoldCursorLine
 --   StatusColumnFoldCurrentCursorLine
 --   StatusColumnFoldOpenCursorLine
 --   StatusColumnFoldCloseCursorLine
+--   StatusColumnFoldEndCursorLine
 --
 -- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
 -- =============================================================================
@@ -783,7 +797,7 @@ if global_config.statuscolumn.enabled then
 				.. ') : ""%}'
 		end
 
-		local get_fold = function(show_indent_symbol, show_current_fold)
+		local get_fold = function(show_indent_symbol, show_current_fold, show_fold_end)
 			return api.nvim_win_call(vim.g.statusline_winid, function()
 				local ts_foldexpr = tostring(vim.treesitter.foldexpr(vim.v.lnum))
 				local ts_foldexpr_after = tostring(vim.treesitter.foldexpr(vim.v.lnum + 1))
@@ -818,13 +832,14 @@ if global_config.statuscolumn.enabled then
 				end
 
 				if foldcolumn == '0' then return '' end
-				if foldlevel == 0 then return ' ' .. spaces end
-				if is_closed then return get_hl_text('FoldClose', foldclose_char) end
+				if foldlevel == 0 then return ' ' .. spaces end if is_closed then return get_hl_text('FoldClose', foldclose_char) end
 				if is_start then return get_hl_text('FoldOpen', foldopen_char) end
 				if show_indent_symbol then
 					local is_current = show_current_fold and (ts_get_fold_start(vim.v.lnum) == ts_get_fold_start(vim.fn.line('.')) and true or false) or false
-					if is_end then return get_hl_text(is_current and 'FoldCurrent' or 'Fold', '└') end
-					return get_hl_text(is_current and 'FoldCurrent' or 'Fold', '│')
+					if is_end then return get_hl_text(is_current and 'FoldCurrent' or 'Fold', global_config.statuscolumn.indent_fold_end) end
+					return get_hl_text(is_current and 'FoldCurrent' or 'Fold', global_config.statuscolumn.indent_fold_char)
+				elseif show_fold_end then
+					if is_end then return get_hl_text('FoldEnd', global_config.statuscolumn.fold_end_char) end
 				end
 				return get_hl_text('Fold', ' ')
 			end)
@@ -834,7 +849,7 @@ if global_config.statuscolumn.enabled then
 			'%s', -- SignColumn
 			cursorline_hl(),
 			get_line_number(),
-			get_fold(global_config.statuscolumn.indent, global_config.statuscolumn.current_fold),
+			get_fold(global_config.statuscolumn.indent, global_config.statuscolumn.current_fold, global_config.statuscolumn.show_fold_end),
 		})
 
 		return text
@@ -1052,10 +1067,12 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'StatusColumnFoldCurrent', { fg = colors.gray })
 					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
 					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = Utils.get_hl('Folded', true) })
+					set_hl(0, 'StatusColumnEndClose', { fg = colors.gray })
 					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = Utils.get_hl('CursorLine', true) })
 					set_hl(0, 'StatusColumnFoldCurrentCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = Utils.get_hl('CursorLine', true) })
+					set_hl(0, 'StatusColumnFoldEndCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 
 					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
@@ -2938,7 +2955,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local lspconfig = require('lspconfig')
 			local util = require('lspconfig.util')
 			local opts = { noremap = true, silent = true }
-			local on_attach = function(client, bufnr)
+			local on_attach = function(_, bufnr)
 				opts.buffer = bufnr
 
 				-- set keybinds
