@@ -784,6 +784,7 @@ if global_config.statuscolumn.enabled then
 	_G.GetStatusColumn = function()
 		local text = ''
 
+		---@return string
 		local cursorline_hl = function()
 			if vim.v.relnum == 0 then
 				return '%#CursorLineNr#'
@@ -791,12 +792,17 @@ if global_config.statuscolumn.enabled then
 			return ''
 		end
 
+		---@return string
 		local get_line_number = function()
 			return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
 				.. (vim.fn.has('nvim-0.11') == 1 and '"%l "' or 'v:relnum == 0 ? (&number ? "%l " : "%r ") : (&relativenumber ? "%r " : "%l ")')
 				.. ') : ""%}'
 		end
 
+		---@param show_indent_symbol boolean|nil
+		---@param show_current_fold boolean|nil
+		---@param show_fold_end boolean|nil
+		---@return string
 		local get_fold = function(show_indent_symbol, show_current_fold, show_fold_end)
 			return api.nvim_win_call(vim.g.statusline_winid, function()
 				local ts_foldexpr = tostring(vim.treesitter.foldexpr(vim.v.lnum))
@@ -814,6 +820,8 @@ if global_config.statuscolumn.enabled then
 				local foldopen_char = opt.fillchars:get().foldopen or '-'
 				local foldclose_char = opt.fillchars:get().foldopen or '+'
 
+				---@param lnum integer
+				---@return integer
 				local ts_get_fold_start = function(lnum)
 					local level = vim.fn.foldlevel(lnum)
 					if level == 0 then return -1 end
@@ -827,6 +835,9 @@ if global_config.statuscolumn.enabled then
 					return current_line
 				end
 
+				---@param hl string
+				---@param s string
+				---@return string
 				local get_hl_text = function(hl, s)
 					return string.format('%%#%s#%s', 'StatusColumn' .. hl .. (vim.v.relnum == 0 and 'CursorLine' or ''), s .. spaces)
 				end
@@ -867,10 +878,11 @@ end
 local gui_font = 'FiraCode Nerd Font Mono'
 local gui_font_size = 11.2
 
+---@param n number
 local gui_change_font_size = function(n)
 	gui_font_size = gui_font_size + n
-	opt.guifont = gui_font .. ':h' .. gui_font_size
-	vim.notify(gui_font_size)
+	opt.guifont = gui_font .. ':h' .. tostring(gui_font_size)
+	vim.notify(tostring(gui_font_size))
 end
 
 opt.guifont = gui_font .. ':h' .. gui_font_size
@@ -886,6 +898,7 @@ end)
 if vim.g.neovide then
 	local neovide_transparency = 1
 
+	---@param n number
 	local neovide_change_transparency = function(n)
 		if neovide_transparency + n <= 1 and neovide_transparency + n >= 0 then
 			neovide_transparency = neovide_transparency + n
@@ -925,6 +938,8 @@ end
 -- =============================================================================
 
 -- Translate shell (trans)
+---@param t string
+---@param to string
 local translate = function(t, to)
 	vim.cmd.split()
 	local text = t
