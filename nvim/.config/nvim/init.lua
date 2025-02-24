@@ -21,6 +21,7 @@
 --     lua-language-server
 --     gopls
 --     bash-language-server
+--     fish-lsp
 --     vscode-langservers-extracted
 --     vim-language-server
 --
