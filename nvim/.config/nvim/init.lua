@@ -59,9 +59,6 @@ local create_user_command = api.nvim_create_user_command
 ---@field ascii_mode boolean
 ---@field gruvbox_comments_italic boolean
 ---@field gruvbox_italic boolean
----@field gruvbox_material_comments_italic boolean
----@field gruvbox_material_conditional_italic boolean
----@field gruvbox_material_bold boolean
 ---@field ivy_layout boolean
 
 ---@class StatusColumnConfig
@@ -105,9 +102,6 @@ local global_config = {
 		ascii_mode = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
-		gruvbox_material_comments_italic = false,
-		gruvbox_material_conditional_italic = false,
-		gruvbox_material_bold = true,
 		ivy_layout = true,
 	},
 }
