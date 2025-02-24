@@ -2625,8 +2625,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					c = function()
 						local c_base = {
 							'cd $dir &&',
-							-- 'gcc-14 --std=gnu23 $fileName -o', -- for homebrew
-							'gcc --std=gnu23 $fileName -o',
+							'gcc-14 --std=gnu23 $fileName -o', -- for homebrew
+							-- 'gcc --std=gnu23 $fileName -o',
 							-- 'clang $fileName -o',
 							'/tmp/$fileNameWithoutExt',
 						}
