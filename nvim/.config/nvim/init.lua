@@ -175,26 +175,24 @@ end
 Utils.commenting.line_end = function()
 	local line = api.nvim_get_current_line()
 	local commentstring = vim.bo.commentstring
-	api.nvim_feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n', false)
+	vim.fn.feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n')
 end
 
 -- Add comment on the line above
-Utils.commenting.above = function()
-	vim.cmd(string.format([[noautocmd exe "norm O.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
-end
-
--- Add comment on the line below
-Utils.commenting.below = function()
-	vim.cmd(string.format([[noautocmd exe "norm o.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
+Utils.commenting.newline = function(key)
+	vim.cmd(string.format([[noautocmd exe "norm! %s.\<esc>%sf.x"]], key, Utils.commenting.operator_rhs()))
+	local line = vim.fn.getline('.')
+	local cursor_loc = api.nvim_win_get_cursor(0)
+	vim.fn.feedkeys(string.sub(line, cursor_loc[2] + 1, -1):find('%S') and 'i' or 'a', 'n')
 end
 
 -- Toggle comment line
 Utils.commenting.toggle_line = function()
 	local line = api.nvim_get_current_line()
 	if line:find('%S') then
-		api.nvim_feedkeys(Utils.commenting.operator_rhs(), 'n', false)
+		vim.fn.feedkeys(Utils.commenting.operator_rhs(), 'n')
 	else
-		vim.cmd(string.format([[noautocmd exe "norm cc.\<esc>%s$x" | call feedkeys("a")]], Utils.commenting.operator_rhs()))
+		Utils.commenting.newline('cc')
 	end
 end
 
@@ -321,8 +319,8 @@ keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Commenting
-keymap.set('n', 'gcO', function() Utils.commenting.above() end, { desc = 'Add comment on the line above', silent = true })
-keymap.set('n', 'gco', function() Utils.commenting.below() end, { desc = 'Add comment on the line below', silent = true })
+keymap.set('n', 'gcO', function() Utils.commenting.newline('O') end, { desc = 'Add comment on the line above', silent = true })
+keymap.set('n', 'gco', function() Utils.commenting.newline('o') end, { desc = 'Add comment on the line below', silent = true })
 keymap.set('n', 'gcA', function() Utils.commenting.line_end() end, { desc = 'Add comment at the end of line', silent = true })
 keymap.set('n', 'gcc', function() Utils.commenting.toggle_line() end, { desc = 'Toggle comment line', silent = true })
 
@@ -1181,6 +1179,21 @@ local plugins = global_config.enabled_plugins and {
 			opt.background = 'dark'
 			vim.cmd.colorscheme('gruvbox')
 		end,
+	},
+
+	-- TSCOMMENTS, TS-COMMENTS
+	{
+		'folke/ts-comments.nvim',
+		opts = {
+			lang = {
+				c = {
+					'/* %s */',
+					'// %s',
+				},
+			},
+		},
+		event = 'VeryLazy',
+		enabled = vim.fn.has('nvim-0.10.0') == 1,
 	},
 
 	-- MINI.STARTER
