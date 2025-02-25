@@ -21,14 +21,14 @@
 # font-size = 12
 
 # IBM Plex
-font-family = BlexMono Nerd Font Mono
-font-size = 13.5
-window-title-font-family = IBM Plex Sans
+# font-family = BlexMono Nerd Font Mono
+# font-size = 13.5
+# window-title-font-family = IBM Plex Sans
 
 # Source Code Pro
-# font-family = SauceCodePro Nerd Font Mono
-# font-size = 14
-# window-title-font-family = SauceCodePro Nerd Font Mono
+font-family = SauceCodePro Nerd Font Mono
+font-size = 14
+window-title-font-family = SauceCodePro Nerd Font Mono
 
 # JetBrains Mono
 # font-family = JetBrainsMono Nerd Font Mono
@@ -37,6 +37,7 @@ window-title-font-family = IBM Plex Sans
 
 # Noto Sans SC (CJK)
 font-family = Noto Sans SC
+
 theme = GruvboxDark
 mouse-hide-while-typing = true
 window-padding-x = 0
