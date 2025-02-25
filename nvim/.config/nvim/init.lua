@@ -104,8 +104,8 @@ local global_config = {
 		ascii_mode = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
-		ivy_layout = false,
-		noice_classic_cmdline = false,
+		ivy_layout = true,
+		noice_classic_cmdline = true,
 	},
 }
 
@@ -795,9 +795,8 @@ if global_config.statuscolumn.enabled then
 
 		---@return string
 		local get_line_number = function()
-			return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
-				.. (vim.fn.has('nvim-0.11') == 1 and '"%l "' or 'v:relnum == 0 ? (&number ? "%l " : "%r ") : (&relativenumber ? "%r " : "%l ")')
-				.. ') : ""%}'
+			return '%=' .. (((vim.o.number or vim.o.relativenumber) and vim.v.virtnum == 0) and
+				(vim.fn.has('nvim-0.11') == 1 and '%l ' or (vim.v.relnum == 0 and (vim.o.number and '%l ' or '%r ') or (vim.o.relativenumber and '%r ' or '%l '))) or '')
 		end
 
 		---@param show_indent_symbol boolean|nil
@@ -2765,7 +2764,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local Snacks = require('snacks')
 			Snacks.setup({
 				bigfile = {},
-				notifier = {},
+				-- notifier = {},
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
