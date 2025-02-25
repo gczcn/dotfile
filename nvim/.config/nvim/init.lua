@@ -794,8 +794,9 @@ if global_config.statuscolumn.enabled then
 
 		---@return string
 		local get_line_number = function()
-			return '%=' .. (((vim.o.number or vim.o.relativenumber) and vim.v.virtnum == 0) and
-				(vim.fn.has('nvim-0.11') == 1 and '%l ' or (vim.v.relnum == 0 and (vim.o.number and '%l ' or '%r ') or (vim.o.relativenumber and '%r ' or '%l '))) or '')
+			return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
+				.. (vim.fn.has('nvim-0.11') == 1 and '"%l "' or 'v:relnum == 0 ? (&number ? "%l " : "%r ") : (&relativenumber ? "%r " : "%l ")')
+				.. ') : ""%}'
 		end
 
 		---@param show_indent_symbol boolean|nil
