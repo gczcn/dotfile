@@ -100,7 +100,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = true,
+		nerd_font_circle_and_square = false,
 		ascii_mode = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
@@ -172,6 +172,7 @@ Utils.commenting.operator_rhs = function()
 end
 
 -- Add comment at the end of line
+-- FIX: needs fixing
 Utils.commenting.line_end = function()
 	local line = api.nvim_get_current_line()
 	local commentstring = vim.bo.commentstring

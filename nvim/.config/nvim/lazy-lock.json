@@ -45,7 +45,7 @@
   "promise-async": { "branch": "main", "commit": "119e8961014c9bfaf1487bf3c2a393d254f337e2" },
   "rainbow-delimiters.nvim": { "branch": "master", "commit": "011d98eaa3a73b5a51d82ce5bc6b1397dde95562" },
   "resession.nvim": { "branch": "master", "commit": "cc1cc9a4ed7e6f72057c265ba5cc711ec16c2cff" },
-  "snacks.nvim": { "branch": "main", "commit": "b0f983ef9aa9b9855ff0b72350cd3dc80de70675" },
+  "snacks.nvim": { "branch": "main", "commit": "bd0f46be9ae963d1a2ea12e53aedc633e1d726db" },
   "sqlite.lua": { "branch": "master", "commit": "b487fcc8937b683942a1f7d9662fcf50ca5acd58" },
   "telescope-emoji.nvim": { "branch": "master", "commit": "86248d97be84a1ce83f0541500ef9edc99ea2aa1" },
   "telescope-file-browser.nvim": { "branch": "master", "commit": "626998e5c1b71c130d8bc6cf7abb6709b98287bb" },
