@@ -104,8 +104,8 @@ local global_config = {
 		ascii_mode = false,
 		gruvbox_comments_italic = false,
 		gruvbox_italic = false,
-		ivy_layout = true,
-		noice_classic_cmdline = true,
+		ivy_layout = false,
+		noice_classic_cmdline = false,
 	},
 }
 
@@ -2779,7 +2779,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local Snacks = require('snacks')
 			Snacks.setup({
 				bigfile = {},
-				-- notifier = {},
+				notifier = {},
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
@@ -3354,7 +3354,18 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						['<M-y>'] = { 'accept', 'fallback' },
 						['<Up>'] = { 'fallback' },
 						['<Down>'] = { 'fallback' },
-					}
+					},
+					completion = {
+						menu = {
+							auto_show = true,
+							draw = {
+								columns = {
+									{ 'label' },
+								},
+							},
+						},
+						ghost_text = { enabled = false },
+					},
 				},
 				completion = {
 					list = {
