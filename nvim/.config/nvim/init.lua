@@ -3356,6 +3356,12 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						['<Down>'] = { 'fallback' },
 					},
 					completion = {
+						list = {
+							selection = {
+								auto_insert = true,
+								preselect = false,
+							},
+						},
 						menu = {
 							auto_show = true,
 							draw = {
@@ -3380,6 +3386,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						},
 					},
 					menu = {
+						auto_show = true,
 						draw = {
 							-- padding = { 0, 1 },
 							treesitter = { 'lsp', 'copilot', 'cmp_tabnine', 'snippets' },
