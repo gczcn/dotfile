@@ -473,8 +473,7 @@ brew install stylua
 brew install shfmt
 
 # Rust Nightly (for blink.cmp)
-brew install rustup
-rustup install nightly]],
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
 	update_deps_brew = [[
 #!/usr/bin/env bash
 brew update
@@ -509,7 +508,6 @@ brew upgrade stylua
 brew upgrade shfmt
 
 # Rust Nightly (for blink.cmp)
-brew upgrade rustup
 rustup update nightly]],
 	install_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
@@ -548,8 +546,7 @@ yes | sudo pacman -S stylua
 yes | sudo pacman -S shfmt
 
 # Rust Nightly (for blink.cmp)
-yes | sudo pacman -S rustup
-rustup install nightly]],
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
 	update_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
 sudo pacman -Sy
@@ -587,7 +584,6 @@ yes | sudo pacman -S stylua
 yes | sudo pacman -S shfmt
 
 # Rust Nightly (for blink.cmp)
-yes | sudo pacman -S rustup
 rustup update nightly]],
 }
 
