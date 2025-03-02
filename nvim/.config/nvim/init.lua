@@ -59,7 +59,10 @@ local create_user_command = api.nvim_create_user_command
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_mode boolean
 ---@field gruvbox_comments_italic boolean
----@field gruvbox_italic boolean
+---@field gruvbox_folds_italic boolean
+---@field gruvbox_conditionals_italic boolean
+---@field gruvbox_special_italic boolean
+---@field gruvbox_types_italic boolean
 ---@field ivy_layout boolean
 ---@field noice_classic_cmdline boolean
 
@@ -103,7 +106,10 @@ local global_config = {
 		nerd_font_circle_and_square = false,
 		ascii_mode = false,
 		gruvbox_comments_italic = false,
-		gruvbox_italic = false,
+		gruvbox_folds_italic = false,
+		gruvbox_conditionals_italic = true,
+		gruvbox_special_italic = true,
+		gruvbox_types_italic = true,
 		ivy_layout = false,
 		noice_classic_cmdline = false,
 	},
@@ -1064,7 +1070,9 @@ local plugins = global_config.enabled_plugins and {
 						gray = p.gray,
 					}
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
-					if global_config.plugins_config.gruvbox_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+					if global_config.plugins_config.gruvbox_conditionals_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
+					if global_config.plugins_config.gruvbox_special_italic then set_hl(0, 'Special', { fg = colors.orange, italic = true }) end
+					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) end
 
 					-- Custom
 					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
@@ -1137,9 +1145,8 @@ local plugins = global_config.enabled_plugins and {
 			require('gruvbox').setup({
 				italic = {
 					strings = false,
-					emphasis = global_config.plugins_config.gruvbox_italic,
 					comments = global_config.plugins_config.gruvbox_comments_italic,
-					folds = global_config.plugins_config.gruvbox_italic,
+					folds = global_config.plugins_config.gruvbox_folds_italic,
 				},
 				overrides = {
 					LspReferenceText = { underline = true },
