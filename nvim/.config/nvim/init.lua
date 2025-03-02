@@ -177,20 +177,25 @@ Utils.commenting.operator_rhs = function()
 	return require('vim._comment').operator() .. '_'
 end
 
--- Add comment at the end of line
--- FIX: needs fixing
-Utils.commenting.line_end = function()
-	local line = api.nvim_get_current_line()
-	local commentstring = vim.bo.commentstring
-	vim.fn.feedkeys(string.format('A%s%s', line:find('%S') and ' ' or '', string.format(commentstring, '')), 'n')
-end
-
--- Add comment on the line above
+-- Add comment on a new line
 Utils.commenting.newline = function(key)
 	vim.cmd(string.format([[noautocmd exe "norm! %s.\<esc>%sf.x"]], key, Utils.commenting.operator_rhs()))
-	local line = vim.fn.getline('.')
+	local line = api.nvim_get_current_line()
 	local cursor_loc = api.nvim_win_get_cursor(0)
 	vim.fn.feedkeys(string.sub(line, cursor_loc[2] + 1, -1):find('%S') and 'i' or 'a', 'n')
+end
+
+-- Add comment at the end of line
+Utils.commenting.line_end = function()
+	if api.nvim_get_current_line():find('%S') then
+		local commentstring = vim.bo.commentstring
+		local _, cursor_back = commentstring:find('%%s')
+		---@diagnostic disable-next-line: unbalanced-assignments
+		cursor_back = #commentstring - cursor_back
+		vim.cmd(string.format([[exe "call feedkeys('A%s%s')"]], ' ' .. commentstring:format(''), string.rep('\\<left>', cursor_back)))
+	else
+		Utils.commenting.newline('cc')
+	end
 end
 
 -- Toggle comment line
@@ -733,6 +738,13 @@ create_autocmd('FileType', {
 -- 		vim.opt_local.tabstop = 2
 -- 	end,
 -- })
+
+create_autocmd('FileType', {
+	pattern = { 'c', 'cpp' },
+	callback = function()
+		vim.opt_local.commentstring = '/* %s */'
+	end,
+})
 
 create_autocmd('FileType', {
 	pattern = { 'json', 'json5', 'jsonc', 'lsonc', 'markdown' },
