@@ -1093,6 +1093,7 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = Utils.get_hl('CursorLine', true) })
 					set_hl(0, 'StatusColumnFoldEndCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 
+					set_hl(0, 'LazyReasonPlugin', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
 					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
