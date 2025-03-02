@@ -1071,7 +1071,7 @@ local plugins = global_config.enabled_plugins and {
 					}
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 					if global_config.plugins_config.gruvbox_conditionals_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
-					if global_config.plugins_config.gruvbox_special_italic then set_hl(0, 'Special', { fg = colors.orange, italic = true }) end
+					if global_config.plugins_config.gruvbox_special_italic then set_hl(0, 'Special', { fg = colors.orange, italic = true }) set_hl(0, '@constructor', { fg = colors.orange }) end
 					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) end
 
 					-- Custom
@@ -1093,7 +1093,6 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = Utils.get_hl('CursorLine', true) })
 					set_hl(0, 'StatusColumnFoldEndCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 
-					set_hl(0, 'LazyReasonPlugin', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
 					set_hl(0, 'NoiceCmdlineIconHelp', { fg = colors.red })
@@ -3315,7 +3314,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						Text = '󰉿',
 						Method = '󰆧',
 						Function = '󰊕',
-						Construct3or = '',
+						Constructor = '',
 						Field = '󰜢',
 						Variable = '󰀫',
 						Class = '󰠱',
