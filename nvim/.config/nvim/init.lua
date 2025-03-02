@@ -1118,6 +1118,14 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'FzfLuaTabTitle', { fg = colors.blue })
 					set_hl(0, 'FzfLuaTabMarker', { fg = colors.fg0 })
 
+					set_hl(0, 'TodoBgTEST', { fg = colors.blue, bold = true })
+					set_hl(0, 'TodoBgHACK', { fg = colors.yellow, bold = true })
+					set_hl(0, 'TodoBgNOTE', { fg = colors.aqua, bold = true })
+					set_hl(0, 'TodoBgTODO', { fg = colors.blue, bold = true })
+					set_hl(0, 'TodoBgFIX', { fg = colors.red, bold = true })
+					set_hl(0, 'TodoBgPERF', { fg = colors.blue, bold = true })
+					set_hl(0, 'TodoBgWARN', { fg = colors.yellow, bold = true })
+
 					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0, bold = true })
 
 					set_hl(0, 'BlinkCmpKindClass', { fg = colors.yellow })
@@ -1146,6 +1154,7 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'BlinkCmpKindValue', { fg = colors.orange })
 					set_hl(0, 'BlinkCmpKindVariable', { fg = colors.orange })
 					set_hl(0, 'BlinkCmpKindCopilot', { fg = colors.gray })
+
 					set_hl(0, 'IlluminatedWordText', { bg = colors.bg2 })
 					set_hl(0, 'IlluminatedWordRead', { bg = colors.bg2 })
 					set_hl(0, 'IlluminatedWordWrite', { bg = colors.bg2 })
@@ -1189,6 +1198,15 @@ local plugins = global_config.enabled_plugins and {
 					BlinkCmpLabelDeprecated = { link = 'GruvboxGray' },
 					BlinkCmpLabelDetail = { link = 'GruvboxGray' },
 					BlinkCmpLabelDescription = { link = 'GruvboxGray' },
+
+					-- todo-comments
+					-- TodoBgTEST = { link = 'TodoFgTEST' },
+					-- TodoBgHACK = { link = 'TodoFgHACK' },
+					-- TodoBgNOTE = { link = 'TodoFgNOTE' },
+					-- TodoBgTODO = { link = 'TodoFgTODO' },
+					-- TodoBgFIX = { link = 'TodoFgFIX' },
+					-- TodoBgPERF = { link = 'TodoFgPERF' },
+					-- TodoBgWARN = { link = 'TodoFgWARN' },
 				},
 			})
 			opt.background = 'dark'
