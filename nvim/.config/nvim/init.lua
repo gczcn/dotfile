@@ -189,9 +189,7 @@ end
 Utils.commenting.line_end = function()
 	if api.nvim_get_current_line():find('%S') then
 		local commentstring = vim.bo.commentstring
-		local _, cursor_back = commentstring:find('%%s')
-		---@diagnostic disable-next-line: unbalanced-assignments
-		cursor_back = #commentstring - cursor_back
+		local cursor_back = #commentstring - commentstring:find('%%s') - 1
 		vim.cmd(string.format([[exe "call feedkeys('A%s%s')"]], ' ' .. commentstring:format(''), string.rep('\\<left>', cursor_back)))
 	else
 		Utils.commenting.newline('cc')
