@@ -1072,7 +1072,7 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 					if global_config.plugins_config.gruvbox_conditionals_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
 					if global_config.plugins_config.gruvbox_constant_builtin_italic then set_hl(0, '@constant.builtin', { fg = colors.orange, italic = true }) end
-					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) end
+					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) set_hl(0, 'dosiniLabel', { fg = colors.yellow }) end
 
 					-- Custom
 					set_hl(0, 'DiagnosticNumHlError', { fg = colors.red, bold = true })
