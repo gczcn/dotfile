@@ -61,7 +61,7 @@ local create_user_command = api.nvim_create_user_command
 ---@field gruvbox_comments_italic boolean
 ---@field gruvbox_folds_italic boolean
 ---@field gruvbox_conditionals_italic boolean
----@field gruvbox_special_italic boolean
+---@field gruvbox_constant_builtin_italic boolean
 ---@field gruvbox_types_italic boolean
 ---@field ivy_layout boolean
 ---@field noice_classic_cmdline boolean
@@ -108,7 +108,7 @@ local global_config = {
 		gruvbox_comments_italic = false,
 		gruvbox_folds_italic = false,
 		gruvbox_conditionals_italic = true,
-		gruvbox_special_italic = true,
+		gruvbox_constant_builtin_italic = true,
 		gruvbox_types_italic = true,
 		ivy_layout = false,
 		noice_classic_cmdline = false,
@@ -1071,7 +1071,7 @@ local plugins = global_config.enabled_plugins and {
 					}
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 					if global_config.plugins_config.gruvbox_conditionals_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
-					if global_config.plugins_config.gruvbox_special_italic then set_hl(0, 'Special', { fg = colors.orange, italic = true }) set_hl(0, '@constructor', { fg = colors.orange }) end
+					if global_config.plugins_config.gruvbox_constant_builtin_italic then set_hl(0, '@constant.builtin', { fg = colors.orange, italic = true }) end
 					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) end
 
 					-- Custom
