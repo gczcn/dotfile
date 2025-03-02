@@ -171,7 +171,7 @@ end
 -- Commenting
 Utils.commenting = {}
 
--- vim/_defaults.lua
+-- See vim/_defaults.lua
 ---@return string
 Utils.commenting.operator_rhs = function()
 	return require('vim._comment').operator() .. '_'
