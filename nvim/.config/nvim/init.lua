@@ -2311,6 +2311,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = { 'echasnovski/mini.icons' },
 		config = function()
+			-- FIX: 'lsp_clients' need fixing.
 			local lsp_clients = function()
 				local bufnr = api.nvim_get_current_buf()
 
@@ -2800,6 +2801,28 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			vim.cmd.ColorizerToggle()
 		end,
 	},
+
+	-- {
+	-- 	'luukvbaal/statuscol.nvim',
+	-- 	config = function ()
+	-- 		local builtin = require("statuscol.builtin")
+	-- 		require("statuscol").setup({
+	-- 			relculright = true,
+	-- 			segments = {
+	-- 				-- { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+	-- 				{
+	-- 					sign = { namespace = { "diagnostic/signs" }, maxwidth = 2, auto = true },
+	-- 					click = "v:lua.ScSa"
+	-- 				},
+	-- 				{ text = { builtin.lnumfunc }, click = "v:lua.ScLa", },
+	-- 				{
+	-- 					sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
+	-- 					click = "v:lua.ScSa"
+	-- 				},
+	-- 			}
+	-- 		})
+	-- 	end
+	-- },
 
 	-- SNACKS
 	{
