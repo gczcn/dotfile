@@ -99,7 +99,7 @@ local global_config = {
 		indent_fold_char = '│',
 		indent_fold_end = '└',
 		show_fold_end = true,
-		fold_end_char = '<',
+		fold_end_char = '^',
 		foldcolumn_rightsplit_char = ' ',
 		foldcolumn_leftsplit_char = ' ',
 	},
