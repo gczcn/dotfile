@@ -58,6 +58,9 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_mode boolean
+---@field edge_comments_italic boolean
+---@field edge_conditionals_italic boolean
+---@field edge_italic boolean
 ---@field gruvbox_comments_italic boolean
 ---@field gruvbox_folds_italic boolean
 ---@field gruvbox_conditionals_italic boolean
@@ -107,6 +110,9 @@ local global_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = false,
 		ascii_mode = false,
+		edge_comments_italic = false,
+		edge_conditionals_italic = false,
+		edge_italic = false,
 		gruvbox_comments_italic = false,
 		gruvbox_folds_italic = false,
 		gruvbox_conditionals_italic = true,
@@ -804,9 +810,10 @@ if global_config.statuscolumn.enabled then
 
 		---@return string
 		local get_line_number = function()
-			return '%=%{%(&number || &relativenumber) && v:virtnum == 0 ? ('
-				.. (vim.fn.has('nvim-0.11') == 1 and '"%l"' or 'v:relnum == 0 ? (&number ? "%l" : "%r") : (&relativenumber ? "%r" : "%l")')
-				.. ') : ""%}'
+			return api.nvim_win_call(vim.g.statusline_winid, function()
+				return '%=' .. (((vim.o.number or vim.o.relativenumber) and vim.v.virtnum == 0) and
+					(vim.fn.has('nvim-0.11') == 1 and '%l' or (vim.v.relnum == 0 and (vim.o.number and '%l' or '%r') or (vim.o.relativenumber and '%r' or '%l'))) or '')
+			end)
 		end
 
 		---@param show_indent_symbol boolean|nil
@@ -983,7 +990,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
-	install = { colorscheme = { 'edge', 'catppuccin', 'gruvbox', 'habamax' } },
+	install = { colorscheme = { 'gruvbox', 'catppuccin', 'habamax', 'edge' } },
 	checker = { enabled = true },
 	change_detection = { notify = false },
 	ui = {
@@ -1007,6 +1014,63 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEMES
+	--- EDGE
+	{
+		'sainnhe/edge',
+		lazy = true,
+		priority = 1000,
+		config = function()
+			create_autocmd('ColorScheme', {
+				group = vim.api.nvim_create_augroup('custom_highlights_edge', {}),
+				pattern = 'edge',
+				callback = function()
+					local config = vim.fn['edge#get_configuration']()
+					local palette = vim.fn['edge#get_palette'](config.style, config.dim_foreground, config.colors_override)
+					local set_hl = vim.fn['edge#highlight']
+
+					set_hl('Visual', palette.none, palette.bg4)
+					set_hl('VisualNOS', palette.none, palette.bg4)
+					set_hl('Directory', palette.green, palette.none, 'bold')
+					set_hl('CursorLineNr', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('CursorLineSign', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('WinBar', palette.fg, palette.bg2)
+					if global_config.plugins_config.edge_conditionals_italic then
+						set_hl('Conditional', palette.purple, palette.none, 'italic')
+						set_hl('TSConditional', palette.purple, palette.none, 'italic')
+					end
+
+					-- Custom Status Column (Tags: column, statuscolumn, status_column )
+					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
+					set_hl('StatusColumnFoldOpen', palette.grey_dim, palette.bg0)
+					set_hl('StatusColumnFoldClose', palette.blue, palette.bg1)
+					set_hl('StatusColumnFoldEnd', palette.grey_dim, palette.bg0)
+					set_hl('StatusColumnFoldCursorLine', palette.bg4, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldOpenCursorLine', palette.grey_dim, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldCloseCursorLine', palette.blue, vim.o.cursorline and palette.bg1 or palette.none)
+					set_hl('StatusColumnFoldEndCursorLine', palette.grey_dim, vim.o.cursorline and palette.bg1 or palette.none)
+
+					-- Custom
+					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
+					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
+					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
+					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
+
+					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
+				end,
+			})
+
+			opt.background = 'dark'
+			vim.g.edge_style = 'aura'
+			vim.g.edge_disable_italic_comment = global_config.plugins_config.edge_comments_italic and 0 or 1
+			vim.g.edge_enable_italic = global_config.plugins_config.edge_italic and 1 or 0
+			vim.g.edge_diagnostic_virtual_text = 'highlighted'
+			vim.g.edge_inlay_hints_background = 'dimmed'
+			vim.g.edge_better_performance = 1
+
+			vim.cmd.colorscheme('edge')
+		end,
+	},
+
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
