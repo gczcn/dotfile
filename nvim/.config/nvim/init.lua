@@ -1,5 +1,6 @@
 -- =============================================================================
 -- My Neovim Config (Single File Version)
+-- https://github.com/gczcn/dotfile
 -- Author: Zixuan Chu <494353540@qq.com>
 --
 -- Dependencies:
@@ -102,7 +103,7 @@ local global_config = {
 		indent_fold_char = '│',
 		indent_fold_end = '└',
 		show_fold_end = true,
-		fold_end_char = '<',
+		fold_end_char = '^',
 		foldcolumn_rightsplit_char = ' ',
 		foldcolumn_leftsplit_char = ' ',
 	},
@@ -115,9 +116,9 @@ local global_config = {
 		edge_italic = false,
 		gruvbox_comments_italic = false,
 		gruvbox_folds_italic = false,
-		gruvbox_conditionals_italic = true,
-		gruvbox_constant_builtin_italic = true,
-		gruvbox_types_italic = true,
+		gruvbox_conditionals_italic = false,
+		gruvbox_constant_builtin_italic = false,
+		gruvbox_types_italic = false,
 		ivy_layout = false,
 		noice_classic_cmdline = false,
 	},
@@ -1039,7 +1040,7 @@ local plugins = global_config.enabled_plugins and {
 						set_hl('TSConditional', palette.purple, palette.none, 'italic')
 					end
 
-					-- Custom Status Column (Tags: column, statuscolumn, status_column )
+					-- Custom Status Column (Tags: column, statuscolumn, status_column)
 					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
 					set_hl('StatusColumnFoldOpen', palette.grey_dim, palette.bg0)
 					set_hl('StatusColumnFoldClose', palette.blue, palette.bg1)
@@ -1152,7 +1153,7 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
 					set_hl(0, 'SignColumn', { bg = Utils.get_hl('Normal', true) })
 
-					-- Custom Status Column (Tags: column, statuscolumn, status_column )
+					-- Custom Status Column (Tags: column, statuscolumn, status_column)
 					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
 					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
 					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = Utils.get_hl('Folded', true) })
