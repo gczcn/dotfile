@@ -836,9 +836,6 @@ if global_config.statuscolumn.enabled then
 				local foldlevel_before = vim.fn.foldlevel(vim.v.lnum - 1)
 				local foldlevel_after = vim.fn.foldlevel(vim.v.lnum + 1)
 				local foldclosed = vim.fn.foldclosed(vim.v.lnum)
-				local is_closed = foldclosed ~= -1 and foldclosed == vim.v.lnum
-				local is_start = foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>'
-				local is_end = (ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after
 				local foldopen_char = opt.fillchars:get().foldopen or '-'
 				local foldclose_char = opt.fillchars:get().foldopen or '+'
 
@@ -864,9 +861,10 @@ if global_config.statuscolumn.enabled then
 				if foldlevel == 0 then goto finish end
 				foldtext = foldtext
 					.. get_hl_text('Fold', string.rep(show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ', get_index(foldlevel) - 1))
-					.. (is_closed and get_hl_text('FoldClose', foldclose_char)
-						or (is_start and get_hl_text('FoldOpen', foldopen_char)
-						or (((show_fold_end or show_indent_symbol) and is_end) and (get_hl_text(show_fold_end and 'FoldEnd' or 'Fold', show_fold_end and global_config.statuscolumn.fold_end_char or global_config.statuscolumn.indent_fold_end))
+					.. ((foldclosed ~= -1 and foldclosed == vim.v.lnum) and get_hl_text('FoldClose', foldclose_char)
+						or ((foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>') and get_hl_text('FoldOpen', foldopen_char)
+						or (((show_fold_end or show_indent_symbol) and ((ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after))
+						and (get_hl_text(show_fold_end and 'FoldEnd' or 'Fold', show_fold_end and global_config.statuscolumn.fold_end_char or global_config.statuscolumn.indent_fold_end))
 						or (get_hl_text('Fold', show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ')))))
 
 				::finish::
