@@ -858,16 +858,13 @@ if global_config.statuscolumn.enabled then
 					return string.format('%%#%s#%s', 'StatusColumn' .. hl .. (vim.v.relnum == 0 and 'CursorLine' or ''), s)
 				end
 
-				if foldlevel == 0 then goto finish end
 				foldtext = foldtext
-					.. get_hl_text('Fold', string.rep(show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ', get_index(foldlevel) - 1))
+					.. (foldlevel ~= 0 and (get_hl_text('Fold', string.rep(show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ', get_index(foldlevel) - 1))
 					.. ((foldclosed ~= -1 and foldclosed == vim.v.lnum) and get_hl_text('FoldClose', foldclose_char)
 						or ((foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>') and get_hl_text('FoldOpen', foldopen_char)
 						or (((show_fold_end or show_indent_symbol) and ((ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after))
 						and (get_hl_text(show_fold_end and 'FoldEnd' or 'Fold', show_fold_end and global_config.statuscolumn.fold_end_char or global_config.statuscolumn.indent_fold_end))
-						or (get_hl_text('Fold', show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ')))))
-
-				::finish::
+						or (get_hl_text('Fold', show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ')))))) or '')
 				return global_config.statuscolumn.foldcolumn_leftsplit_char .. foldtext .. get_other_chars(get_index(foldlevel)) .. global_config.statuscolumn.foldcolumn_rightsplit_char
 			end)
 		end
