@@ -2766,6 +2766,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- SUDA, SUDO
 	{
 		'lambdalisue/vim-suda',
+		enabled = vim.fn.has('win32') and false or true,
 		event = { 'VeryLazy', 'User FileOpened' },
 		cmd = { 'SudaWrite', 'SudaRead' },
 		config = function()
