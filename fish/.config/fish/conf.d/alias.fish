@@ -4,5 +4,5 @@ alias ff 'fastfetch'
 alias c 'clear'
 
 # list
-alias l 'eza -al'
+alias l 'eza -aal'
 alias ls 'eza'
