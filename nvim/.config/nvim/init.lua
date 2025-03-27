@@ -1,5 +1,5 @@
 -- =============================================================================
--- My Neovim Config (Single File Version)
+-- My Neovim Configuration (Single File Version)
 -- https://github.com/gczcn/dotfile
 -- Author: Zixuan Chu <494353540@qq.com>
 --
