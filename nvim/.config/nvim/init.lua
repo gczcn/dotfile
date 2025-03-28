@@ -2365,23 +2365,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	{
 		'nvim-lualine/lualine.nvim',
 		event = { 'User FileOpened', 'BufAdd' },
-		dependencies = { 'echasnovski/mini.icons' },
+		dependencies = {
+			'echasnovski/mini.icons',
+			'meuter/lualine-so-fancy.nvim',
+		},
 		config = function()
-			-- FIX: 'lsp_clients' need fixing.
-			local lsp_clients = function()
-				local bufnr = api.nvim_get_current_buf()
-
-				local clients = vim.lsp.get_clients({ buffer = bufnr })
-				if next(clients) == nil then
-					return ''
-				end
-
-				local c = {}
-				for _, client in pairs(clients) do
-					c[#c] = client.name
-				end
-				return global_config.plugins_config.ascii_mode and 'LS: ' or ' ' .. table.concat(c, ', ')
-			end
 
 			require('lualine').setup({
 				options = {
@@ -2429,7 +2417,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 								return { fg = Utils.get_hl('Constant') }
 							end
 						},
-						lsp_clients,
+						'fancy_lsp_servers',
 						'tabnine',
 						'hostname',
 						'fileformat',
