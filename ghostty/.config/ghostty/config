@@ -46,7 +46,10 @@ font-size = 13.3
 # font-size = 12.5
 
 # Noto Sans SC (CJK)
-font-family = Noto Sans SC
+# font-family = Noto Sans SC
+
+# Shanggu Sans
+font-family = Shanggu Sans
 
 theme = GruvboxDark
 mouse-hide-while-typing = true
