@@ -372,6 +372,7 @@ keymap.set('n', '<leader>tc', function()
 end, keymaps_opts)
 keymap.set({ 'n', 'v' }, 'U', 'K', keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
+keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
 keymap.set('n', '<leader>gg', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
 
@@ -2817,13 +2818,15 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				view = global_config.plugins_config.noice_classic_cmdline and 'cmdline' or 'cmdline_popup',
 			},
 			messages = {
+				view_history = 'popup',
 				-- view_search = false,
 			},
 			views = {
-				cmdline_popup = { border = { style = 'single', } },
-				cmdline_input = { border = { style = 'single', } },
-				confirm = { border = { style = 'single', } },
-				popup_menu = { border = { style = 'single', } },
+				cmdline_popup = { border = { style = global_config.plugins_config.border, } },
+				cmdline_input = { border = { style = global_config.plugins_config.border, } },
+				confirm = { border = { style = global_config.plugins_config.border, } },
+				popup = { border = { style = global_config.plugins_config.border } },
+				popup_menu = { border = { style = global_config.plugins_config.border, } },
 				mini = { timeout = 3000 },
 				-- hover = { border = { style = 'single', padding = { 0, 2 } } },
 			},
@@ -2912,7 +2915,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 
 			keymap.set('n', '<leader>ar', Snacks.rename.rename_file)
 			keymap.set('n', '<leader>h', Snacks.notifier.hide)
-			keymap.set('n', '<leader>fn', Snacks.notifier.show_history)
+			keymap.set('n', '<leader>fN', Snacks.notifier.show_history)
 		end,
 	},
 
