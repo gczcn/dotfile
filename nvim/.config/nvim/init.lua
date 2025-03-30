@@ -4,7 +4,7 @@
 -- Author: Zixuan Chu <494353540@qq.com>
 --
 -- Dependencies:
---   Neovim - (latest or nightly version)
+--   Neovim >= 0.11
 --   ripgrep - for fzf.lua
 --   fd - for fzf.lua
 --   make
