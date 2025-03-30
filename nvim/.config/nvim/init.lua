@@ -1,6 +1,6 @@
 -- =============================================================================
 -- My Neovim Configuration (Single File Version)
--- https://github.com/gczcn/dotfile
+-- https://github.com/gczcn/dotfile/
 -- Author: Zixuan Chu <494353540@qq.com>
 --
 -- Dependencies:
@@ -3225,9 +3225,8 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						[vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
 					},
 				},
-				-- virtual_text = {
-				-- 	prefix = '󰝤',
-				-- },
+				virtual_text = true,
+				virtual_lines = { current_line = true },
 				severity_sort = true,
 			})
 
