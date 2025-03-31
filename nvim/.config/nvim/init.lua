@@ -375,6 +375,7 @@ keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
 keymap.set('n', '<leader>gg', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
+keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lines=not vim.diagnostic.config().virtual_lines})<CR>')
 
 -- =============================================================================
 -- Options
@@ -443,6 +444,33 @@ if not global_config.enabled_plugins then
 	set_hl(0, 'StatusColumnFoldCloseCursorLine', { link = 'Normal' })
 	set_hl(0, 'StatusColumnFoldEndCursorLine', { link = 'FoldColumn' })
 end
+
+-- Lsp
+vim.diagnostic.config({
+	-- My font does not display the default icon properly.
+	-- Need Nerd Font
+	virtual_text = global_config.plugins_config.nerd_font_circle_and_square and {
+		prefix = '󰝤',
+	} or true,
+	virtual_lines = false, -- press <leader><leader> to toggle this option.
+	severity_sort = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = '',
+			[vim.diagnostic.severity.WARN] = '',
+			[vim.diagnostic.severity.HINT] = '',
+			[vim.diagnostic.severity.INFO] = '',
+		},
+
+		-- The following highlight groups need to be set manually
+		numhl = {
+			[vim.diagnostic.severity.ERROR] = 'DiagnosticNumHlError',
+			[vim.diagnostic.severity.WARN] = 'DiagnosticNumHlWarn',
+			[vim.diagnostic.severity.HINT] = 'DiagnosticNumHlHint',
+			[vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
+		},
+	}
+})
 
 -- =============================================================================
 -- Shell Scripts
@@ -3208,28 +3236,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 				}
 			end
 
-			vim.diagnostic.config({
-				signs = {
-					text = {
-						[vim.diagnostic.severity.ERROR] = '',
-						[vim.diagnostic.severity.WARN] = '',
-						[vim.diagnostic.severity.HINT] = '',
-						[vim.diagnostic.severity.INFO] = '',
-					},
-
-					-- The following highlight groups need to be set manually
-					numhl = {
-						[vim.diagnostic.severity.ERROR] = 'DiagnosticNumHlError',
-						[vim.diagnostic.severity.WARN] = 'DiagnosticNumHlWarn',
-						[vim.diagnostic.severity.HINT] = 'DiagnosticNumHlHint',
-						[vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
-					},
-				},
-				virtual_text = true,
-				virtual_lines = { current_line = true },
-				severity_sort = true,
-			})
-
 			-- configure html server
 			lspconfig['html'].setup({
 				capabilities = capabilities(),
@@ -3605,14 +3611,6 @@ if global_config.enabled_plugins then
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
 	opt.foldenable = true
-
-	-- My font does not display the default icon properly.
-	-- Need Nerd Font
-	vim.diagnostic.config(global_config.plugins_config.nerd_font_circle_and_square and {
-		virtual_text = {
-			prefix = '󰝤',
-		},
-	} or { virtual_text = true })
 
 	keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
 	keymap.set('n', '<leader>tl', function()
