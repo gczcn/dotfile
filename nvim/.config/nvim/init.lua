@@ -1209,6 +1209,13 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'TodoBgFIX', { fg = colors.red, bold = true })
 					set_hl(0, 'TodoBgPERF', { fg = colors.blue, bold = true })
 					set_hl(0, 'TodoBgWARN', { fg = colors.yellow, bold = true })
+					set_hl(0, 'TodoSignTEST', { fg = colors.blue })
+					set_hl(0, 'TodoSignHACK', { fg = colors.yellow })
+					set_hl(0, 'TodoSignNOTE', { fg = colors.aqua })
+					set_hl(0, 'TodoSignTODO', { fg = colors.blue })
+					set_hl(0, 'TodoSignFIX', { fg = colors.red })
+					set_hl(0, 'TodoSignPERF', { fg = colors.blue })
+					set_hl(0, 'TodoSignWARN', { fg = colors.yellow })
 
 					set_hl(0, 'FlashLabel', { bg = colors.red, fg = colors.bg0, bold = true })
 
