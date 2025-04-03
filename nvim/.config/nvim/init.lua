@@ -2411,7 +2411,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					component_separators = '',
 					section_separators = { left = '', right = '' },
 					disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter' } },
-					-- globalstatus = true,
+					globalstatus = true,
 				},
 				sections = {
 					lualine_a = { 'mode' },
