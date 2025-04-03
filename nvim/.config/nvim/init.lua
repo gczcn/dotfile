@@ -2411,7 +2411,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					component_separators = '',
 					section_separators = { left = '', right = '' },
 					disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'ministarter' } },
-					globalstatus = true,
+					-- globalstatus = true,
 				},
 				sections = {
 					lualine_a = { 'mode' },
@@ -2419,9 +2419,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					lualine_c = {
 						'branch',
 						'diff',
-						'filesize',
-						'filetype',
-						'encoding',
 						{
 							'diagnostics',
 							symbols = {
@@ -2454,12 +2451,14 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						},
 						'fancy_lsp_servers',
 						'tabnine',
-						'hostname',
-						'fileformat',
+						'filesize',
+						'filetype',
+						'encoding',
+						'(vim.o.expandtab and "Spaces: " or "Tabs: ")..vim.o.tabstop',
 					},
 					lualine_y = {
 						{ 'progress', separator = ' ', padding = { left = 1, right = 0 } },
-						{ 'location', padding = { left = 0, right = 1 } },
+						'location',
 					},
 					lualine_z = { 'os.date("%D %R")' },
 				},
