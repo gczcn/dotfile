@@ -109,7 +109,7 @@ local global_config = {
 	},
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-		nerd_font_circle_and_square = false,
+		nerd_font_circle_and_square = true,
 		ascii_mode = false,
 		edge_comments_italic = false,
 		edge_conditionals_italic = false,
