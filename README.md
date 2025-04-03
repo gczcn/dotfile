@@ -26,7 +26,6 @@ Run `stow nvim` to create an symlink for the neovim configuration
   - [x] Use `stow` to manage configuration files
 * neovim
   - [ ] Archlinux installation dependency script fully automatic (I can't test it right now)
-  - [ ] Fix the issue where the loaded language server could not be displayed on the status bar
   - [ ] Make non-treesitter folded columns display normally (I don't think I can do it)
 * wezterm
   - [ ] Configuration Modularity
