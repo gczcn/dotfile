@@ -21,9 +21,9 @@
 # font-size = 12
 
 # IBM Plex
-font-family = BlexMono Nerd Font Mono
-font-size = 13.5
-window-title-font-family = ibm plex sans
+# font-family = BlexMono Nerd Font Mono
+# font-size = 13.5
+# window-title-font-family = ibm plex sans
 
 # Source Code Pro
 # font-family = SauceCodePro Nerd Font Mono
@@ -47,6 +47,11 @@ window-title-font-family = ibm plex sans
 
 # Noto Sans SC (CJK)
 # font-family = Noto Sans SC
+
+# Iosevka Custom
+font-family = IosevkaPlex Nerd Font Mono
+font-size = 12
+window-title-font-family = IosevkaPlex Nerd Font Mono
 
 # Shanggu Sans
 font-family = Shanggu Sans
