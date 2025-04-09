@@ -1096,6 +1096,101 @@ local plugins = global_config.enabled_plugins and {
 		end,
 	},
 
+	-- CATPPUCCIN
+	-- Supported flavors: mocha, latte
+	{
+		'catppuccin/nvim',
+		name = 'catppuccin-nvim',
+		lazy = true,
+		priority = 1000,
+		config = function()
+			require('catppuccin').setup({
+				styles = {
+					functions = { 'bold' },
+				},
+				integrations = {
+					treesitter_context = true,
+					dropbar = { enabled = true, color_mode = true },
+					mason = false,
+					indent_blankline = { scope_color = 'overlay0' },
+					neotree = false,
+					noice = true,
+					lsp_trouble = true,
+				},
+				custom_highlights = function(colors)
+					local U = require('catppuccin.utils.colors')
+					return {
+						-- Custom Status Column (Tags: column, statuscolumn, status_column )
+						StatusColumnFold = { fg = colors.surface0 },
+						StatusColumnFoldOpen = { fg = colors.overlay0 },
+						StatusColumnFoldClose = { link = 'Folded' },
+						StatusColumnFoldEnd = { fg = colors.overlay0 },
+						StatusColumnFoldCursorLine = { fg = colors.surface0,
+							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+						},
+						StatusColumnFoldOpenCursorLine = { fg = colors.overlay0,
+							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+						},
+						StatusColumnFoldCloseCursorLine = { link = 'Folded' },
+						StatusColumnFoldEndCursorLine = { fg = colors.overlay0,
+							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+						},
+
+						CursorLineNr = {
+							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+						},
+						CursorLineSign = {
+							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
+						},
+						DiagnosticNumHlError = { fg = colors.red, bold = true },
+						DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
+						DiagnosticNumHlHint = { fg = colors.teal, bold = true },
+						DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
+						FzfLuaHeaderText = { fg = colors.red },
+						FzfLuaHeaderBind = { fg = colors.pink },
+
+						-- IlluminatedWordText = { underline = true },
+						-- IlluminatedWordRead = { underline = true },
+						-- IlluminatedWordWrite = { underline = true },
+						-- LspReferenceText = { underline = true },
+						-- LspReferenceRead = { underline = true },
+						-- LspReferenceWrite = { underline = true },
+
+						-- BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
+						-- BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
+						-- BlinkCmpKindConstant = { bg = colors.peach, fg = colors.base },
+						-- BlinkCmpKindConstructor = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindEnum = { bg = colors.green, fg = colors.base },
+						-- BlinkCmpKindEnumMember = { bg = colors.red, fg = colors.base },
+						-- BlinkCmpKindEvent = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindField = { bg = colors.green, fg = colors.base },
+						-- BlinkCmpKindFile = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindFolder = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindFunction = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindInterface = { bg = colors.yellow, fg = colors.base },
+						-- BlinkCmpKindKeyword = { bg = colors.red, fg = colors.base },
+						-- BlinkCmpKindMethod = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindModule = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindOperator = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindProperty = { bg = colors.green, fg = colors.base },
+						-- BlinkCmpKindReference = { bg = colors.red, fg = colors.base },
+						-- BlinkCmpKindSnippet = { bg = colors.mauve, fg = colors.base },
+						-- BlinkCmpKindStruct = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindText = { bg = colors.teal, fg = colors.base },
+						-- BlinkCmpKindTypeParameter = { bg = colors.blue, fg = colors.base },
+						-- BlinkCmpKindUnit = { bg = colors.green, fg = colors.base },
+						-- BlinkCmpKindValue = { bg = colors.peach, fg = colors.base },
+						-- BlinkCmpKindVariable = { bg = colors.flamingo, fg = colors.base },
+						-- BlinkCmpKindCopilot = { bg = colors.lavender, fg = colors.base },
+					}
+				end,
+			})
+
+			vim.cmd.colorscheme('catppuccin-mocha')
+			vim.cmd.highlight('TreesitterContextBottom gui=none')
+		end
+	},
+
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
@@ -2047,6 +2142,118 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local colors = {
 				default = 'gruvbox',
 				colorschemes = {
+										['catppuccin-mocha'] = {
+						dark = {
+							focused = {
+								normal = { bg = '#89b4fa', fg = '#181825', bold = true },
+								insert = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
+								command = { bg = '#fab387', fg = '#1e1e2e', bold = true },
+								visual = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
+								select = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
+								replace = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
+								term = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
+								normal_num = { bg = '#629cf8', fg = '#181825', bold = true },
+								insert_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
+								command_num = { bg = '#f49357', fg = '#1e1e2e', bold = true },
+								visual_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
+								select_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
+								replace_num = { bg = '#ee5983', fg = '#1e1e2e', bold = true },
+								term_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
+								unique_prefix_fg = '#45475a',
+								diagnostic_error = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
+								diagnostic_warn = { bg = '#f9e2af', fg = '#1e1e2e', bold = true },
+								diagnostic_info = { bg = '#89dceb', fg = '#1e1e2e', bold = true },
+								diagnostic_hint = { bg = '#94e2d5', fg = '#1e1e2e', bold = true },
+							},
+							not_focused = {
+								normal = { bg = '#313244', fg = '#89b4fa' },
+								insert = { bg = '#313244', fg = '#a6e3a1' },
+								command = { bg = '#313244', fg = '#fab387' },
+								visual = { bg = '#313244', fg = '#cba6f7' },
+								select = { bg = '#313244', fg = '#cba6f7' },
+								replace = { bg = '#313244', fg = '#f38ba8' },
+								term = { bg = '#313244', fg = '#a6e3a1' },
+								normal_num = { bg = '#45475a', fg = '#89b4fa' },
+								insert_num = { bg = '#45475a', fg = '#a6e3a1' },
+								command_num = { bg = '#45475a', fg = '#fab387' },
+								visual_num = { bg = '#45475a', fg = '#cba6f7' },
+								select_num = { bg = '#45475a', fg = '#cba6f7' },
+								replace_num = { bg = '#45475a', fg = '#f38ba8' },
+								term_num = { bg = '#45475a', fg = '#a6e3a1' },
+								unique_prefix_fg = '#9399b2',
+								diagnostic_error = { bg = '#313244', fg = '#f38ba8' },
+								diagnostic_warn = { bg = '#313244', fg = '#f9e2af' },
+								diagnostic_info = { bg = '#313244', fg = '#89dceb' },
+								diagnostic_hint = { bg = '#313244', fg = '#94e2d5' },
+							},
+							tablinefill = {
+								normal = { bg = '#181825', fg = '#cdd6f4' },
+								insert = { bg = '#181825', fg = '#cdd6f4' },
+								command = { bg = '#181825', fg = '#cdd6f4' },
+								visual = { bg = '#181825', fg = '#cdd6f4' },
+								select = { bg = '#181825', fg = '#cdd6f4' },
+								replace = { bg = '#181825', fg = '#cdd6f4' },
+								term = { bg = '#181825', fg = '#cdd6f4' },
+							},
+							quit = { bg = '#f38ba8', fg = '#1e1e2e', bold = true }
+						},
+					},
+					['catppuccin-latte'] = {
+						light = {
+							focused = {
+								normal = { bg = '#1e66f5', fg = '#e6e9ef', bold = true },
+								insert = { bg = '#40a02b', fg = '#eff1f5', bold = true },
+								command = { bg = '#fe640d', fg = '#eff1f5', bold = true },
+								visual = { bg = '#8839ef', fg = '#eff1f5', bold = true },
+								select = { bg = '#8839ef', fg = '#eff1f5', bold = true },
+								replace = { bg = '#d20f39', fg = '#eff1f5', bold = true },
+								term = { bg = '#40a02b', fg = '#eff1f5', bold = true },
+								normal_num = { bg = '#3c7af6', fg = '#e6e9ef', bold = true },
+								insert_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
+								command_num = { bg = '#fe7e34', fg = '#eff1f5', bold = true },
+								visual_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
+								select_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
+								replace_num = { bg = '#ee1141', fg = '#eff1f5', bold = true },
+								term_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
+								unique_prefix_fg = '#bcc0cc',
+								diagnostic_error = { bg = '#d20f39', fg = '#eff1f5', bold = true },
+								diagnostic_warn = { bg = '#df8e1d', fg = '#eff1f5', bold = true },
+								diagnostic_info = { bg = '#04a5e5', fg = '#eff1f5', bold = true },
+								diagnostic_hint = { bg = '#179299', fg = '#eff1f5', bold = true },
+							},
+							not_focused = {
+								normal = { bg = '#ccd0da', fg = '#1e66f5' },
+								insert = { bg = '#ccd0da', fg = '#40a02b' },
+								command = { bg = '#ccd0da', fg = '#fe640d' },
+								visual = { bg = '#ccd0da', fg = '#8839ef' },
+								select = { bg = '#ccd0da', fg = '#8839ef' },
+								replace = { bg = '#ccd0da', fg = '#d20f39' },
+								term = { bg = '#ccd0da', fg = '#40a02b' },
+								normal_num = { bg = '#bcc0cc', fg = '#1e66f5' },
+								insert_num = { bg = '#bcc0cc', fg = '#40a02b' },
+								command_num = { bg = '#bcc0cc', fg = '#fe640d' },
+								visual_num = { bg = '#bcc0cc', fg = '#8839ef' },
+								select_num = { bg = '#bcc0cc', fg = '#8839ef' },
+								replace_num = { bg = '#bcc0cc', fg = '#d20f39' },
+								term_num = { bg = '#bcc0cc', fg = '#40a02b' },
+								unique_prefix_fg = '#7c7f93',
+								diagnostic_error = { bg = '#ccd0da', fg = '#d20f39' },
+								diagnostic_warn = { bg = '#ccd0da', fg = '#df8e1d' },
+								diagnostic_info = { bg = '#ccd0da', fg = '#04a5e5' },
+								diagnostic_hint = { bg = '#ccd0da', fg = '#179299' },
+							},
+							tablinefill = {
+								normal = { bg = '#e6e9ef', fg = '#4c4f69' },
+								insert = { bg = '#e6e9ef', fg = '#4c4f69' },
+								command = { bg = '#e6e9ef', fg = '#4c4f69' },
+								visual = { bg = '#e6e9ef', fg = '#4c4f69' },
+								select = { bg = '#e6e9ef', fg = '#4c4f69' },
+								replace = { bg = '#e6e9ef', fg = '#4c4f69' },
+								term = { bg = '#e6e9ef', fg = '#4c4f69' },
+							},
+							quit = { bg = '#d20f39', fg = '#eff1f5', bold = true }
+						},
+					},
 					gruvbox = {
 						dark = {
 							focused = {
