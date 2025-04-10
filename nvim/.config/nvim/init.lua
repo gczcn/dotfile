@@ -3120,7 +3120,25 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		config = function()
 			local Snacks = require('snacks')
 			Snacks.setup({
-				bigfile = {},
+				bigfile = {
+					setup = function(ctx)
+						if ctx.ft == 'markdown' then
+							vim.bo.filetype = ctx.ft
+							vim.notify('Big file Disabled', vim.log.levels.WARN)
+							return
+						end
+						if vim.fn.exists(':NoMatchParen') ~= 0 then
+							vim.cmd([[NoMatchParen]])
+						end
+						Snacks.util.wo(0, { foldmethod = 'manual', statuscolumn = '', conceallevel = 0 })
+						vim.b.minianimate_disable = true
+						vim.schedule(function()
+							if vim.api.nvim_buf_is_valid(ctx.buf) then
+								vim.bo[ctx.buf].syntax = ctx.ft
+							end
+						end)
+					end,
+				},
 				notifier = {},
 				quickfile = {},
 				-- statuscolumn = {
