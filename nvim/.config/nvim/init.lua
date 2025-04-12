@@ -87,6 +87,7 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
+---@field simple_mode boolean
 ---@field statuscolumn StatusColumnConfig
 ---@field plugins_config PluginsConfig
 local global_config = {
@@ -97,6 +98,7 @@ local global_config = {
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
+	simple_mode = false,
 	statuscolumn = {
 		enabled = true,
 		indent = false,
@@ -493,6 +495,7 @@ brew install fd
 brew install node
 brew install npm
 brew install fzf
+brew install gh
 
 # Code Runner
 brew install gcc
@@ -528,6 +531,7 @@ brew upgrade fd
 brew upgrade node
 brew upgrade npm
 brew upgrade fzf
+brew upgrade gh
 
 # Code Runner
 brew upgrade gcc
@@ -563,6 +567,7 @@ yes | sudo pacman -S fd
 yes | sudo pacman -S nodejs
 yes | sudo pacman -S npm
 yes | sudo pacman -S fzf
+yes | sudo pacman -S github-cli
 
 # Code Runner
 yes | sudo pacman -S gcc
@@ -601,6 +606,7 @@ yes | sudo pacman -S fd
 yes | sudo pacman -S nodejs
 yes | sudo pacman -S npm
 yes | sudo pacman -S fzf
+yes | sudo pacman -S github-cli
 
 # Code Runner
 yes | sudo pacman -S gcc
@@ -826,7 +832,7 @@ end
 -- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
 -- =============================================================================
 
-if global_config.statuscolumn.enabled then
+if global_config.statuscolumn.enabled and not global_config.simple_mode then
 	_G.GetStatusColumn = function()
 		local text = ''
 
@@ -1042,6 +1048,7 @@ local plugins = global_config.enabled_plugins and {
 	--- EDGE
 	{
 		'sainnhe/edge',
+		enabled = not global_config.simple_mode,
 		lazy = true,
 		priority = 1000,
 		config = function()
@@ -1100,6 +1107,7 @@ local plugins = global_config.enabled_plugins and {
 	-- Supported flavors: mocha, latte
 	{
 		'catppuccin/nvim',
+		enabled = not global_config.simple_mode,
 		name = 'catppuccin-nvim',
 		lazy = true,
 		priority = 1000,
@@ -1418,6 +1426,7 @@ local plugins = global_config.enabled_plugins and {
 	-- MINI.STARTER
 	{
 		'echasnovski/mini.starter',
+		enabled = not global_config.simple_mode,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -1578,6 +1587,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MINI.FILES, FILES_MANAGER
 	{
 		'echasnovski/mini.files',
+		enabled = not global_config.simple_mode,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -1653,6 +1663,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MINI.ICONS
 	{
 		'echasnovski/mini.icons',
+		enabled = not global_config.simple_mode,
 		lazy = true,
 		opts = {
 			style = global_config.plugins_config.ascii_mode and 'ascii' or 'glyph',
@@ -1677,7 +1688,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- https://gist.github.com/tmerse/dc21ec932860013e56882f23ee9ad8d2
 	{
 		'echasnovski/mini.pairs',
-		enabled = true,
+		enabled = not global_config.simple_mode,
 		event = { 'VeryLazy' },
 		version = '*',
 		opts = {
@@ -2017,6 +2028,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- VIM-ILLUMINATE, WORD
 	{
 		'rrethy/vim-illuminate',
+		enabled = not global_config.simple_mode,
 		event = 'User FileOpened',
 		opts = {
 			delay = 200,
@@ -2077,6 +2089,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- TODO-COMMENTS
 	{
 		'folke/todo-comments.nvim',
+		enabled = not global_config.simple_mode,
 		cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
 		event = 'User FileOpened',
 		opts = {},
@@ -2094,6 +2107,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- DROPBAR, WINBAR
 	{
 		'Bekaboo/dropbar.nvim',
+		enabled = not global_config.simple_mode,
 		event = 'User FileOpened',
 		dependencies = {
 			'echasnovski/mini.icons',
@@ -2112,7 +2126,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- COKELINE, TABBAR, TABLINE
 	{
 		'willothy/nvim-cokeline',
-		enabled = true,
+		enabled = not global_config.simple_mode,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'nvim-lua/plenary.nvim',
@@ -2606,6 +2620,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- LUALINE, STATUSLINE
 	{
 		'nvim-lualine/lualine.nvim',
+		enabled = not global_config.simple_mode,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'echasnovski/mini.icons',
@@ -2810,6 +2825,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MULTI-CURSOR
 	{
 		'jake-stewart/multicursor.nvim',
+		enabled = not global_config.simple_mode,
 		keys = function()
 			return {
 				{ '<up>', function() require('multicursor-nvim').lineAddCursor(-1) end, mode = { 'n', 'v' } },
@@ -2860,9 +2876,27 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- FLASH
 	{
 		'folke/flash.nvim',
-		enabled = true,
+		enabled = not global_config.simple_mode,
 		event = 'VeryLazy',
 		opts = {
+			search = {
+				exclude = {
+					'notify',
+					'cmp_menu',
+					'noice',
+					'flash_prompt',
+					'bigfile',
+					function(win)
+						-- exclude non-focusable windows
+						return not vim.api.nvim_win_get_config(win).focusable
+					end,
+				},
+			},
+			modes = {
+				char = {
+					enabled = false,
+				},
+			},
 			-- labels = 'asdfghjklqwertyuiopzxcvbnm', -- Qwerty
 			labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
 			prompt = {
@@ -2882,11 +2916,19 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MARKDOWN-PREVIEW
 	{
 		'iamcco/markdown-preview.nvim',
+		lazy = false,
 		cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+		keys = { { '<leader>m', '<cmd>MarkdownPreviewToggle<CR>' } },
 		ft = { 'markdown' },
 		build = function()
 			require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
 			vim.fn['mkdp#util#install']()
+		end,
+		init = function()
+			vim.cmd([[
+let g:mkdp_command_for_global = 1
+let g:mkdp_page_title = '"${name}"'
+			]])
 		end,
 	},
 
@@ -2937,9 +2979,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					size = 20
 				},
 				filetype = {
-					markdown = function ()
-						vim.cmd [[MarkdownPreviewToggle]]
-					end,
 					java = {
 						'cd $dir &&',
 						'javac $fileName &&',
@@ -2980,9 +3019,9 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- INDENT-BLANKLINE
 	{
 		'lukas-reineke/indent-blankline.nvim',
+		enabled = not global_config.simple_mode,
 		main = 'ibl',
 		event = 'User FileOpened',
-		enabled = true,
 		config = function()
 			require('ibl').setup({
 				indent = {
@@ -3016,7 +3055,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- NOICE
 	{
 		'folke/noice.nvim',
-		enabled = true,
+		enabled = not global_config.simple_mode,
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
@@ -3078,6 +3117,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- test: #000000, #ffffff, #ff0000, #00ff00, #0000ff
 	{
 		'catgoose/nvim-colorizer.lua',
+		enabled = not global_config.simple_mode,
 		event = 'VeryLazy',
 		config = function()
 			require('colorizer').setup({
@@ -3122,11 +3162,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			Snacks.setup({
 				bigfile = {
 					setup = function(ctx)
-						if ctx.ft == 'markdown' then
-							vim.bo.filetype = ctx.ft
-							vim.notify('Big file Disabled', vim.log.levels.WARN)
-							return
-						end
 						if vim.fn.exists(':NoMatchParen') ~= 0 then
 							vim.cmd([[NoMatchParen]])
 						end
@@ -3139,7 +3174,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 						end)
 					end,
 				},
-				notifier = {},
+				notifier = { enabled = not global_config.simple_mode },
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
