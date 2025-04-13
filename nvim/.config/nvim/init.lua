@@ -98,7 +98,7 @@ local global_config = {
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
-	simple_mode = false,
+	simple_mode = true,
 	statuscolumn = {
 		enabled = true,
 		indent = false,
@@ -283,6 +283,22 @@ Utils.autocmd_attach_file_browser = function(plugin_name, plugin_open)
 			end)
 		end,
 	})
+end
+
+Utils.setup_markdown_tools = function()
+	keymap.set('i', ',n', '---<CR><CR>', { buffer = true }) -- dashes
+	keymap.set('i', ',b', '****<left><left>', { buffer = true }) -- bold
+	keymap.set('i', ',s', '~~~~<left><left>', { buffer = true }) -- strikethrough
+	keymap.set('i', ',i', '**<left><left>', { buffer = true }) -- italic
+	keymap.set('i', ',d', '``<left><left>', { buffer = true }) -- code
+	keymap.set('i', ',c', '``````<left><left><left>', { buffer = true }) -- code block
+	keymap.set('i', ',p', '![]()<left><left><left>', { buffer = true })
+	keymap.set('i', ',1', '# ', { buffer = true })
+	keymap.set('i', ',2', '## ', { buffer = true })
+	keymap.set('i', ',3', '### ', { buffer = true })
+	keymap.set('i', ',4', '#### ', { buffer = true })
+	keymap.set('i', ',5', '##### ', { buffer = true })
+	keymap.set('i', ',6', '###### ', { buffer = true })
 end
 
 -- =============================================================================
@@ -790,6 +806,13 @@ create_autocmd('FileType', {
 	pattern = { 'json', 'json5', 'jsonc', 'lsonc', 'markdown' },
 	callback = function()
 		vim.opt_local.conceallevel = 0
+	end,
+})
+
+create_autocmd('FileType', {
+	pattern = { 'markdown' },
+	callback = function()
+		Utils.setup_markdown_tools()
 	end,
 })
 
@@ -3162,6 +3185,9 @@ let g:mkdp_page_title = '"${name}"'
 			Snacks.setup({
 				bigfile = {
 					setup = function(ctx)
+						if ctx.ft == 'markdown' then
+							Utils.setup_markdown_tools()
+						end
 						if vim.fn.exists(':NoMatchParen') ~= 0 then
 							vim.cmd([[NoMatchParen]])
 						end
