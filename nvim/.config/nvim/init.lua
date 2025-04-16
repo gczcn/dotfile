@@ -74,17 +74,14 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
----@field simple_mode boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
 	-- 0, 1, 2, ..., 9
 	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
 	remove_padding_around_neovim_instance = false,
-	auto_toggle_relativenumber = false, -- WARN: There are performance issues, such as slowing down macro functions
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
-	simple_mode = false,
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
@@ -110,46 +107,6 @@ _G.Utils = {}
 ---@param s string|nil
 Utils.goto_github = function(s)
 	vim.ui.open('https://github.com/' .. s)
-end
-
----@param t any[]
----@param v any
----@return integer|nil
-Utils.table_indexof = function(t, v)
-	if type(t) == 'table' then
-		for i = 1, #t do
-			if v == t[i] then
-				return i
-			end
-		end
-	end
-
-	return nil
-end
-
----@param k string
-Utils.do_sth_with_middle_row_of_keyboard = function(k)
-	vim.o.relativenumber = true
-	vim.cmd.redraw()
-	---@type number?
-	local char
-	local index
-	local count = ''
-	while true do
-		---@diagnostic disable-next-line: param-type-mismatch
-		char = tonumber(vim.fn.getchar())
-		if char == 27 then goto stop end
-		if char == 32 then goto continue end
-		index = Utils.table_indexof(global_config.middle_row_of_keyboard, tostring(vim.fn.nr2char(char or 0)))
-		index = index and index - 1 or nil
-		if not index then goto stop end
-		count = count .. tostring(index)
-	end
-	---@diagnostic disable-next-line: unreachable-code
-	::continue::
-	api.nvim_feedkeys(count .. k, 'n', false)
-	::stop::
-	vim.o.relativenumber = false
 end
 
 -- Commenting
@@ -349,10 +306,6 @@ keymap.set('o', '<M-D>', 'D', keymaps_opts)
 
 -- Buffer
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
-
--- Cursor
-keymap.set({ 'n', 'v', 'o' }, "<leader>'", function() Utils.do_sth_with_middle_row_of_keyboard('j') end)
-keymap.set({ 'n', 'v', 'o' }, "<leader>[", function() Utils.do_sth_with_middle_row_of_keyboard('k') end)
 
 -- Other
 --- Toggle background [ dark | light ]
@@ -724,32 +677,6 @@ create_autocmd('TextYankPost', {
 	end,
 })
 
--- https://github.com/sitiom/nvim-numbertoggle/blob/main/plugin/numbertoggle.lua
-if global_config.auto_toggle_relativenumber then
-	local numbertoggleaugroup = api.nvim_create_augroup("numbertoggle", {})
-
-	create_autocmd({ 'BufEnter', 'FocusGained', 'InsertLeave', 'CmdlineLeave', 'WinEnter' }, {
-		pattern = '*',
-		group = numbertoggleaugroup,
-		callback = function()
-			if vim.o.nu and api.nvim_get_mode().mode ~= 'i' then
-				opt.relativenumber = true
-			end
-		end,
-	})
-
-	create_autocmd({ 'BufLeave', 'FocusLost', 'InsertEnter', 'CmdlineEnter', 'WinLeave' }, {
-		pattern = '*',
-		group = numbertoggleaugroup,
-		callback = function()
-			if vim.o.nu then
-				opt.relativenumber = false
-				vim.cmd('redraw')
-			end
-		end,
-	})
-end
-
 create_autocmd('FileType', {
 	pattern = { 'json', 'json5', 'jsonc', 'lsonc', 'markdown' },
 	callback = function()
@@ -1086,7 +1013,6 @@ local plugins = global_config.enabled_plugins and {
 	-- MINI.STARTER
 	{
 		'echasnovski/mini.starter',
-		enabled = not global_config.simple_mode,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -1247,7 +1173,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MINI.FILES, FILES_MANAGER
 	{
 		'echasnovski/mini.files',
-		enabled = not global_config.simple_mode,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -1323,7 +1248,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MINI.ICONS
 	{
 		'echasnovski/mini.icons',
-		enabled = not global_config.simple_mode,
 		lazy = true,
 		opts = {
 			style = global_config.plugins_config.ascii_mode and 'ascii' or 'glyph',
@@ -1348,7 +1272,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- https://gist.github.com/tmerse/dc21ec932860013e56882f23ee9ad8d2
 	{
 		'echasnovski/mini.pairs',
-		enabled = not global_config.simple_mode,
 		event = { 'VeryLazy' },
 		version = '*',
 		opts = {
@@ -1688,7 +1611,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- VIM-ILLUMINATE, WORD
 	{
 		'rrethy/vim-illuminate',
-		enabled = not global_config.simple_mode,
 		event = 'User FileOpened',
 		opts = {
 			delay = 200,
@@ -1749,7 +1671,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- TODO-COMMENTS
 	{
 		'folke/todo-comments.nvim',
-		enabled = not global_config.simple_mode,
 		cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
 		event = 'User FileOpened',
 		opts = {},
@@ -1767,7 +1688,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- DROPBAR, WINBAR
 	{
 		'Bekaboo/dropbar.nvim',
-		enabled = not global_config.simple_mode,
 		event = 'User FileOpened',
 		dependencies = {
 			'echasnovski/mini.icons',
@@ -1786,7 +1706,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- COKELINE, TABBAR, TABLINE
 	{
 		'willothy/nvim-cokeline',
-		enabled = not global_config.simple_mode,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'nvim-lua/plenary.nvim',
@@ -2168,7 +2087,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- LUALINE, STATUSLINE
 	{
 		'nvim-lualine/lualine.nvim',
-		enabled = not global_config.simple_mode,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'echasnovski/mini.icons',
@@ -2373,7 +2291,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- MULTI-CURSOR
 	{
 		'jake-stewart/multicursor.nvim',
-		enabled = not global_config.simple_mode,
 		keys = function()
 			return {
 				{ '<up>', function() require('multicursor-nvim').lineAddCursor(-1) end, mode = { 'n', 'v' } },
@@ -2424,7 +2341,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- FLASH
 	{
 		'folke/flash.nvim',
-		enabled = not global_config.simple_mode,
 		event = 'VeryLazy',
 		opts = {
 			search = {
@@ -2567,7 +2483,6 @@ let g:mkdp_page_title = '"${name}"'
 	-- INDENT-BLANKLINE
 	{
 		'lukas-reineke/indent-blankline.nvim',
-		enabled = not global_config.simple_mode,
 		main = 'ibl',
 		event = 'User FileOpened',
 		config = function()
@@ -2603,7 +2518,6 @@ let g:mkdp_page_title = '"${name}"'
 	-- NOICE
 	{
 		'folke/noice.nvim',
-		enabled = not global_config.simple_mode,
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
@@ -2665,7 +2579,6 @@ let g:mkdp_page_title = '"${name}"'
 	-- test: #000000, #ffffff, #ff0000, #00ff00, #0000ff
 	{
 		'catgoose/nvim-colorizer.lua',
-		enabled = not global_config.simple_mode,
 		event = 'VeryLazy',
 		config = function()
 			require('colorizer').setup({
@@ -2726,7 +2639,7 @@ let g:mkdp_page_title = '"${name}"'
 						end)
 					end,
 				},
-				notifier = { enabled = not global_config.simple_mode },
+				notifier = {},
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
