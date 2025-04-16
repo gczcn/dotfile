@@ -59,9 +59,6 @@ local create_user_command = api.nvim_create_user_command
 ---@field border string[]
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_mode boolean
----@field edge_comments_italic boolean
----@field edge_conditionals_italic boolean
----@field edge_italic boolean
 ---@field gruvbox_comments_italic boolean
 ---@field gruvbox_folds_italic boolean
 ---@field gruvbox_conditionals_italic boolean
@@ -69,16 +66,6 @@ local create_user_command = api.nvim_create_user_command
 ---@field gruvbox_types_italic boolean
 ---@field ivy_layout boolean
 ---@field noice_classic_cmdline boolean
-
----@class StatusColumnConfig
----@field enabled boolean
----@field indent boolean
----@field indent_fold_char string
----@field indent_fold_end string
----@field show_fold_end boolean
----@field fold_end_char string
----@field foldcolumn_rightsplit_char string
----@field foldcolumn_leftsplit_char string
 
 ---@class global_config
 ---@field middle_row_of_keyboard string[]
@@ -88,7 +75,6 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
 ---@field simple_mode boolean
----@field statuscolumn StatusColumnConfig
 ---@field plugins_config PluginsConfig
 local global_config = {
 	-- 0, 1, 2, ..., 9
@@ -98,24 +84,11 @@ local global_config = {
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
-	simple_mode = true,
-	statuscolumn = {
-		enabled = true,
-		indent = false,
-		indent_fold_char = '│',
-		indent_fold_end = '└',
-		show_fold_end = true,
-		fold_end_char = '^',
-		foldcolumn_rightsplit_char = ' ',
-		foldcolumn_leftsplit_char = ' ',
-	},
+	simple_mode = false,
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_mode = false,
-		edge_comments_italic = false,
-		edge_conditionals_italic = false,
-		edge_italic = false,
 		gruvbox_comments_italic = false,
 		gruvbox_folds_italic = false,
 		gruvbox_conditionals_italic = false,
@@ -285,7 +258,7 @@ Utils.autocmd_attach_file_browser = function(plugin_name, plugin_open)
 	})
 end
 
-Utils.setup_markdown_tools = function()
+Utils.setup_markdown = function()
 	keymap.set('i', ',n', '---<CR><CR>', { buffer = true }) -- dashes
 	keymap.set('i', ',b', '****<left><left>', { buffer = true }) -- bold
 	keymap.set('i', ',s', '~~~~<left><left>', { buffer = true }) -- strikethrough
@@ -333,6 +306,7 @@ keymap.set({ 'n', 'v', 'o' }, 'k', 'i', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'K', 'I', keymaps_opts)
 keymap.set('t', '<M-q>', '<C-\\><C-n>', keymaps_opts)
 keymap.set('v', 'kr', '`[`]', keymaps_opts)
+keymap.set({ 'n', 'v', 'o' }, '0', '`', keymaps_opts)
 
 -- Windows & Splits
 keymap.set('n', '<leader>ww', '<C-w>w', keymaps_opts)
@@ -392,7 +366,7 @@ keymap.set({ 'n', 'v' }, 'U', 'K', keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
-keymap.set('n', '<leader>gg', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
+keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
 keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lines=not vim.diagnostic.config().virtual_lines})<CR>')
 
 -- =============================================================================
@@ -421,10 +395,10 @@ opt.guicursor = vim.fn.has('nvim-0.11') == 1
 opt.ignorecase = true -- Ignore case
 opt.list = true -- Show some hidden characters
 opt.listchars = { tab = '> ', trail = '-', extends = '>', precedes = '<', nbsp = '+' }
+opt.maxmempattern = 5000
 opt.number = true
 opt.pumblend = 10
 opt.pumheight = 30
-
 -- opt.relativenumber = true
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
@@ -438,6 +412,7 @@ opt.smoothscroll = true
 -- opt.softtabstop = 8
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
+opt.statuscolumn = '%s%l %C%#NonText#%{%(&foldcolumn>0?(&foldcolumn>1?"▏":" "):"")%}' -- Custom StatusColumn
 opt.tabstop = 8 -- Number of spaces tabs count for
 opt.termguicolors = true -- Enable true colors
 opt.undofile = true
@@ -812,7 +787,7 @@ create_autocmd('FileType', {
 create_autocmd('FileType', {
 	pattern = { 'markdown' },
 	callback = function()
-		Utils.setup_markdown_tools()
+		Utils.setup_markdown()
 	end,
 })
 
@@ -825,182 +800,6 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 		api.nvim_exec_autocmds('User', { pattern = 'FileOpened', modeline = false })
 	end,
 })
-
--- =============================================================================
--- PopUp Menu
--- Tags: POPUP, POPUPMENU
--- =============================================================================
-if global_config.enabled_plugins then
-	vim.cmd([[
-amenu disable PopUp.How-to\ disable\ mouse
-anoremenu PopUp.References <cmd>FzfLua lsp_references<CR>
-anoremenu PopUp.Declarations <cmd>FzfLua lsp_declarations<CR>
-anoremenu PopUp.Definitions <cmd>FzfLua lsp_definitions<CR>
-anoremenu PopUp.Implementations <cmd>FzfLua lsp_implementations<CR>
-anoremenu PopUp.TypeDefs <cmd>FzfLua lsp_typedefs<CR>]])
-end
-
--- =============================================================================
--- Status Column
--- The following highlight groups need to be set manually
---   StatusColumnFold
---   StatusColumnFoldOpen
---   StatusColumnFoldClose
---   StatusColumnFoldEnd
---   StatusColumnFoldCursorLine
---   StatusColumnFoldOpenCursorLine
---   StatusColumnFoldCloseCursorLine
---   StatusColumnFoldEndCursorLine
---
--- Tags: COLUMN, STATUSCOLUMN, STATUS_COLUMN
--- =============================================================================
-
-if global_config.statuscolumn.enabled and not global_config.simple_mode then
-	_G.GetStatusColumn = function()
-		local text = ''
-
-		---@return string
-		local cursorline_hl = function()
-			if vim.v.relnum == 0 then
-				return '%#CursorLineNr#'
-			end
-			return ''
-		end
-
-		---@return string
-		local get_line_number = function()
-			return api.nvim_win_call(vim.g.statusline_winid, function()
-				return '%=' .. (((vim.o.number or vim.o.relativenumber) and vim.v.virtnum == 0) and
-					(vim.fn.has('nvim-0.11') == 1 and '%l' or (vim.v.relnum == 0 and (vim.o.number and '%l' or '%r') or (vim.o.relativenumber and '%r' or '%l'))) or '')
-			end)
-		end
-
-		---@param show_indent_symbol boolean|nil
-		---@param show_fold_end boolean|nil
-		---@return string
-		local get_fold = function(show_indent_symbol, show_fold_end)
-			return api.nvim_win_call(vim.g.statusline_winid, function()
-				---@type integer
-				---@diagnostic disable-next-line
-				local foldcolumn = tonumber(vim.o.foldcolumn)
-				if foldcolumn == 0 then return '' end
-
-				local foldtext = ''
-
-				local ts_foldexpr = tostring(vim.treesitter.foldexpr(vim.v.lnum))
-				local ts_foldexpr_after = tostring(vim.treesitter.foldexpr(vim.v.lnum + 1))
-				---@type integer
-				local foldlevel = vim.fn.foldlevel(vim.v.lnum)
-				local foldlevel_before = vim.fn.foldlevel(vim.v.lnum - 1)
-				local foldlevel_after = vim.fn.foldlevel(vim.v.lnum + 1)
-				local foldclosed = vim.fn.foldclosed(vim.v.lnum)
-				local foldopen_char = opt.fillchars:get().foldopen or '-'
-				local foldclose_char = opt.fillchars:get().foldopen or '+'
-
-				---@param current_chars integer
-				---@return string
-				local get_other_chars = function(current_chars)
-					return string.rep(' ', foldcolumn - current_chars)
-				end
-
-				---@param n integer
-				---@return integer
-				local get_index = function(n)
-					return n < foldcolumn and n or foldcolumn
-				end
-
-				---@param hl string
-				---@param s string
-				---@return string
-				local get_hl_text = function(hl, s)
-					return string.format('%%#%s#%s', 'StatusColumn' .. hl .. (vim.v.relnum == 0 and 'CursorLine' or ''), s)
-				end
-
-				foldtext = foldtext
-					.. (foldlevel ~= 0 and (get_hl_text('Fold', string.rep(show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ', get_index(foldlevel) - 1))
-					.. ((foldclosed ~= -1 and foldclosed == vim.v.lnum) and get_hl_text('FoldClose', foldclose_char)
-						or ((foldlevel > foldlevel_before or ts_foldexpr:sub(1, 1) == '>') and get_hl_text('FoldOpen', foldopen_char)
-						or (((show_fold_end or show_indent_symbol) and ((ts_foldexpr_after:sub(1, 1) == '>' and foldlevel == foldlevel_after) or foldlevel > foldlevel_after))
-						and (get_hl_text(show_fold_end and 'FoldEnd' or 'Fold', show_fold_end and global_config.statuscolumn.fold_end_char or global_config.statuscolumn.indent_fold_end))
-						or (get_hl_text('Fold', show_indent_symbol and global_config.statuscolumn.indent_fold_char or ' ')))))) or '')
-				return global_config.statuscolumn.foldcolumn_leftsplit_char .. foldtext .. get_other_chars(get_index(foldlevel)) .. global_config.statuscolumn.foldcolumn_rightsplit_char
-			end)
-		end
-
-		text = table.concat({
-			'%s', -- SignColumn
-			cursorline_hl(),
-			get_line_number(),
-			get_fold(global_config.statuscolumn.indent, global_config.statuscolumn.show_fold_end),
-		})
-
-		return text
-	end
-
-	opt.statuscolumn = '%!v:lua.GetStatusColumn()'
-end
-
--- =============================================================================
--- Gui
--- Tags: GUI
--- =============================================================================
-
-local gui_font = 'FiraCode Nerd Font Mono'
-local gui_font_size = 11.2
-
----@param n number
-local gui_change_font_size = function(n)
-	gui_font_size = gui_font_size + n
-	opt.guifont = gui_font .. ':h' .. tostring(gui_font_size)
-	vim.notify(tostring(gui_font_size))
-end
-
-opt.guifont = gui_font .. ':h' .. gui_font_size
-
-keymap.set('n', '<C-=>', function()
-	gui_change_font_size(0.1)
-end)
-keymap.set('n', '<C-->', function()
-	gui_change_font_size(-0.1)
-end)
-
--- ========== NEOVIDE ==========
-if vim.g.neovide then
-	local neovide_transparency = 1
-
-	---@param n number
-	local neovide_change_transparency = function(n)
-		if neovide_transparency + n <= 1 and neovide_transparency + n >= 0 then
-			neovide_transparency = neovide_transparency + n
-			vim.g.neovide_transparency = neovide_transparency
-			print(neovide_transparency)
-		else
-			print('transparency out of range (' .. neovide_transparency .. ')')
-		end
-	end
-
-	vim.o.pumblend = 20
-	vim.o.winblend = 20
-
-	vim.g.neovide_floating_blur_amount_x = 1.5
-	vim.g.neovide_floating_blur_amount_y = 1.5
-	vim.g.neovide_scroll_animation_length = 0.3
-	vim.g.neovide_hide_mouse_when_typing = true
-	vim.g.neovide_unlink_border_highlights = true
-	vim.g.neovide_confirm_quit = true
-	vim.g.neovide_cursor_animate_command_line = true
-	vim.g.neovide_cursor_unfocused_outline_width = 0.1
-	vim.g.neovide_remember_window_size = true
-	vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
-	vim.g.neovide_transparency = neovide_transparency
-
-	keymap.set('n', '<C-+>', function()
-		neovide_change_transparency(0.1)
-	end)
-	keymap.set('n', '<C-_>', function()
-		neovide_change_transparency(-0.1)
-	end)
-end
 
 -- =============================================================================
 -- Features
@@ -1044,7 +843,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
-	install = { colorscheme = { 'gruvbox', 'catppuccin', 'habamax', 'edge' } },
+	install = { colorscheme = { 'gruvbox', 'habamax' } },
 	checker = { enabled = true },
 	change_detection = { notify = false },
 	ui = {
@@ -1068,160 +867,6 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEMES
-	--- EDGE
-	{
-		'sainnhe/edge',
-		enabled = not global_config.simple_mode,
-		lazy = true,
-		priority = 1000,
-		config = function()
-			create_autocmd('ColorScheme', {
-				group = vim.api.nvim_create_augroup('custom_highlights_edge', {}),
-				pattern = 'edge',
-				callback = function()
-					local config = vim.fn['edge#get_configuration']()
-					local palette = vim.fn['edge#get_palette'](config.style, config.dim_foreground, config.colors_override)
-					local set_hl = vim.fn['edge#highlight']
-
-					set_hl('Visual', palette.none, palette.bg4)
-					set_hl('VisualNOS', palette.none, palette.bg4)
-					set_hl('Directory', palette.green, palette.none, 'bold')
-					set_hl('CursorLineNr', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('CursorLineSign', palette.bg_grey, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('WinBar', palette.fg, palette.bg2)
-					if global_config.plugins_config.edge_conditionals_italic then
-						set_hl('Conditional', palette.purple, palette.none, 'italic')
-						set_hl('TSConditional', palette.purple, palette.none, 'italic')
-					end
-
-					-- Custom Status Column (Tags: column, statuscolumn, status_column)
-					set_hl('StatusColumnFold', palette.bg4, palette.bg0)
-					set_hl('StatusColumnFoldOpen', palette.grey_dim, palette.bg0)
-					set_hl('StatusColumnFoldClose', palette.blue, palette.bg1)
-					set_hl('StatusColumnFoldEnd', palette.grey_dim, palette.bg0)
-					set_hl('StatusColumnFoldCursorLine', palette.bg4, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldOpenCursorLine', palette.grey_dim, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldCloseCursorLine', palette.blue, vim.o.cursorline and palette.bg1 or palette.none)
-					set_hl('StatusColumnFoldEndCursorLine', palette.grey_dim, vim.o.cursorline and palette.bg1 or palette.none)
-
-					-- Custom
-					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
-					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
-					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
-					set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
-
-					set_hl('MiniFilesCursorLine', palette.none, palette.bg4)
-				end,
-			})
-
-			opt.background = 'dark'
-			vim.g.edge_style = 'aura'
-			vim.g.edge_disable_italic_comment = global_config.plugins_config.edge_comments_italic and 0 or 1
-			vim.g.edge_enable_italic = global_config.plugins_config.edge_italic and 1 or 0
-			vim.g.edge_diagnostic_virtual_text = 'highlighted'
-			vim.g.edge_inlay_hints_background = 'dimmed'
-			vim.g.edge_better_performance = 1
-
-			vim.cmd.colorscheme('edge')
-		end,
-	},
-
-	-- CATPPUCCIN
-	-- Supported flavors: mocha, latte
-	{
-		'catppuccin/nvim',
-		enabled = not global_config.simple_mode,
-		name = 'catppuccin-nvim',
-		lazy = true,
-		priority = 1000,
-		config = function()
-			require('catppuccin').setup({
-				styles = {
-					functions = { 'bold' },
-				},
-				integrations = {
-					treesitter_context = true,
-					dropbar = { enabled = true, color_mode = true },
-					mason = false,
-					indent_blankline = { scope_color = 'overlay0' },
-					neotree = false,
-					noice = true,
-					lsp_trouble = true,
-				},
-				custom_highlights = function(colors)
-					local U = require('catppuccin.utils.colors')
-					return {
-						-- Custom Status Column (Tags: column, statuscolumn, status_column )
-						StatusColumnFold = { fg = colors.surface0 },
-						StatusColumnFoldOpen = { fg = colors.overlay0 },
-						StatusColumnFoldClose = { link = 'Folded' },
-						StatusColumnFoldEnd = { fg = colors.overlay0 },
-						StatusColumnFoldCursorLine = { fg = colors.surface0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						StatusColumnFoldOpenCursorLine = { fg = colors.overlay0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						StatusColumnFoldCloseCursorLine = { link = 'Folded' },
-						StatusColumnFoldEndCursorLine = { fg = colors.overlay0,
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-
-						CursorLineNr = {
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						CursorLineSign = {
-							bg = U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base)),
-						},
-						DiagnosticNumHlError = { fg = colors.red, bold = true },
-						DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
-						DiagnosticNumHlHint = { fg = colors.teal, bold = true },
-						DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
-						FzfLuaHeaderText = { fg = colors.red },
-						FzfLuaHeaderBind = { fg = colors.pink },
-
-						-- IlluminatedWordText = { underline = true },
-						-- IlluminatedWordRead = { underline = true },
-						-- IlluminatedWordWrite = { underline = true },
-						-- LspReferenceText = { underline = true },
-						-- LspReferenceRead = { underline = true },
-						-- LspReferenceWrite = { underline = true },
-
-						-- BlinkCmpKindClass = { bg = colors.yellow, fg = colors.base },
-						-- BlinkCmpKindColor = { bg = colors.red, fg = colors.base },
-						-- BlinkCmpKindConstant = { bg = colors.peach, fg = colors.base },
-						-- BlinkCmpKindConstructor = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindEnum = { bg = colors.green, fg = colors.base },
-						-- BlinkCmpKindEnumMember = { bg = colors.red, fg = colors.base },
-						-- BlinkCmpKindEvent = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindField = { bg = colors.green, fg = colors.base },
-						-- BlinkCmpKindFile = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindFolder = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindFunction = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindInterface = { bg = colors.yellow, fg = colors.base },
-						-- BlinkCmpKindKeyword = { bg = colors.red, fg = colors.base },
-						-- BlinkCmpKindMethod = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindModule = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindOperator = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindProperty = { bg = colors.green, fg = colors.base },
-						-- BlinkCmpKindReference = { bg = colors.red, fg = colors.base },
-						-- BlinkCmpKindSnippet = { bg = colors.mauve, fg = colors.base },
-						-- BlinkCmpKindStruct = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindText = { bg = colors.teal, fg = colors.base },
-						-- BlinkCmpKindTypeParameter = { bg = colors.blue, fg = colors.base },
-						-- BlinkCmpKindUnit = { bg = colors.green, fg = colors.base },
-						-- BlinkCmpKindValue = { bg = colors.peach, fg = colors.base },
-						-- BlinkCmpKindVariable = { bg = colors.flamingo, fg = colors.base },
-						-- BlinkCmpKindCopilot = { bg = colors.lavender, fg = colors.base },
-					}
-				end,
-			})
-
-			vim.cmd.colorscheme('catppuccin-mocha')
-			vim.cmd.highlight('TreesitterContextBottom gui=none')
-		end
-	},
-
 	--- GRUVBOX
 	{
 		'ellisonleao/gruvbox.nvim',
@@ -1292,6 +937,9 @@ local plugins = global_config.enabled_plugins and {
 						gray = p.gray,
 					}
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
+					set_hl(0, 'CursorLineFold', { fg = colors.bg4, bg = colors.bg1 })
+					set_hl(0, 'SignColumn', { bg = colors.bg0 })
+					set_hl(0, 'FoldColumn', { fg = colors.bg4, bg = colors.bg0 })
 					if global_config.plugins_config.gruvbox_conditionals_italic then set_hl(0, 'Conditional', { fg = colors.red, italic = true }) end
 					if global_config.plugins_config.gruvbox_constant_builtin_italic then set_hl(0, '@constant.builtin', { fg = colors.orange, italic = true }) end
 					if global_config.plugins_config.gruvbox_types_italic then set_hl(0, 'Type', { fg = colors.yellow, italic = true }) set_hl(0, 'dosiniLabel', { fg = colors.yellow }) end
@@ -1301,17 +949,6 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'DiagnosticNumHlWarn', { fg = colors.yellow, bold = true })
 					set_hl(0, 'DiagnosticNumHlHint', { fg = colors.aqua, bold = true })
 					set_hl(0, 'DiagnosticNumHlInfo', { fg = colors.blue, bold = true })
-					set_hl(0, 'SignColumn', { bg = Utils.get_hl('Normal', true) })
-
-					-- Custom Status Column (Tags: column, statuscolumn, status_column)
-					set_hl(0, 'StatusColumnFold', { fg = colors.bg2 })
-					set_hl(0, 'StatusColumnFoldOpen', { fg = colors.gray })
-					set_hl(0, 'StatusColumnFoldClose', { fg = colors.yellow, bg = Utils.get_hl('Folded', true) })
-					set_hl(0, 'StatusColumnFoldEnd', { fg = colors.gray })
-					set_hl(0, 'StatusColumnFoldCursorLine', { fg = colors.bg2, bg = Utils.get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldOpenCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldCloseCursorLine', { fg = colors.yellow, bg = Utils.get_hl('CursorLine', true) })
-					set_hl(0, 'StatusColumnFoldEndCursorLine', { fg = colors.gray, bg = Utils.get_hl('CursorLine', true) })
 
 					set_hl(0, 'NoiceCmdlineIcon', { fg = colors.orange })
 					set_hl(0, 'NoiceCmdlineIconLua', { fg = colors.blue })
@@ -2179,118 +1816,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			local colors = {
 				default = 'gruvbox',
 				colorschemes = {
-										['catppuccin-mocha'] = {
-						dark = {
-							focused = {
-								normal = { bg = '#89b4fa', fg = '#181825', bold = true },
-								insert = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
-								command = { bg = '#fab387', fg = '#1e1e2e', bold = true },
-								visual = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
-								select = { bg = '#cba6f7', fg = '#1e1e2e', bold = true },
-								replace = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
-								term = { bg = '#a6e3a1', fg = '#1e1e2e', bold = true },
-								normal_num = { bg = '#629cf8', fg = '#181825', bold = true },
-								insert_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
-								command_num = { bg = '#f49357', fg = '#1e1e2e', bold = true },
-								visual_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
-								select_num = { bg = '#ba8af5', fg = '#1e1e2e', bold = true },
-								replace_num = { bg = '#ee5983', fg = '#1e1e2e', bold = true },
-								term_num = { bg = '#73d26a', fg = '#1e1e2e', bold = true },
-								unique_prefix_fg = '#45475a',
-								diagnostic_error = { bg = '#f38ba8', fg = '#1e1e2e', bold = true },
-								diagnostic_warn = { bg = '#f9e2af', fg = '#1e1e2e', bold = true },
-								diagnostic_info = { bg = '#89dceb', fg = '#1e1e2e', bold = true },
-								diagnostic_hint = { bg = '#94e2d5', fg = '#1e1e2e', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#313244', fg = '#89b4fa' },
-								insert = { bg = '#313244', fg = '#a6e3a1' },
-								command = { bg = '#313244', fg = '#fab387' },
-								visual = { bg = '#313244', fg = '#cba6f7' },
-								select = { bg = '#313244', fg = '#cba6f7' },
-								replace = { bg = '#313244', fg = '#f38ba8' },
-								term = { bg = '#313244', fg = '#a6e3a1' },
-								normal_num = { bg = '#45475a', fg = '#89b4fa' },
-								insert_num = { bg = '#45475a', fg = '#a6e3a1' },
-								command_num = { bg = '#45475a', fg = '#fab387' },
-								visual_num = { bg = '#45475a', fg = '#cba6f7' },
-								select_num = { bg = '#45475a', fg = '#cba6f7' },
-								replace_num = { bg = '#45475a', fg = '#f38ba8' },
-								term_num = { bg = '#45475a', fg = '#a6e3a1' },
-								unique_prefix_fg = '#9399b2',
-								diagnostic_error = { bg = '#313244', fg = '#f38ba8' },
-								diagnostic_warn = { bg = '#313244', fg = '#f9e2af' },
-								diagnostic_info = { bg = '#313244', fg = '#89dceb' },
-								diagnostic_hint = { bg = '#313244', fg = '#94e2d5' },
-							},
-							tablinefill = {
-								normal = { bg = '#181825', fg = '#cdd6f4' },
-								insert = { bg = '#181825', fg = '#cdd6f4' },
-								command = { bg = '#181825', fg = '#cdd6f4' },
-								visual = { bg = '#181825', fg = '#cdd6f4' },
-								select = { bg = '#181825', fg = '#cdd6f4' },
-								replace = { bg = '#181825', fg = '#cdd6f4' },
-								term = { bg = '#181825', fg = '#cdd6f4' },
-							},
-							quit = { bg = '#f38ba8', fg = '#1e1e2e', bold = true }
-						},
-					},
-					['catppuccin-latte'] = {
-						light = {
-							focused = {
-								normal = { bg = '#1e66f5', fg = '#e6e9ef', bold = true },
-								insert = { bg = '#40a02b', fg = '#eff1f5', bold = true },
-								command = { bg = '#fe640d', fg = '#eff1f5', bold = true },
-								visual = { bg = '#8839ef', fg = '#eff1f5', bold = true },
-								select = { bg = '#8839ef', fg = '#eff1f5', bold = true },
-								replace = { bg = '#d20f39', fg = '#eff1f5', bold = true },
-								term = { bg = '#40a02b', fg = '#eff1f5', bold = true },
-								normal_num = { bg = '#3c7af6', fg = '#e6e9ef', bold = true },
-								insert_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
-								command_num = { bg = '#fe7e34', fg = '#eff1f5', bold = true },
-								visual_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
-								select_num = { bg = '#9650f1', fg = '#eff1f5', bold = true },
-								replace_num = { bg = '#ee1141', fg = '#eff1f5', bold = true },
-								term_num = { bg = '#49b530', fg = '#eff1f5', bold = true },
-								unique_prefix_fg = '#bcc0cc',
-								diagnostic_error = { bg = '#d20f39', fg = '#eff1f5', bold = true },
-								diagnostic_warn = { bg = '#df8e1d', fg = '#eff1f5', bold = true },
-								diagnostic_info = { bg = '#04a5e5', fg = '#eff1f5', bold = true },
-								diagnostic_hint = { bg = '#179299', fg = '#eff1f5', bold = true },
-							},
-							not_focused = {
-								normal = { bg = '#ccd0da', fg = '#1e66f5' },
-								insert = { bg = '#ccd0da', fg = '#40a02b' },
-								command = { bg = '#ccd0da', fg = '#fe640d' },
-								visual = { bg = '#ccd0da', fg = '#8839ef' },
-								select = { bg = '#ccd0da', fg = '#8839ef' },
-								replace = { bg = '#ccd0da', fg = '#d20f39' },
-								term = { bg = '#ccd0da', fg = '#40a02b' },
-								normal_num = { bg = '#bcc0cc', fg = '#1e66f5' },
-								insert_num = { bg = '#bcc0cc', fg = '#40a02b' },
-								command_num = { bg = '#bcc0cc', fg = '#fe640d' },
-								visual_num = { bg = '#bcc0cc', fg = '#8839ef' },
-								select_num = { bg = '#bcc0cc', fg = '#8839ef' },
-								replace_num = { bg = '#bcc0cc', fg = '#d20f39' },
-								term_num = { bg = '#bcc0cc', fg = '#40a02b' },
-								unique_prefix_fg = '#7c7f93',
-								diagnostic_error = { bg = '#ccd0da', fg = '#d20f39' },
-								diagnostic_warn = { bg = '#ccd0da', fg = '#df8e1d' },
-								diagnostic_info = { bg = '#ccd0da', fg = '#04a5e5' },
-								diagnostic_hint = { bg = '#ccd0da', fg = '#179299' },
-							},
-							tablinefill = {
-								normal = { bg = '#e6e9ef', fg = '#4c4f69' },
-								insert = { bg = '#e6e9ef', fg = '#4c4f69' },
-								command = { bg = '#e6e9ef', fg = '#4c4f69' },
-								visual = { bg = '#e6e9ef', fg = '#4c4f69' },
-								select = { bg = '#e6e9ef', fg = '#4c4f69' },
-								replace = { bg = '#e6e9ef', fg = '#4c4f69' },
-								term = { bg = '#e6e9ef', fg = '#4c4f69' },
-							},
-							quit = { bg = '#d20f39', fg = '#eff1f5', bold = true }
-						},
-					},
 					gruvbox = {
 						dark = {
 							focused = {
