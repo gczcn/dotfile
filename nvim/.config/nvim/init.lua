@@ -2716,7 +2716,7 @@ let g:mkdp_page_title = '"${name}"'
 						if vim.fn.exists(':NoMatchParen') ~= 0 then
 							vim.cmd([[NoMatchParen]])
 						end
-						Snacks.util.wo(0, { foldmethod = 'manual', statuscolumn = '', conceallevel = 0 })
+						Snacks.util.wo(0, { foldmethod = 'manual', conceallevel = 0 })
 						vim.b.minianimate_disable = true
 						vim.cmd('IlluminatePauseBuf')
 						vim.schedule(function()
@@ -3204,7 +3204,7 @@ let g:mkdp_page_title = '"${name}"'
 	-- BLINKCMP
 	{
 		'saghen/blink.cmp',
-		enabled = false,
+		enabled = true,
 		event = { 'InsertEnter', 'CmdlineEnter' },
 		dependencies = {
 			'rafamadriz/friendly-snippets',
