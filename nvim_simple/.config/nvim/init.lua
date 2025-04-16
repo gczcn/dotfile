@@ -977,6 +977,7 @@ local plugins = option_enabled_plugins and {
 	-- VIM-ILLUMINATE, WORD
 	{
 		'rrethy/vim-illuminate',
+		enabled = false,
 		event = 'User FileOpened',
 		opts = {
 			delay = 200,

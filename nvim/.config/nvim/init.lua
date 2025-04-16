@@ -2711,13 +2711,14 @@ let g:mkdp_page_title = '"${name}"'
 				bigfile = {
 					setup = function(ctx)
 						if ctx.ft == 'markdown' then
-							Utils.setup_markdown_tools()
+							Utils.setup_markdown()
 						end
 						if vim.fn.exists(':NoMatchParen') ~= 0 then
 							vim.cmd([[NoMatchParen]])
 						end
 						Snacks.util.wo(0, { foldmethod = 'manual', statuscolumn = '', conceallevel = 0 })
 						vim.b.minianimate_disable = true
+						vim.cmd('IlluminatePauseBuf')
 						vim.schedule(function()
 							if vim.api.nvim_buf_is_valid(ctx.buf) then
 								vim.bo[ctx.buf].syntax = ctx.ft
@@ -3203,7 +3204,7 @@ let g:mkdp_page_title = '"${name}"'
 	-- BLINKCMP
 	{
 		'saghen/blink.cmp',
-		enabled = true,
+		enabled = false,
 		event = { 'InsertEnter', 'CmdlineEnter' },
 		dependencies = {
 			'rafamadriz/friendly-snippets',
