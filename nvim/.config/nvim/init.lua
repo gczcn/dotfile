@@ -262,8 +262,11 @@ keymap.set({ 'n', 'v' }, 'L', 'U', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'k', 'i', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'K', 'I', keymaps_opts)
 keymap.set('t', '<M-q>', '<C-\\><C-n>', keymaps_opts)
-keymap.set('v', 'kr', '`[`]', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, '0', '`', keymaps_opts)
+
+-- Indenting
+keymap.set('v', '<', '<gv', keymaps_opts)
+keymap.set('v', '>', '>gv', keymaps_opts)
 
 -- Windows & Splits
 keymap.set('n', '<leader>ww', '<C-w>w', keymaps_opts)
@@ -304,6 +307,25 @@ keymap.set('o', '<M-Y>', 'Y', keymaps_opts)
 keymap.set('o', '<M-d>', 'd', keymaps_opts)
 keymap.set('o', '<M-D>', 'D', keymaps_opts)
 
+-- LSP
+keymap.set('n', '<leader>cl', '<cmd>LspInfo<CR>', { desc = 'Lsp Info' })
+keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'References' })
+keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
+keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
+keymap.set('n', 'gT', vim.lsp.buf.type_definition, { desc = 'Goto Type Definition' })
+keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Actions' })
+keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
+keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
+keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart Rename' })
+keymap.set('n', '<leader>dl', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
+keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
+keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
+keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
+keymap.set('n', 'gU', vim.lsp.buf.signature_help, { desc = 'Show documentation for what is under cursor' })
+keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
+keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
+
 -- Buffer
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
@@ -315,7 +337,6 @@ end, keymaps_opts)
 keymap.set('n', '<leader>tc', function()
 	opt.cursorcolumn = not vim.o.cursorcolumn
 end, keymaps_opts)
-keymap.set({ 'n', 'v' }, 'U', 'K', keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
@@ -863,6 +884,8 @@ local plugins = global_config.enabled_plugins and {
 						dark_aqua = p.light_aqua,
 						gray = p.gray,
 					}
+
+					set_hl(0, 'LspInlayHint', { fg = colors.gray, bg = colors.bg1 })
 					set_hl(0, 'CursorLineSign', { bg = colors.bg1 })
 					set_hl(0, 'CursorLineFold', { fg = colors.bg4, bg = colors.bg1 })
 					set_hl(0, 'SignColumn', { bg = colors.bg0 })
@@ -1394,6 +1417,14 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 			{ '<leader>fb', '<cmd>FzfLua buffers<CR>' },
 			{ '<leader>fw', '<cmd>FzfLua colorschemes<CR>' },
 			{ '<leader>fm', '<cmd>FzfLua manpages<CR>' },
+
+			-- LSP
+			{ 'gr', '<cmd>FzfLua lsp_references<CR>', desc = 'Show LSP References' },
+			{ 'gd', '<cmd>FzfLua lsp_definitions<CR>', desc = 'Show LSP Definitions' },
+			{ 'gD', '<cmd>FzfLua lsp_declarations<CR>', desc = 'Show LSP Declarations' },
+			{ 'gI', '<cmd>FzfLua lsp_implementations<CR>', desc = 'Show LSP Implementations' },
+			{ 'gT', '<cmd>FzfLua lsp_typedefs<CR>', desc = 'Show LSP Type Definitions' },
+			{ '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', desc = 'Show Buffer Diagnostics' },
 		},
 		init = function()
 			---@diagnostic disable-next-line: duplicate-set-field
@@ -2660,7 +2691,7 @@ let g:mkdp_page_title = '"${name}"'
 				},
 			})
 
-			keymap.set('n', '<leader>ar', Snacks.rename.rename_file)
+			keymap.set('n', '<leader>rN', Snacks.rename.rename_file)
 			keymap.set('n', '<leader>h', Snacks.notifier.hide)
 			keymap.set('n', '<leader>fN', Snacks.notifier.show_history)
 		end,
@@ -2850,7 +2881,7 @@ let g:mkdp_page_title = '"${name}"'
 		end,
 	},
 
-	-- LSP (Language Server Protocol)
+	-- LSPCONFIG
 	{
 		'neovim/nvim-lspconfig',
 		event = { 'BufReadPre', 'BufNewFile' },
@@ -2862,50 +2893,6 @@ let g:mkdp_page_title = '"${name}"'
 		config = function()
 			local lspconfig = require('lspconfig')
 			local util = require('lspconfig.util')
-			local opts = { noremap = true, silent = true }
-			local on_attach = function(_, bufnr)
-				opts.buffer = bufnr
-
-				-- set keybinds
-				opts.desc = 'Show LSP references'
-				keymap.set('n', 'gR', '<cmd>FzfLua lsp_references<CR>', opts) -- show definition, references
-
-				opts.desc = 'Go to declaration'
-				keymap.set('n', 'gD', '<cmd>FzfLua lsp_declarations<CR>', opts) -- go to declaration
-
-				opts.desc = 'Show LSP definitions'
-				keymap.set('n', 'gd', '<cmd>FzfLua lsp_definitions<CR>', opts) -- show lsp definitions
-
-				opts.desc = 'Show LSP implementations'
-				keymap.set('n', 'gi', '<cmd>FzfLua lsp_implementations<CR>', opts) -- show lsp implementations
-
-				opts.desc = 'Show LSP type definitions'
-				keymap.set('n', 'gT', '<cmd>FzfLua lsp_typedefs<CR>', opts) -- show lsp type definitions
-
-				opts.desc = 'See available code actions'
-				keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
-
-				opts.desc = 'Smart rename'
-				keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-
-				opts.desc = 'Show buffer diagnostics'
-				keymap.set('n', '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', opts) -- show  diagnostics for file
-
-				opts.desc = 'Show line diagnostics'
-				keymap.set('n', '<leader>dl', vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-				opts.desc = 'Go to previous diagnostic'
-				keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, opts) -- jump to previous diagnostic in buffer
-
-				opts.desc = 'Go to next diagnostic'
-				keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, opts) -- jump to next diagnostic in buffer
-
-				opts.desc = 'Show documentation for what is under cursor'
-				keymap.set('n', 'U', vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
-				opts.desc = 'Restart LSP'
-				keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', opts) -- mapping to restart lsp if necessary
-			end
 
 			local if_nil = function(val, default)
 				if val == nil then return default end
@@ -2924,8 +2911,7 @@ let g:mkdp_page_title = '"${name}"'
 								commitCharactersSupport = if_nil(override.commitCharactersSupport, true),
 								deprecatedSupport = if_nil(override.deprecatedSupport, true),
 								preselectSupport = if_nil(override.preselectSupport, true),
-								tagSupport = if_nil(override.tagSupport, {
-									valueSet = {
+								tagSupport = if_nil(override.tagSupport, { valueSet = {
 										1, -- Deprecated
 									}
 								}),
@@ -2970,19 +2956,16 @@ let g:mkdp_page_title = '"${name}"'
 			-- configure html server
 			lspconfig['html'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 			})
 
 			-- configure typescript server with plugin
 			lspconfig['ts_ls'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 			})
 
 			-- configure css server
 			lspconfig['cssls'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 			})
 
 			-- configure python server
@@ -2993,7 +2976,6 @@ let g:mkdp_page_title = '"${name}"'
 
 			lspconfig['basedpyright'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 				settings = {
 					basedpyright = {
 						typeCheckingMode = 'standard',
@@ -3004,7 +2986,6 @@ let g:mkdp_page_title = '"${name}"'
 			-- configure lua server (with special settings)
 			lspconfig['lua_ls'].setup({
 				-- capabilities = capabilities(),
-				on_attach = on_attach,
 				settings = { -- custom settings for lua
 					Lua = {
 						-- make the language server recognize 'vim' global
@@ -3018,6 +2999,9 @@ let g:mkdp_page_title = '"${name}"'
 								[vim.fn.stdpath('config') .. '/lua'] = true,
 							},
 						},
+						hint = {
+							enable = true,
+						},
 					},
 				},
 			})
@@ -3025,7 +3009,6 @@ let g:mkdp_page_title = '"${name}"'
 			-- configure Go language server
 			lspconfig['gopls'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 				cmd = { 'gopls' },
 				filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
 				root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
@@ -3041,24 +3024,20 @@ let g:mkdp_page_title = '"${name}"'
 			-- configure Bash language server
 			lspconfig['bashls'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 				cmd = { 'bash-language-server', 'start' },
 			})
 
 			lspconfig['fish_lsp'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 			})
 
 			lspconfig['vimls'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 			})
 
 			-- configure C and C++ ... language server
 			lspconfig['clangd'].setup({
 				capabilities = capabilities(),
-				on_attach = on_attach,
 				cmd = {
 					'clangd',
 					'--background-index',
@@ -3066,7 +3045,6 @@ let g:mkdp_page_title = '"${name}"'
 			})
 			-- lspconfig['ccls'].setup({
 			-- 	capabilities = capabilities(),
-			-- 	on_attach = on_attach,
 			-- 	filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'opencl' },
 			-- 	root_dir = function(fname)
 			-- 		return vim.loop.cwd() -- current working directory
