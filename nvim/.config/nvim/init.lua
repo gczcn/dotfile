@@ -532,7 +532,6 @@ yes | sudo pacman -S fd
 yes | sudo pacman -S nodejs
 yes | sudo pacman -S npm
 yes | sudo pacman -S fzf
-yes | sudo pacman -S github-cli
 
 # Code Runner
 yes | sudo pacman -S gcc
@@ -571,7 +570,6 @@ yes | sudo pacman -S fd
 yes | sudo pacman -S nodejs
 yes | sudo pacman -S npm
 yes | sudo pacman -S fzf
-yes | sudo pacman -S github-cli
 
 # Code Runner
 yes | sudo pacman -S gcc
