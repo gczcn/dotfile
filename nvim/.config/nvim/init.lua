@@ -74,14 +74,16 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
+---@field enabled_ui_plugins boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
 	-- 0, 1, 2, ..., 9
-	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' }, -- Colemak
+	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' },
 	remove_padding_around_neovim_instance = false,
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
+	enabled_ui_plugins = false,
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
@@ -790,7 +792,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
 	install = { colorscheme = { 'gruvbox', 'habamax' } },
-	checker = { enabled = true },
+	checker = { enabled = true, notify = global_config.enabled_ui_plugins },
 	change_detection = { notify = false },
 	ui = {
 		-- My font does not display the default icon properly
@@ -1019,6 +1021,7 @@ local plugins = global_config.enabled_plugins and {
 	-- MINI.STARTER
 	{
 		'echasnovski/mini.starter',
+		enabled = global_config.enabled_ui_plugins,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -1720,6 +1723,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- COKELINE, TABBAR, TABLINE
 	{
 		'willothy/nvim-cokeline',
+		enabled = global_config.enabled_ui_plugins,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'nvim-lua/plenary.nvim',
@@ -2101,6 +2105,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 	-- LUALINE, STATUSLINE
 	{
 		'nvim-lualine/lualine.nvim',
+		enabled = global_config.enabled_ui_plugins,
 		event = { 'User FileOpened', 'BufAdd' },
 		dependencies = {
 			'echasnovski/mini.icons',
@@ -2532,6 +2537,7 @@ let g:mkdp_page_title = '"${name}"'
 	-- NOICE
 	{
 		'folke/noice.nvim',
+		enabled = global_config.enabled_ui_plugins,
 		dependencies = {
 			'MunifTanjim/nui.nvim',
 		},
@@ -2653,7 +2659,7 @@ let g:mkdp_page_title = '"${name}"'
 						end)
 					end,
 				},
-				notifier = {},
+				notifier = { enabled = global_config.enabled_ui_plugins },
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
