@@ -2763,7 +2763,6 @@ let g:mkdp_page_title = '"${name}"'
 	-- GITSIGNS
 	{
 		'lewis6991/gitsigns.nvim',
-		event = 'User FileOpened',
 		config = function()
 			require('gitsigns').setup({
 				signs = {
