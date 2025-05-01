@@ -2187,7 +2187,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'nvim-treesitter/nvim-treesitter-context',
-			'HiPhish/rainbow-delimiters.nvim',
+			{ 'HiPhish/rainbow-delimiters.nvim', submodules = false },
 		},
 		init = function(plugin)
 			require('lazy.core.loader').add_to_rtp(plugin)
@@ -3303,7 +3303,7 @@ if global_config.enabled_plugins then
 	end
 	vim.opt.rtp:prepend(lazypath)
 
-	opt.cmdheight = 0
+	opt.cmdheight = global_config.enabled_ui_plugins and 0 or 1
 	opt.laststatus = 0
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
