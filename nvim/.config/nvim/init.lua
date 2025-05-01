@@ -1021,7 +1021,6 @@ local plugins = global_config.enabled_plugins and {
 	-- MINI.STARTER
 	{
 		'echasnovski/mini.starter',
-		enabled = global_config.enabled_ui_plugins,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
