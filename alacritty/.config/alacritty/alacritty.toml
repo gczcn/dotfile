@@ -3,24 +3,24 @@
 
 [font]
 # size = 15
-size = 13
+size = 12
 # 1234567890
 # JetBrains Mono
 offset = { x = 1, y = 0 }
 [font.bold]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "BlexMono Nerd Font Mono"
+family = "Terminess Nerd Font Mono"
 style = "Regular"
 
 # Noto Sans Mono
