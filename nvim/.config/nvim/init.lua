@@ -320,7 +320,7 @@ keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code A
 keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
 keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
 keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart Rename' })
-keymap.set('n', '<leader>dl', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
+keymap.set('n', '<leader>of', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
 keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
 keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
 keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
@@ -369,6 +369,7 @@ opt.guicursor = vim.fn.has('nvim-0.11') == 1
 	or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.ignorecase = true -- Ignore case
+opt.laststatus = 2
 opt.list = true -- Show some hidden characters
 opt.listchars = { tab = '> ', trail = '-', extends = '>', precedes = '<', nbsp = '+' }
 opt.maxmempattern = 5000
@@ -388,7 +389,6 @@ opt.smoothscroll = true
 -- opt.softtabstop = 8
 opt.splitbelow = true -- Put new windows below current
 opt.splitright = true -- Put new windows right of current
-opt.statuscolumn = '%s%l %C%#NonText#%{%(&foldcolumn>0?(&foldcolumn>1?"▏":" "):"")%}' -- Custom StatusColumn
 opt.tabstop = 8 -- Number of spaces tabs count for
 opt.termguicolors = true -- Enable true colors
 opt.undofile = true
@@ -398,6 +398,10 @@ opt.updatetime = 200 -- Save swap file and trigger CursorHold
 opt.winblend = 10
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
+
+-- ----- UIOPTIONS ----- --
+opt.statuscolumn = '%s%l %C%#NonText#%{%(&foldcolumn>0?(&foldcolumn>1?"▏":" "):"")%}'
+opt.statusline = '%{mode()} %f  %M%R%H%Y%q%=%l/%L, %c%V  %p%%'
 
 if not global_config.enabled_plugins then
 	vim.cmd.colorscheme('habamax')
@@ -3303,8 +3307,8 @@ if global_config.enabled_plugins then
 	end
 	vim.opt.rtp:prepend(lazypath)
 
-	opt.cmdheight = global_config.enabled_ui_plugins and 0 or 1
-	opt.laststatus = 0
+	opt.cmdheight = 0
+	opt.laststatus = global_config.enabled_ui_plugins and 0 or 2
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
 	opt.foldenable = true
