@@ -622,6 +622,7 @@ local plugins = option_enabled_plugins and {
 			vim.g.gruvbox_material_disable_italic_comment = 1
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
 			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
+			vim.g.gruvbox_material_current_word = 'underline'
 			vim.g.gruvbox_material_better_performance = 1
 
 			vim.cmd.colorscheme('gruvbox-material')
