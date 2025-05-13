@@ -391,7 +391,7 @@ opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
 opt.statuscolumn = '%s%l %C%#NonText#%{%(&foldcolumn>0?" ":"")%}'
-opt.statusline = [[%<%{mode()} %f %h%m%r%y%q [%{get(b:,'gitsigns_head','')} %{get(b:,'gitsigns_status','')}] %=%{v:register}%-14.(%l,%c%V%)%P]] -- Need the GitSigns Plugin
+opt.statusline = [[%<%{mode()} %f %h%m%r%y%q [%{get(b:,'gitsigns_head','')}] %{get(b:,'gitsigns_status','')}%=%{v:register}%-14.(%l,%c%V%)%P]] -- Need the GitSigns Plugin
 
 if not global_config.enabled_plugins then
 	vim.cmd.colorscheme('habamax')
