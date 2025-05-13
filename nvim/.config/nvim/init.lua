@@ -909,166 +909,6 @@ local plugins = global_config.enabled_plugins and {
 		enabled = vim.fn.has('nvim-0.10.0') == 1,
 	},
 
-	-- MINI.STARTER
-	{
-		'echasnovski/mini.starter',
-		enabled = global_config.enabled_ui_plugins,
-		dependencies = {
-			'echasnovski/mini.icons',
-		},
-		config = function()
-			vim.cmd([[autocmd User MiniStarterOpened setlocal nofoldenable fillchars=eob:\ ]])
-
-			local starter = require('mini.starter')
-			local v = vim.version()
-			local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
-
-			local version = function()
-				return 'NVIM ' .. prerelease .. tostring(vim.version())
-			end
-
-			local header = function()
-				return version() .. '\n\n' .. [[
-Nvim is open source and freely distributable
-https://neovim.io/#chat
-
-This Configuration:
-https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
-			end
-
-			local footer = function()
-				return
-				os.date()
-			end
-
-			local recent_files = function(n, index_h, index, current_dir, show_path, show_icon)
-				n = n or 5
-				if current_dir == nil then current_dir = false end
-
-				if show_path == nil then show_path = true end
-				if show_path == false then show_path = function() return '' end end
-				if show_path == true then
-					show_path = function(path) return string.format(' (%s)', vim.fn.fnamemodify(path, ':~:.')) end
-				end
-
-				if show_icon == nil then show_icon = true end
-				if show_icon == nil then show_icon = function() return '' end end
-				if show_icon == true then
-					show_icon = function(file_name)
-						local icon, _ = require('nvim-web-devicons').get_icon(file_name)
-						if not icon then icon = global_config.plugins_config.ascii_mode and 'F' or '󰈔' end
-						return icon .. ' '
-					end
-				end
-
-				return function()
-					local section = string.format('Recent files%s', current_dir and ' ' .. current_dir or '')
-
-					-- Use only actual readable files
-					local files = vim.tbl_filter(function(f) return vim.fn.filereadable(f) == 1 end, vim.v.oldfiles or {})
-
-					if #files == 0 then
-						return { { name = 'There are no recent files (`v:oldfiles` is empty)', action = '', section = section } }
-					end
-
-					-- Possibly filter files from current directory
-					if current_dir then
-						---@diagnostic disable-next-line: undefined-field
-						local sep = vim.loop.os_uname().sysname == 'Windows_NT' and [[%\]] or '%/'
-						local cwd_pattern = '^' .. vim.pesc(vim.fn.getcwd()) .. sep
-						-- Use only files from current directory and its subdirectories
-						files = vim.tbl_filter(function(f) return f:find(cwd_pattern) ~= nil end, files)
-					end
-
-					if #files == 0 then
-						return { { name = 'There are no recent files in current directory', action = '', section = section } }
-					end
-
-					-- Create items
-					local i = index or ''
-					local items = {}
-					for _, f in ipairs(vim.list_slice(files, 1, n)) do
-						local file_name = vim.fn.fnamemodify(f, ':t')
-						local name = index_h .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. show_icon(file_name) .. file_name .. show_path(f)
-						i = i == '' and '' or i + 1
-						items[#items + 1] = { action = 'edit ' .. f, name = name, section = section }
-					end
-
-					return items
-				end
-			end
-
-			local opts = {
-				evaluate_single = true,
-				items = {
-					-- Recent files (Current directory)
-					recent_files(5, '', 1, vim.fn.getcwd()),
-
-					-- Recent files
-					recent_files(5, '`', 1),
-
-					-- Builtin actions
-					{ name = 'n New buffer', action = ':ene', section = 'Builtin actions' },
-					{ name = 'q Quit Neovim', action = ':q', section = 'Builtin actions' },
-					{ name = 'o Options', action = ':e ' .. vim.fn.stdpath('config') .. '/init.lua', section = 'Builtin actions' },
-
-					-- Plugins actions
-					{ name = 's Sync Plugins', action = ':Lazy sync', section = 'Plugins actions' },
-					{ name = 'p Plugins', action = ':Lazy', section = 'Plugins actions' },
-					-- { name = 'Mason', action = ':Mason', section = 'Plugins actions' },
-
-					-- MiniFiles
-					{ name = 'e File Browser', action = ':lua require("mini.files").open()', section = 'MiniFiles' },
-					{ name = 'w File Browser (Options)', action = ':lua require("mini.files").open("' .. vim.fn.stdpath('config') .. '")', section = 'MiniFiles' },
-
-					-- FzfLua
-					{ name = 'f Find files', action = ':FzfLua files', section = 'FzfLua' },
-					{ name = 'l Live grep', action = ':FzfLua live_grep', section = 'FzfLua' },
-					{ name = 'g Grep', action = ':FzfLua grep', section = 'FzfLua' },
-					{ name = 'r Recent files', action = ':FzfLua oldfiles', section = 'FzfLua' },
-					-- { name = 'Bookmarks', action = ':Telescope bookmarks list', section = 'Telescope' },
-					-- { name = 'o Options', action = string.format(':FzfLua files cwd=%s', vim.fn.stdpath('config')), section = 'FzfLua' },
-				},
-				-- items = nil,
-				content_hooks = {
-					starter.gen_hook.padding(7, 3),
-					starter.gen_hook.adding_bullet(global_config.plugins_config.ascii_mode and '| ' or '▏ '),
-					-- starter.gen_hook.adding_bullet('░ '),
-				},
-				header = header(),
-				footer = footer(),
-				-- footer = '',
-				query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.`',
-				silent = true,
-
-			}
-
-			starter.setup(opts)
-
-			create_user_command('MiniStarterToggle', function()
-				if vim.o.filetype == 'ministarter' then
-					require('mini.starter').close()
-				else
-					require('mini.starter').open()
-				end
-			end, {})
-
-			keymap.set('n', '<leader>ts', '<cmd>MiniStarterToggle<CR>')
-
-			create_autocmd('User', {
-				pattern = 'LazyVimStarted',
-				callback = function(ev)
-					local stats = require('lazy').stats()
-					local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-					starter.config.footer = 'loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms\n' .. footer()
-					if vim.bo[ev.buf].filetype == 'ministarter' then
-						pcall(starter.refresh)
-					end
-				end
-			})
-		end
-	},
-
 	-- MINI.FILES, FILES_MANAGER
 	{
 		'echasnovski/mini.files',
@@ -1113,33 +953,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 					permanent_delete = true,
 					use_as_default_explorer = false,
 				},
-			})
-		end,
-	},
-
-	-- MINI.AI
-	{
-		'echasnovski/mini.ai',
-		event = 'VeryLazy',
-		enabled = false,
-		config = function()
-			require('mini.ai').setup({
-				mappings = {
-					-- Main textobject prefixes
-					around = 'a',
-					inside = 'k',
-
-					-- Next/last variants
-					around_next = 'an',
-					inside_next = 'kn',
-					around_last = 'al',
-					inside_last = 'kl',
-
-					-- Move to corresponding edge of `a` textobject
-					goto_left = 'g[',
-					goto_right = 'g]',
-				},
-				n_lines = 500,
 			})
 		end,
 	},
@@ -1614,7 +1427,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		build = ':TSUpdate',
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
-			'nvim-treesitter/nvim-treesitter-context',
+			-- 'nvim-treesitter/nvim-treesitter-context',
 			{ 'HiPhish/rainbow-delimiters.nvim', submodules = false },
 		},
 		init = function(plugin)
@@ -2697,7 +2510,7 @@ let g:mkdp_page_title = '"${name}"'
 				}
 			end
 
-			-- if enabled_tabnine then
+			-- if global_config.enabled_tabnine then
 			-- 	opts.sources.providers.cmp_tabnine = {
 			-- 		name = 'cmp_tabnine',
 			-- 		module = 'blink.compat.source',
