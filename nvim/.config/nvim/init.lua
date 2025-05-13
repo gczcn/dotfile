@@ -223,6 +223,17 @@ Utils.setup_markdown = function()
 	keymap.set('i', ',6', '###### ', { buffer = true })
 end
 
+---@param n number
+Utils.neovide_change_opacity = function(n)
+	if not vim.g.neovide_opacity then vim.g.neovide_opacity = 1 end
+	if vim.g.neovide_opacity + n <= 1 and vim.g.neovide_opacity + n >= 0 then
+		vim.g.neovide_opacity = vim.g.neovide_opacity + n
+		print(vim.g.neovide_opacity)
+	else
+		print('transparency out of range (' .. vim.g.neovide_opacity .. ')')
+	end
+end
+
 -- =============================================================================
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
@@ -587,7 +598,7 @@ rustup update nightly]],
 }
 
 -- =============================================================================
--- Commands
+-- Commands and Aliases
 -- Tags: CMD, COMMAND, COMMANDS
 -- =============================================================================
 
@@ -733,6 +744,57 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 })
 
 -- =============================================================================
+-- Gui
+-- Tags: GUI
+-- =============================================================================
+
+local gui_font = 'BlexMono Nerd Font Mono'
+local gui_font_size = 13.5
+
+---@param n number
+_G.GUIChangeFontSize = function(n)
+	gui_font_size = gui_font_size + n
+	opt.guifont = gui_font .. ':h' .. tostring(gui_font_size)
+	vim.notify(tostring(gui_font_size))
+end
+
+opt.guifont = gui_font .. ':h' .. gui_font_size
+
+keymap.set('n', '<C-=>', ':lua GUIChangeFontSize(0.1)<CR>')
+keymap.set('n', '<C-->', ':lua GUIChangeFontSize(-0.1)<CR>')
+
+-- ========== NEOVIDE ==========
+if vim.g.neovide then
+	---@param n number
+	_G.NeovideChangeOpacity = function(n)
+		if not vim.g.neovide_opacity then vim.g.neovide_opacity = 1 end
+		if vim.g.neovide_opacity + n <= 1 and vim.g.neovide_opacity + n >= 0 then
+			vim.g.neovide_opacity = vim.g.neovide_opacity + n
+			print(vim.g.neovide_opacity)
+		else
+			print('transparency out of range (' .. vim.g.neovide_opacity .. ')')
+		end
+	end
+
+	vim.o.pumblend = 20
+	vim.o.winblend = 20
+
+	vim.g.neovide_floating_blur_amount_x = 1.5
+	vim.g.neovide_floating_blur_amount_y = 1.5
+	vim.g.neovide_scroll_animation_length = 0.3
+	vim.g.neovide_hide_mouse_when_typing = true
+	vim.g.neovide_unlink_border_highlights = true
+	vim.g.neovide_confirm_quit = true
+	vim.g.neovide_cursor_animate_command_line = true
+	vim.g.neovide_cursor_unfocused_outline_width = 0.1
+	vim.g.neovide_remember_window_size = true
+	vim.g.neovide_input_macos_option_key_is_meta = 'only_left'
+
+	keymap.set('n', '<C-+>', ':lua NeovideChangeOpacity(0.1)<CR>')
+	keymap.set('n', '<C-_>', ':lua NeovideChangeOpacity(-0.1)<CR>')
+end
+
+-- =============================================================================
 -- Features
 -- Tags: FEATURES
 -- =============================================================================
@@ -850,6 +912,7 @@ local plugins = global_config.enabled_plugins and {
 	-- MINI.STARTER
 	{
 		'echasnovski/mini.starter',
+		enabled = global_config.enabled_ui_plugins,
 		dependencies = {
 			'echasnovski/mini.icons',
 		},
@@ -2005,7 +2068,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'nvim-treesitter/nvim-treesitter-context',
-			{ 'HiPhish/rainbow-delimiters.nvim', submodules = false },
+			-- { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
 		},
 		init = function(plugin)
 			require('lazy.core.loader').add_to_rtp(plugin)
