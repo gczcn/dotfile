@@ -2068,7 +2068,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
 		dependencies = {
 			'nvim-treesitter/nvim-treesitter-textobjects',
 			'nvim-treesitter/nvim-treesitter-context',
-			-- { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
+			{ 'HiPhish/rainbow-delimiters.nvim', submodules = false },
 		},
 		init = function(plugin)
 			require('lazy.core.loader').add_to_rtp(plugin)
