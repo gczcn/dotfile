@@ -464,7 +464,6 @@ brew install gcc
 # Language servers
 brew install llvm  # C and C++
 brew install typescript-language-server  # Typescript
-# brew install pyright  # Python
 brew install basedpyright  # Python
 brew install lua-language-server  # Lua
 brew install gopls  # Go
@@ -500,7 +499,6 @@ brew upgrade gcc
 # Language servers
 brew upgrade llvm
 brew upgrade typescript-language-server
-# brew upgrade pyright
 brew install basedpyright
 brew upgrade lua-language-server
 brew upgrade gopls
@@ -536,7 +534,6 @@ yes | sudo pacman -S gcc
 yes | sudo pacman -S llvm
 yes | sudo pacman -S clang
 yes | sudo pacman -S typescript-language-server
-# yes | sudo pacman -S pyright
 yay -S basedpyright
 yes | sudo pacman -S lua-language-server
 yes | sudo pacman -S gopls
@@ -574,7 +571,6 @@ yes | sudo pacman -S gcc
 yes | sudo pacman -S llvm
 yes | sudo pacman -S clang
 yes | sudo pacman -S typescript-language-server
-# yes | sudo pacman -S pyright
 yay -S basedpyright
 yes | sudo pacman -S lua-language-server
 yes | sudo pacman -S gopls
@@ -748,8 +744,8 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- Tags: GUI
 -- =============================================================================
 
-local gui_font = 'BlexMono Nerd Font Mono'
-local gui_font_size = 13.5
+local gui_font = 'SauceCodePro Nerd Font Mono'
+local gui_font_size = 14
 
 ---@param n number
 _G.GUIChangeFontSize = function(n)
@@ -860,6 +856,7 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEMES
+
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
@@ -874,6 +871,7 @@ local plugins = global_config.enabled_plugins and {
 					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
+					-- set_hl('TSString', palette.green, palette.none)
 					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
 					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
 					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
@@ -883,7 +881,9 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
+			vim.g.gruvbox_material_foreground = 'material'
 			vim.g.gruvbox_material_disable_italic_comment = 1
+			vim.g.gruvbox_material_enable_bold = 1
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
 			vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
 			vim.g.gruvbox_material_current_word = 'underline'
@@ -936,13 +936,13 @@ local plugins = global_config.enabled_plugins and {
 			require('mini.files').setup({
 				mappings = {
 					close       = 'q',
-					go_in       = 'I',
-					go_in_plus  = 'i',
-					go_out      = 'N',
-					go_out_plus = 'n',
+					go_in       = '<S-CR>',
+					go_in_plus  = '<CR>',
+					go_out      = '<BS>',
+					go_out_plus = '<S-BS>',
 					mark_goto   = "'",
 					mark_set    = 'm',
-					reset       = '<BS>',
+					reset       = '-',
 					reveal_cwd  = '@',
 					show_help   = 'g?',
 					synchronize = '=',
@@ -1092,7 +1092,7 @@ local plugins = global_config.enabled_plugins and {
 		'ibhagwan/fzf-lua',
 		dependencies = {
 			'echasnovski/mini.icons',
-			'nvim-treesitter/nvim-treesitter-context',
+			-- 'nvim-treesitter/nvim-treesitter-context',
 		},
 		cmd = 'FzfLua',
 		keys = {
@@ -1708,7 +1708,7 @@ let g:mkdp_page_title = '"${name}"'
 						'java $fileNameWithoutExt'
 					},
 					python = function() return 'python3 $file ' .. vim.g.code_runner_run_args end,
-					go = function()  end,
+					go = function() return 'go run $file ' .. vim.g.code_runner_run_args end,
 					lua = function() return 'lua $file ' .. vim.g.code_runner_run_args end,
 					typescript = 'deno run',
 					rust = {
@@ -1969,7 +1969,7 @@ let g:mkdp_page_title = '"${name}"'
 		end,
 	},
 
-	-- CONFORM, FORMAT
+	-- CONFORM, FORMATTER
 	{
 		'stevearc/conform.nvim',
 		cmd = { 'ConformInfo' },
@@ -2094,7 +2094,7 @@ let g:mkdp_page_title = '"${name}"'
 		end,
 	},
 
-	-- LINT, LINTER
+	-- TODO: LINT, LINTER
 	{
 		'mfussenegger/nvim-lint',
 		event = { 'User FileOpened' },
@@ -2544,7 +2544,6 @@ if global_config.enabled_plugins then
 	end
 	vim.opt.rtp:prepend(lazypath)
 
-	opt.cmdheight = 0
 	opt.laststatus = global_config.enabled_ui_plugins and 0 or 2
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
