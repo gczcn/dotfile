@@ -60,31 +60,22 @@ local create_user_command = api.nvim_create_user_command
 ---@field nerd_font_circle_and_square boolean
 ---@field ascii_mode boolean
 ---@field ivy_layout boolean
----@field noice_classic_cmdline boolean
 
 ---@class global_config
----@field middle_row_of_keyboard string[]
----@field remove_padding_around_neovim_instance boolean
 ---@field auto_toggle_relativenumber boolean
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
----@field enabled_ui_plugins boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
-	-- 0, 1, 2, ..., 9
-	middle_row_of_keyboard = { 'o', 'a', 'r', 's', 't', 'd', 'h', 'n', 'e', 'i' },
-	remove_padding_around_neovim_instance = false,
 	enabled_plugins = true,
 	enabled_copilot = false,
 	enabled_tabnine = false,
-	enabled_ui_plugins = false,
 	plugins_config = {
 		border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 		nerd_font_circle_and_square = true,
 		ascii_mode = false,
 		ivy_layout = false,
-		noice_classic_cmdline = false,
 	},
 }
 
@@ -639,28 +630,6 @@ end, { nargs = 1 })
 -- Tags: AU, AUTOCMD, AUTOCMDS
 -- =============================================================================
 
--- https://www.reddit.com/r/neovim/comments/1ehidxy/you_can_remove_padding_around_neovim_instance/
-if global_config.remove_padding_around_neovim_instance then
-	local id = api.nvim_create_augroup('remove_padding_around_neovim_instance', {})
-	create_autocmd({ 'UIEnter', 'ColorScheme' }, {
-		group = id,
-		callback = function()
-			local normal = api.nvim_get_hl(0, { name = 'Normal' })
-			if not normal.bg then return end
-			io.write(string.format('\027Ptmux;\027\027]11;#%06x\007\027\\', normal.bg))
-			io.write(string.format('\027]11;#%06x\027\\', normal.bg))
-		end,
-	})
-
-	create_autocmd({ 'UILeave', 'VimLeave' }, {
-		group = id,
-		callback = function()
-			io.write('\027Ptmux;\027\027]111;\007\027\\')
-			io.write('\027]111\027\\')
-		end,
-	})
-end
-
 -- Line breaks are not automatically commented
 create_autocmd('FileType', {
 	pattern = '*',
@@ -771,7 +740,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
 	install = { colorscheme = { 'gruvbox-material', 'habamax' } },
-	checker = { enabled = true, notify = global_config.enabled_ui_plugins },
+	checker = { enabled = true, notify = false },
 	change_detection = { notify = false },
 	ui = {
 		-- My font does not display the default icon properly
@@ -1712,67 +1681,6 @@ let g:mkdp_page_title = '"${name}"'
 		end,
 	},
 
-	-- NOICE
-	{
-		'folke/noice.nvim',
-		enabled = global_config.enabled_ui_plugins,
-		dependencies = {
-			'MunifTanjim/nui.nvim',
-		},
-		keys = {
-			-- { '<leader>fn', '<cmd>NoiceFzf<CR>' },
-			-- { '<leader>h', '<cmd>NoiceDismiss<CR>' },
-			{ '<S-Enter>', function() require('noice').redirect(vim.fn.getcmdline()) end, mode = 'c', desc = 'Redirect Cmdline' },
-			{ '<leader>anl', function() require('noice').cmd('last') end, desc = 'Noice Last Message' },
-			{ '<leader>anh', function() require('noice').cmd('history') end, desc = 'Noice History' },
-			{ '<leader>ana', function() require('noice').cmd('all') end, desc = 'Noice All' },
-			-- { '<leader>and', function() require('noice').cmd('dismiss') end, desc = 'Dismiss All' },
-			{ '<c-f>', function() if not require('noice.lsp').scroll(4) then return '<c-f>' end end, silent = true, expr = true, desc = 'Scroll Forward', mode = {'i', 'n', 's'} },
-			{ '<c-b>', function() if not require('noice.lsp').scroll(-4) then return '<c-b>' end end, silent = true, expr = true, desc = 'Scroll Backward', mode = {'i', 'n', 's'}},
-		},
-		event = 'VeryLazy',
-		opts = {
-			cmdline = {
-				-- enabled = false,
-				format = {
-					cmdline = { pattern = '^:', icon = ('%s>'):format(global_config.plugins_config.noice_classic_cmdline and ' ' or ''), lang = 'vim' },
-					search_down = { kind = 'search', pattern = '^/', icon = ' Up', lang = 'regex' },
-					search_up = { kind = 'search', pattern = '^%?', icon = ' Down', lang = 'regex' },
-					filter = { pattern = '^:%s*!', icon = ('%s$'):format(global_config.plugins_config.noice_classic_cmdline and ' ' or ''), lang = 'bash' },
-					lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = (global_config.plugins_config.ascii_mode and '%sL' or '%s'):format(global_config.plugins_config.noice_classic_cmdline and ' ' or ''), lang = 'lua' },
-					help = { pattern = '^:%s*he?l?p?%s+', icon = ('%s?'):format(global_config.plugins_config.noice_classic_cmdline and ' ' or '') },
-					input = { view = global_config.plugins_config.noice_classic_cmdline and 'cmdline' or nil, icon = ' 󰥻 ' },
-				},
-				view = global_config.plugins_config.noice_classic_cmdline and 'cmdline' or 'cmdline_popup',
-			},
-			messages = {
-				view_history = 'popup',
-				-- view_search = false,
-			},
-			views = {
-				cmdline_popup = { border = { style = global_config.plugins_config.border, } },
-				cmdline_input = { border = { style = global_config.plugins_config.border, } },
-				confirm = { border = { style = global_config.plugins_config.border, } },
-				popup = { border = { style = global_config.plugins_config.border } },
-				popup_menu = { border = { style = global_config.plugins_config.border, } },
-				mini = { timeout = 3000 },
-				-- hover = { border = { style = 'single', padding = { 0, 2 } } },
-			},
-			presets = {
-				inc_rename = true,
-				bottom_search = true,
-				-- command_palette = true,
-				long_message_to_split = true,
-			},
-			format = {
-				---@class NoiceFormatOptions.level
-				level = {
-					icons = { error = 'E:', warn = 'W:', info = 'I:' },
-				},
-			},
-		},
-	},
-
 	-- COLORIZER
 	-- test: #000000, #ffffff, #ff0000, #00ff00, #0000ff
 	{
@@ -1837,7 +1745,6 @@ let g:mkdp_page_title = '"${name}"'
 						end)
 					end,
 				},
-				notifier = { enabled = global_config.enabled_ui_plugins },
 				quickfile = {},
 				-- statuscolumn = {
 				-- 	folds = {
@@ -1859,8 +1766,6 @@ let g:mkdp_page_title = '"${name}"'
 			})
 
 			keymap.set('n', '<leader>rN', Snacks.rename.rename_file)
-			keymap.set('n', '<leader>h', Snacks.notifier.hide)
-			keymap.set('n', '<leader>fN', Snacks.notifier.show_history)
 		end,
 	},
 
@@ -2482,7 +2387,7 @@ if global_config.enabled_plugins then
 	end
 	vim.opt.rtp:prepend(lazypath)
 
-	opt.laststatus = global_config.enabled_ui_plugins and 0 or 2
+	opt.laststatus = 2
 	opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 	opt.foldlevelstart = 99
 	opt.foldenable = true
