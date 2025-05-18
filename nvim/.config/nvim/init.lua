@@ -12,7 +12,6 @@
 --   npm
 --   fzf - for fzf.lua
 --   gcc
---   rust - nightly version for blink.cmp
 --   Nerd Font - if you want to show some icons
 --
 --   Language Servers:
@@ -461,7 +460,7 @@ brew install stylua
 brew install shfmt
 
 # Rust Nightly (for blink.cmp)
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
 	update_deps_brew = [[
 #!/usr/bin/env bash
 brew update
@@ -496,7 +495,7 @@ brew upgrade stylua
 brew upgrade shfmt
 
 # Rust Nightly (for blink.cmp)
-rustup update nightly]],
+# rustup update nightly]],
 	install_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
 sudo pacman -Sy
@@ -533,7 +532,7 @@ yes | sudo pacman -S stylua
 yes | sudo pacman -S shfmt
 
 # Rust Nightly (for blink.cmp)
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
 	update_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
 sudo pacman -Sy
@@ -570,7 +569,7 @@ yes | sudo pacman -S stylua
 yes | sudo pacman -S shfmt
 
 # Rust Nightly (for blink.cmp)
-rustup update nightly]],
+# rustup update nightly]],
 }
 
 -- =============================================================================
@@ -2187,8 +2186,7 @@ let g:mkdp_page_title = '"${name}"'
 			-- { 'Saghen/blink.compat', opts = { impersonate_nvim_cmp = true } },
 			-- { 'tzachar/cmp-tabnine', enabled = enabled_tabnine, build = './install.sh' },
 		},
-		build = 'rustup run nightly cargo build --release',
-		-- build = 'cargo build --release',
+		version = '*',
 		config = function()
 			require('luasnip.loaders.from_vscode').lazy_load()
 
