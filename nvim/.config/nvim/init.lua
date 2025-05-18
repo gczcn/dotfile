@@ -1663,7 +1663,7 @@ let g:mkdp_page_title = '"${name}"'
 	-- SUDA, SUDO
 	{
 		'lambdalisue/vim-suda',
-		enabled = vim.fn.has('win32') and false or true,
+		enabled = (vim.fn.has('win16') or vim.fn.has('win32') or vim.fn.has('win64')) and false or true,
 		event = { 'VeryLazy', 'User FileOpened' },
 		cmd = { 'SudaWrite', 'SudaRead' },
 		config = function()
