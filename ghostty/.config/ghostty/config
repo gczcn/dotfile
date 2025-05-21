@@ -24,6 +24,7 @@
 font-family = BlexMono Nerd Font Mono
 font-size = 13.5
 window-title-font-family = ibm plex sans
+font-feature = onum
 
 # Source Code Pro
 # font-family = SauceCodePro Nerd Font Mono
