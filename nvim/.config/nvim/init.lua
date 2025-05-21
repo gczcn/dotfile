@@ -33,10 +33,8 @@
 --     stylua
 --     shfmt
 --
--- Run :RunShellScripgt <install|update>_deps_<package_manager>
--- Supported package managers:
---   pacman and yay
---   homebrew
+-- The best way to install these dependencies is to use your distribution's package manager,
+-- or you can run :RunShellScripgt<install|update>_deps_<package_manager> to install these dependencies.
 --
 -- Jump to somewhere by searching for an uppercase tag.
 --
