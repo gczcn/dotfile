@@ -760,15 +760,17 @@ local lazy_config = global_config.enabled_plugins and {
 local plugins = global_config.enabled_plugins and {
 
 	-- COLORSCHEMES
-	
+
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
 		lazy = false,
 		priority = 1000,
 		config = function()
+			local group_id = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
+
 			create_autocmd('ColorScheme', {
-				group = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {}),
+				group = group_id,
 				pattern = 'gruvbox-material',
 				callback = function()
 					local config = vim.fn['gruvbox_material#get_configuration']()
@@ -785,7 +787,8 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
-			vim.g.gruvbox_material_foreground = 'material'
+			vim.g.gruvbox_material_background = 'hard'
+			vim.g.gruvbox_material_foreground = 'mix'
 			vim.g.gruvbox_material_disable_italic_comment = 1
 			vim.g.gruvbox_material_enable_bold = 1
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'

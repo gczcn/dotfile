@@ -57,7 +57,7 @@ font-feature = onum
 # Shanggu Sans
 font-family = Shanggu Sans
 
-theme = gruvbox-material-medium-dark
+theme = gruvbox-material-hard-dark-mix
 # theme = GruvboxDark
 # theme = catppuccin-mocha
 mouse-hide-while-typing = true
