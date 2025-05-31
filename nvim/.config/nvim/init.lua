@@ -127,18 +127,6 @@ Utils.commenting.toggle_line = function()
 	end
 end
 
--- Get icon from file name or file type
--- Need nvim-web-devicons or mini.icons
----@param filename string?
----@param filetype string?
----@return string|nil, string|nil
-Utils.get_file_icon = function(filename, filetype)
-	local icon_filetype, color_filetype = require('nvim-web-devicons').get_icon_color_by_filetype(filetype or '')
-	local icon_filename, color_filename = require('nvim-web-devicons').get_icon_color(filename or '')
-	if icon_filename then return icon_filename, color_filename end
-	return icon_filetype, color_filetype
-end
-
 -- Copy from https://github.com/LazyVim/LazyVim/blob/f11890bf99477898f9c003502397786026ba4287/lua/lazyvim/util/ui.lua#L171-L187
 ---@param name string
 ---@param bg boolean?
@@ -196,7 +184,7 @@ Utils.autocmd_attach_file_browser = function(plugin_name, plugin_open)
 end
 
 Utils.setup_markdown = function()
-	keymap.set('i', ',n', '---<CR><CR>', { buffer = true }) -- dashes
+	keymap.set('i', ',n', '<CR>---<CR><CR>', { buffer = true }) -- dashes
 	keymap.set('i', ',b', '****<left><left>', { buffer = true }) -- bold
 	keymap.set('i', ',s', '~~~~<left><left>', { buffer = true }) -- strikethrough
 	keymap.set('i', ',i', '**<left>', { buffer = true }) -- italic
