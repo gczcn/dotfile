@@ -717,9 +717,9 @@ create_user_command('TranslateRegt', function(opts)
 	local text = vim.fn.getreg('t')
 	translate(text, opts.args)
 end, {
-		range = true,
-		nargs = 1,
-	})
+	range = true,
+	nargs = 1,
+})
 
 create_user_command('TranslateText', function(opts)
 	local arg1 = vim.fn.split(opts.args, ' ')[2]
