@@ -787,8 +787,8 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
-			vim.g.gruvbox_material_background = 'hard'
-			vim.g.gruvbox_material_foreground = 'mix'
+			-- vim.g.gruvbox_material_background = 'hard'
+			-- vim.g.gruvbox_material_foreground = 'mix'
 			vim.g.gruvbox_material_disable_italic_comment = 1
 			vim.g.gruvbox_material_enable_bold = 1
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
