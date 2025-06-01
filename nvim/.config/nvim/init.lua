@@ -443,10 +443,7 @@ brew install delve
 # Tools
 brew install black
 brew install stylua
-brew install shfmt
-
-# Rust Nightly (for blink.cmp)
-# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
+brew install shfmt]],
 	update_deps_brew = [[
 #!/usr/bin/env bash
 brew update
@@ -478,10 +475,7 @@ brew upgrade delve
 # Tools
 brew upgrade black
 brew upgrade stylua
-brew upgrade shfmt
-
-# Rust Nightly (for blink.cmp)
-# rustup update nightly]],
+brew upgrade shfmt]],
 	install_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
 sudo pacman -Sy
@@ -515,10 +509,7 @@ yes | sudo pacman -S delve
 # Tools
 yes | sudo pacman -S python-black
 yes | sudo pacman -S stylua
-yes | sudo pacman -S shfmt
-
-# Rust Nightly (for blink.cmp)
-# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly]],
+yes | sudo pacman -S shfmt]],
 	update_deps_pacman_and_yay = [[
 #!/usr/bin/env bash
 sudo pacman -Sy
@@ -552,10 +543,7 @@ yes | sudo pacman -S delve
 # Tools
 yes | sudo pacman -S python-black
 yes | sudo pacman -S stylua
-yes | sudo pacman -S shfmt
-
-# Rust Nightly (for blink.cmp)
-# rustup update nightly]],
+yes | sudo pacman -S shfmt]],
 }
 
 -- =============================================================================
