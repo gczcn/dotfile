@@ -754,6 +754,7 @@ local plugins = global_config.enabled_plugins and {
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
 					-- set_hl('TSString', palette.green, palette.none)
+					set_hl('CursorLineNr', palette.orange, palette.none)
 					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
 					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
 					set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
