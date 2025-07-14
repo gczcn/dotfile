@@ -697,6 +697,7 @@ end, {
 	nargs = 1,
 })
 
+-- FIX: Need to fix
 create_user_command('TranslateText', function(opts)
 	local arg1 = vim.fn.split(opts.args, ' ')[2]
 	local arg2 = vim.fn.split(opts.args, ' ')[1]
