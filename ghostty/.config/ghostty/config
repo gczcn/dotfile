@@ -63,8 +63,8 @@ font-family = HarmonyOS Sans SC
 # Shanggu Sans for CJK
 # font-family = Shanggu Sans
 
-theme = gruvbox-material-medium-dark
-# theme = GruvboxDark
+# theme = gruvbox-material-medium-dark
+theme = GruvboxDark
 # theme = catppuccin-mocha
 mouse-hide-while-typing = true
 window-padding-x = 0

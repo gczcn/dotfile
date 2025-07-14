@@ -713,7 +713,7 @@ keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true }
 
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
-	install = { colorscheme = { 'gruvbox-material', 'habamax' } },
+	install = { colorscheme = { 'gruvbox', 'habamax' } },
 	checker = { enabled = true, notify = false },
 	change_detection = { notify = false },
 	ui = {
@@ -741,7 +741,7 @@ local plugins = global_config.enabled_plugins and {
 	--- GRUVBOX-MATERIAL
 	{
 		'sainnhe/gruvbox-material',
-		lazy = false,
+		lazy = true,
 		priority = 1000,
 		config = function()
 			local group_id = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
@@ -754,7 +754,7 @@ local plugins = global_config.enabled_plugins and {
 					local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
 					local set_hl = vim.fn['gruvbox_material#highlight']
 
-					-- set_hl('TSString', palette.green, palette.none)
+					set_hl('TSString', palette.green, palette.none)
 					set_hl('CursorLineNr', palette.orange, palette.none)
 					set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
 					set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
@@ -766,7 +766,7 @@ local plugins = global_config.enabled_plugins and {
 			})
 
 			-- vim.g.gruvbox_material_background = 'hard'
-			-- vim.g.gruvbox_material_foreground = 'mix'
+			-- vim.g.gruvbox_material_foreground = 'original'
 			vim.g.gruvbox_material_disable_italic_comment = 1
 			vim.g.gruvbox_material_enable_bold = 1
 			vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
@@ -776,6 +776,43 @@ local plugins = global_config.enabled_plugins and {
 
 			opt.background = 'dark'
 			vim.cmd.colorscheme('gruvbox-material')
+		end,
+	},
+
+	--- GRUVBOX
+	{
+		'ellisonleao/gruvbox.nvim',
+		lazy = false,
+		priority = 1000,
+		config = function()
+			create_autocmd('ColorScheme', {
+				group = vim.api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+				pattern = 'gruvbox',
+				callback = function()
+					local set_hl = vim.api.nvim_set_hl
+
+					local foldcolumn_fg = Utils.get_hl('FoldColumn')
+					set_hl(0, 'FoldColumn', { fg = foldcolumn_fg })
+					set_hl(0, 'CursorLineFold', { fg = foldcolumn_fg, bg = Utils.get_hl('CursorLine', true) })
+
+					-- Illuminate
+					set_hl(0, 'IlluminatedWordText', { underline = true })
+					set_hl(0, 'IlluminatedWordRead', { underline = true })
+					set_hl(0, 'IlluminatedWordWrite', { underline = true })
+				end,
+			})
+
+			require('gruvbox').setup({
+				italic = {
+					strings = false,
+					emphasis = false,
+					comments = false,
+					operators = false,
+					folds = false,
+				},
+			})
+
+			vim.cmd.colorscheme('gruvbox')
 		end,
 	},
 
