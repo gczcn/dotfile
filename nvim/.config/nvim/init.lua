@@ -799,6 +799,8 @@ local plugins = global_config.enabled_plugins and {
 					set_hl(0, 'IlluminatedWordText', { underline = true })
 					set_hl(0, 'IlluminatedWordRead', { underline = true })
 					set_hl(0, 'IlluminatedWordWrite', { underline = true })
+
+					set_hl(0, 'GitsignsCurrentLineBlame', { fg = vim.o.background == 'dark' and '#7c6f64' or '#a89984' })
 				end,
 			})
 
@@ -1798,6 +1800,7 @@ let g:mkdp_preview_options = {
 	{
 		'lewis6991/gitsigns.nvim',
 		event = { 'User FileOpened' },
+		enabled = true,
 		config = function()
 			require('gitsigns').setup({
 				signs = {
