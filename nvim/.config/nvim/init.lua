@@ -366,7 +366,7 @@ opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
-opt.statuscolumn = '%s%l%{%(&foldcolumn>0?" ":"")%}%C%#NonText#%{%(&foldcolumn>0?" ":"")%}'
+opt.statuscolumn = '%s%l%{%((&foldcolumn>0&&(&signcolumn!="no"||&number||&relativenumber))?" ":"")%}%C%#NonText#%{%(&foldcolumn>0||&number||&relativenumber?" ":"")%}'
 opt.statusline = [[%<%{mode()} %f %h%m%r%y%q [%{get(b:,'gitsigns_head','')}] %{get(b:,'gitsigns_status','')}%=%{v:register}%-14.(%l,%c%V%)%P]] -- Need the GitSigns Plugin
 
 if not global_config.enabled_plugins then

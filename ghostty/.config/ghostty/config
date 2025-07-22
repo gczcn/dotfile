@@ -27,14 +27,14 @@
 # font-feature = onum
 
 # Source Code Pro
-# font-family = SauceCodePro Nerd Font Mono
-# font-size = 14
-# window-title-font-family = SauceCodePro Nerd Font Mono
+font-family = SauceCodePro Nerd Font Mono
+font-size = 14
+window-title-font-family = SauceCodePro Nerd Font Mono
 
 # JetBrains Mono
-font-family = JetBrainsMono Nerd Font Mono
-font-feature = ss01
-font-size = 13.3
+# font-family = JetBrainsMono Nerd Font Mono
+# font-feature = ss01
+# font-size = 13.3
 
 # Fira Code
 # font-family = FiraCode Nerd Font Mono
@@ -55,10 +55,10 @@ font-size = 13.3
 # window-title-font-family = IosevkaPlex Nerd Font Mono
 
 # Mi Sans for CJK
-# font-family = MiSans
+font-family = MiSans
 
 # HarmonyOS Sans SC for CJK
-font-family = HarmonyOS Sans SC
+# font-family = HarmonyOS Sans SC
 
 # Shanggu Sans for CJK
 # font-family = Shanggu Sans
