@@ -366,8 +366,29 @@ opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
-opt.statuscolumn = '%s%l%{%((&foldcolumn>0&&(&signcolumn!="no"||&number||&relativenumber))?" ":"")%}%C%#NonText#%{%(&foldcolumn>0||&number||&relativenumber?" ":"")%}'
-opt.statusline = [[%<%{mode()} %f %h%m%r%y%q [%{get(b:,'gitsigns_head','')}] %{get(b:,'gitsigns_status','')}%=%{v:register}%-14.(%l,%c%V%)%P]] -- Need the GitSigns Plugin
+opt.statuscolumn = table.concat({
+	'%s', -- Sign column
+	'%l', -- Line number
+	'%{%(&foldcolumn > 0 && (&signcolumn != "no" || &number || &relativenumber) ? " " : "")%}', -- Gap between SignColumn/number and foldcolumn
+	'%C', -- Fold column
+	'%#NonText#', -- The highlight for the dividing line
+	'%{%(&foldcolumn > 1 ? "▐" : "")%}', -- The dividing line between foldcolumn and buffer
+	'%{%(&foldcolumn > 0 || &number || &relativenumber ? " " : "")%}', -- Gap between foldcolumn and buffer
+})
+
+-- Need the gitsigns plugin
+-- TODO: Diagnostic Info
+-- FIX: Need to fix sth
+opt.statusline = table.concat({
+	'%<', -- See the 'statusline' help file
+	'%{mode()} ', -- Current mode
+	'%f ', -- File name
+	'%h%m%r%y%q ', -- Help buffer, Modified, Readonly, Type and ("[Quickfix List]", "[Location List]" or empty)
+	"[%{get(b:,'gitsigns_head','')}] ", -- Git Branch
+	"%{get(b:,'gitsigns_status','')}", -- Git Status
+	'%=', -- See the 'statusline' help file
+	'%{v:register}%-14.(%l,%c%V%)%P', -- Don't care about that
+})
 
 if not global_config.enabled_plugins then
 	vim.cmd.colorscheme('habamax')
