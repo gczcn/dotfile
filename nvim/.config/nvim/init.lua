@@ -366,7 +366,7 @@ opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
-opt.statuscolumn = '%s%l %C%#NonText#%{%(&foldcolumn>0?" ":"")%}'
+opt.statuscolumn = '%s%l%{%(&foldcolumn>0?" ":"")%}%C%#NonText#%{%(&foldcolumn>0?" ":"")%}'
 opt.statusline = [[%<%{mode()} %f %h%m%r%y%q [%{get(b:,'gitsigns_head','')}] %{get(b:,'gitsigns_status','')}%=%{v:register}%-14.(%l,%c%V%)%P]] -- Need the GitSigns Plugin
 
 if not global_config.enabled_plugins then
@@ -612,6 +612,7 @@ create_autocmd('FileType', {
 })
 
 -- Highlight when copying
+---@diagnostic disable-next-line: param-type-mismatch
 create_autocmd('TextYankPost', {
 	desc = 'Highlight when yanking (copying) text',
 	callback = function()
@@ -661,11 +662,12 @@ create_autocmd('FileType', {
 })
 
 -- Events
-
+---@diagnostic disable-next-line: param-type-mismatch
 create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 	group = api.nvim_create_augroup('FileOpened', { clear = true }),
 	pattern = '*',
 	callback = function()
+		---@diagnostic disable-next-line: param-type-mismatch
 		api.nvim_exec_autocmds('User', { pattern = 'FileOpened', modeline = false })
 	end,
 })
@@ -850,6 +852,7 @@ local plugins = global_config.enabled_plugins and {
 			Utils.autocmd_attach_file_browser('mini.files', mini_files_open_folder)
 		end,
 		config = function()
+			---@diagnostic disable-next-line: param-type-mismatch
 			create_autocmd('User', {
 				pattern = 'MiniFilesActionRename',
 				callback = function(event)
@@ -1154,6 +1157,7 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
+			---@diagnostic disable-next-line: param-type-mismatch
 			create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
 				callback = function()
 					vim.cmd.UfoDisable()
@@ -1203,14 +1207,14 @@ local plugins = global_config.enabled_plugins and {
 				end,
 			})
 
-			create_autocmd({ 'InsertLeave' }, {
+			create_autocmd('InsertLeave', {
 				pattern = '*',
 				callback = function()
 					require('illuminate').resume()
 				end,
 			})
 
-			create_autocmd({ 'InsertEnter' }, {
+			create_autocmd('InsertEnter', {
 				pattern = '*',
 				callback = function()
 					require('illuminate').pause()
@@ -1288,6 +1292,7 @@ local plugins = global_config.enabled_plugins and {
 					'luap',
 					'python',
 					'c',
+					'dart',
 					'html',
 					'vim',
 					'vimdoc',
@@ -1326,6 +1331,7 @@ local plugins = global_config.enabled_plugins and {
 				},
 				textobjects = {
 					select = {
+						disable = { 'dart' },
 						enable = true,
 						lookahead = true,
 						keymaps = {
@@ -1568,6 +1574,7 @@ let g:mkdp_preview_options = {
 						'java $fileNameWithoutExt'
 					},
 					python = function() return 'python3 $file ' .. vim.g.code_runner_run_args end,
+					dart = function() return 'dart run $file ' .. vim.g.code_runner_run_args end,
 					go = function() return 'go run $file ' .. vim.g.code_runner_run_args end,
 					lua = function() return 'lua $file ' .. vim.g.code_runner_run_args end,
 					typescript = 'deno run',
