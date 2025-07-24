@@ -111,7 +111,13 @@ Utils.commenting.line_end = function()
   if api.nvim_get_current_line():find('%S') then
     local commentstring = vim.bo.commentstring
     local cursor_back = #commentstring - commentstring:find('%%s') - 1
-    vim.cmd(string.format([[exe "call feedkeys('A%s%s')"]], ' ' .. commentstring:format(''), string.rep('\\<left>', cursor_back)))
+    vim.cmd(
+      string.format(
+        [[exe "call feedkeys('A%s%s')"]],
+        ' ' .. commentstring:format(''),
+        string.rep('\\<left>', cursor_back)
+      )
+    )
   else
     Utils.commenting.newline('cc')
   end
@@ -203,6 +209,8 @@ end
 -- Keymaps
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
+
+-- stylua: ignore start
 
 ---@type table<string, boolean>
 local keymaps_opts = { noremap = true }
@@ -311,6 +319,8 @@ keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lu
 keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
 keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lines=not vim.diagnostic.config().virtual_lines})<CR>')
 
+-- stylua: ignore end
+
 -- =============================================================================
 -- Options
 -- Tags: OPT, OPTS, OPTION, OPTIONS
@@ -331,7 +341,7 @@ opt.expandtab = true
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
 opt.foldcolumn = '1'
 opt.guicursor = vim.fn.has('nvim-0.11') == 1
-  and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
+    and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 -- opt.fillchars = { foldopen = '▂', foldclose = '▐' }
 opt.ignorecase = true -- Ignore case
@@ -418,7 +428,7 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.HINT] = 'DiagnosticNumHlHint',
       [vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
     },
-  }
+  },
 })
 
 -- =============================================================================
