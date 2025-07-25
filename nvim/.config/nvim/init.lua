@@ -838,6 +838,11 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'FoldColumn', { fg = foldcolumn_fg })
           set_hl(0, 'CursorLineFold', { fg = foldcolumn_fg, bg = Utils.get_hl('CursorLine', true) })
 
+          set_hl(0, 'DiagnosticNumHlError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+          set_hl(0, 'DiagnosticNumHlWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+          set_hl(0, 'DiagnosticNumHlHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+          set_hl(0, 'DiagnosticNumHlInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+
           -- Illuminate
           set_hl(0, 'IlluminatedWordText', { underline = true })
           set_hl(0, 'IlluminatedWordRead', { underline = true })
@@ -855,6 +860,7 @@ local plugins = global_config.enabled_plugins and {
           operators = false,
           folds = false,
         },
+        overrides = {},
       })
 
       vim.cmd.colorscheme('gruvbox')
@@ -1273,7 +1279,22 @@ local plugins = global_config.enabled_plugins and {
     'folke/todo-comments.nvim',
     cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
     event = 'User FileOpened',
-    opts = {},
+    opts = {
+      keywords = {
+        FIX = {
+          icon = 'FX', -- icon used for the sign, and in search results
+          color = 'error', -- can be a hex color, or a named color (see below)
+          alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, -- a set of other keywords that all map to this FIX keywords
+          -- signs = false, -- configure signs for some keywords individually
+        },
+        TODO = { icon = 'TO', color = 'info' },
+        HACK = { icon = 'HK', color = 'warning' },
+        WARN = { icon = 'WN', color = 'warning', alt = { 'WARNING', 'XXX' } },
+        PERF = { icon = 'PF', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
+        NOTE = { icon = 'NE', color = 'hint', alt = { 'INFO' } },
+        TEST = { icon = 'TE', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
+      },
+    },
     -- stylua: ignore
     keys = {
       { ']c', function() require('todo-comments').jump_next() end, desc = 'Next Todo Comment' },
@@ -1953,6 +1974,44 @@ let g:mkdp_preview_options = {
         -- ['_'] = { 'fallback linter' },
         -- ['*'] = { 'typos' },
       }
+    end,
+  },
+
+  -- FLUTTERTOOLS
+  {
+    'nvim-flutter/flutter-tools.nvim',
+    cmd = {
+      'FlutterRun',
+      'FlutterDebug',
+      'FlutterDevices',
+      'FlutterEmulators',
+      'FlutterReload',
+      'FlutterRestart',
+      'FlutterQuit',
+      'FlutterAttach',
+      'FlutterDetach',
+      'FlutterOutlineToggle',
+      'FlutterOutlineOpen',
+      'FlutterDevTools',
+      'FlutterDevToolsActivate',
+      'FlutterCopyProfilerUrl',
+      'FlutterLspRestart',
+      'FlutterSuper',
+      'FlutterReanalyze',
+      'FlutterRename',
+      'FlutterLogClear',
+      'FlutterLogToggle',
+    },
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    config = function()
+      require('flutter-tools').setup({
+        ui = {
+          border = global_config.plugins_config.border,
+        },
+      })
     end,
   },
 
