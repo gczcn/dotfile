@@ -1565,7 +1565,7 @@ local plugins = global_config.enabled_plugins and {
       vim.cmd([[
 let g:mkdp_command_for_global = 1
 let g:mkdp_page_title = '"${name}"'
-let g:mkdp_theme = 'light'
+" let g:mkdp_theme = 'light'
 let g:mkdp_preview_options = {
     \ 'mkit': {},
     \ 'katex': {},
