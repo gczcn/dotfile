@@ -698,6 +698,7 @@ create_autocmd('FileType', {
 create_autocmd('FileType', {
   pattern = { 'markdown' },
   callback = function()
+    vim.opt_local.wrap = true
     Utils.setup_markdown()
   end,
 })
