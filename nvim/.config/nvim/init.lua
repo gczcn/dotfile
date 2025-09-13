@@ -376,6 +376,7 @@ opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
+-- FIX: When wrap is enabled, fold column doesn't show correctly
 opt.statuscolumn = table.concat({
   '%s', -- Sign column
   '%l', -- Line number
@@ -698,7 +699,8 @@ create_autocmd('FileType', {
 create_autocmd('FileType', {
   pattern = { 'markdown' },
   callback = function()
-    vim.opt_local.wrap = true
+    -- FIX: Need to fix. see L379
+    -- vim.opt_local.wrap = true
     Utils.setup_markdown()
   end,
 })
