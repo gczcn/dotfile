@@ -377,6 +377,7 @@ opt.wrap = false -- Disable line wrap
 
 -- ----- UIOPTIONS ----- --
 -- FIX: When wrap is enabled, fold column doesn't show correctly
+-- I don't know how to fox it!!!!!!! :<
 opt.statuscolumn = table.concat({
   '%s', -- Sign column
   '%l', -- Line number
