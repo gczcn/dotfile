@@ -701,6 +701,8 @@ create_autocmd('FileType', {
   callback = function()
     -- FIX: Need to fix. see L379
     -- vim.opt_local.wrap = true
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
     Utils.setup_markdown()
   end,
 })
@@ -1210,7 +1212,7 @@ local plugins = global_config.enabled_plugins and {
       ---@diagnostic disable-next-line: param-type-mismatch
       create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
         callback = function()
-          vim.cmd.UfoDisable()
+          -- vim.cmd.UfoDisable()
           vim.cmd.UfoEnable()
         end,
       })
