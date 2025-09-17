@@ -36,7 +36,7 @@
 -- The best way to install these dependencies is to use your distribution's package manager,
 -- or you can run :RunShellScripgt<install|update>_deps_<package_manager> to install these dependencies.
 --
--- Jump to somewhere by searching for an uppercase tag.
+-- Jump to any part of the configuration by searching for an uppercase tag.
 --
 -- I hope I can read the code later :)
 -- =============================================================================
@@ -70,7 +70,7 @@ local global_config = {
   enabled_tabnine = false,
   plugins_config = {
     border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-    nerd_font_circle_and_square = true,
+    nerd_font_circle_and_square = false,
     ascii_mode = false,
     ivy_layout = false,
   },
@@ -389,15 +389,33 @@ opt.statuscolumn = table.concat({
 })
 
 -- Need the gitsigns plugin
--- TODO: Diagnostic Info
--- FIX: Need to fix sth
+_G.StatusLineGetGitInfo = function()
+  local branch = (vim.b.gitsigns_head or '')
+  local git_status = (vim.b.gitsigns_status or '')
+  local text = branch .. (branch ~= '' and ' ' or '') .. git_status
+  return text .. (text ~= '' and ' ' or '')
+end
+
+-- FIX: There're some problems
+_G.StatusLineGetDiagnostic = function()
+  local errors = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))
+  local warns = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))
+  local hints = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT }))
+  local infos = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO }))
+  errors = errors ~= '0' and ('E' .. errors) or ''
+  warns = warns ~= '0' and ('W' .. warns) or ''
+  hints = hints ~= '0' and ('H' .. hints) or ''
+  infos = infos ~= '0' and ('I' .. infos) or ''
+  return (errors .. warns .. hints .. infos) ~= '' and '[' .. errors .. warns .. hints .. infos .. ']' or ''
+end
+
 opt.statusline = table.concat({
   '%<', -- See the 'statusline' help file
   '%{mode()} ', -- Current mode
   '%f ', -- File name
   '%h%m%r%y%q ', -- Help buffer, Modified, Readonly, Type and ("[Quickfix List]", "[Location List]" or empty)
-  "[%{get(b:,'gitsigns_head','')}] ", -- Git Branch
-  "%{get(b:,'gitsigns_status','')}", -- Git Status
+  "%{v:lua.StatusLineGetGitInfo()}",
+  "%{v:lua.StatusLineGetDiagnostic()}",
   '%=', -- See the 'statusline' help file
   '%{v:register}%-14.(%l,%c%V%)%P', -- Don't care about that
 })
