@@ -389,6 +389,7 @@ opt.statuscolumn = table.concat({
 })
 
 -- Need the gitsigns plugin
+-- TODO: Colorful statusline
 _G.StatusLineGetGitInfo = function()
   local branch = (vim.b.gitsigns_head or '')
   local git_status = (vim.b.gitsigns_status or '')
