@@ -283,25 +283,6 @@ keymap.set('o', '<M-Y>', 'Y', keymaps_opts)
 keymap.set('o', '<M-d>', 'd', keymaps_opts)
 keymap.set('o', '<M-D>', 'D', keymaps_opts)
 
--- LSP
-keymap.set('n', '<leader>cl', '<cmd>LspInfo<CR>', { desc = 'Lsp Info' })
-keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'References' })
-keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
-keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
-keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
-keymap.set('n', 'gT', vim.lsp.buf.type_definition, { desc = 'Goto Type Definition' })
-keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Actions' })
-keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
-keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
-keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart Rename' })
-keymap.set('n', '<leader>of', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
-keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
-keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
-keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
-keymap.set('n', 'gU', vim.lsp.buf.signature_help, { desc = 'Show documentation for what is under cursor' })
-keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
-keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
-
 -- Buffer
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
@@ -320,6 +301,46 @@ keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end
 keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lines=not vim.diagnostic.config().virtual_lines})<CR>')
 
 -- stylua: ignore end
+
+-- =============================================================================
+-- Language Server Configuration
+-- Because these language servers has no configurations, you need to install the
+-- nvim-lspconfig plugin.
+-- Tags: LSP, LS
+-- =============================================================================
+
+-- Enable
+vim.lsp.enable('html')
+vim.lsp.enable('ts_ls')
+vim.lsp.enable('cssls')
+vim.lsp.enable('basedpyright')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('gopls')
+vim.lsp.enable('bashls')
+vim.lsp.enable('fish_lsp')
+vim.lsp.enable('vimls')
+vim.lsp.enable('clangd')
+
+-- Keymaps
+-- keymap.set('n', '<leader>cl', '<cmd>LspInfo<CR>', { desc = 'Lsp Info' })
+-- keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'References' })
+keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
+keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+-- keymap.set('n', 'gI', vim.lsp.buf.implementation, { desc = 'Goto Implementation' })
+-- keymap.set('n', 'gT', vim.lsp.buf.type_definition, { desc = 'Goto Type Definition' })
+-- keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, { desc = 'Code Actions' })
+keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
+keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
+-- keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = 'Smart Rename' })
+keymap.set('n', 'grf', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
+keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
+keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
+keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
+-- keymap.set('n', 'gU', vim.lsp.buf.signature_help, { desc = 'Show documentation for what is under cursor' })
+keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
+keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
+keymap.del('x', 'in')
+keymap.set('x', 'kn', function() vim.lsp.buf.selection_range(-vim.v.count1) end, keymaps_opts)
 
 -- =============================================================================
 -- Options
@@ -743,6 +764,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- Tags: FEATURES
 -- =============================================================================
 
+-- WARN: There are a lot of issues, so do not use it!
 -- Translate shell (trans)
 ---@param t string
 ---@param to string
@@ -2043,14 +2065,10 @@ let g:mkdp_preview_options = {
   -- LSPCONFIG
   {
     'neovim/nvim-lspconfig',
-    event = { 'BufReadPre', 'BufNewFile' },
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'echasnovski/mini.icons',
-      'lewis6991/gitsigns.nvim',
+    keys = {
+      { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
     config = function()
-      local lspconfig = require('lspconfig')
       local util = require('lspconfig.util')
 
       local if_nil = function(val, default)
@@ -2112,29 +2130,7 @@ let g:mkdp_preview_options = {
         }
       end
 
-      -- configure html server
-      lspconfig['html'].setup({
-        capabilities = capabilities(),
-      })
-
-      -- configure typescript server with plugin
-      lspconfig['ts_ls'].setup({
-        capabilities = capabilities(),
-      })
-
-      -- configure css server
-      lspconfig['cssls'].setup({
-        capabilities = capabilities(),
-      })
-
-      -- configure python server
-      -- lspconfig['pyright'].setup({
-      --   capabilities = capabilities(),
-      --   on_attach = on_attach,
-      -- })
-
-      lspconfig['basedpyright'].setup({
-        capabilities = capabilities(),
+      vim.lsp.config('basedpyright', {
         settings = {
           basedpyright = {
             typeCheckingMode = 'standard',
@@ -2143,8 +2139,7 @@ let g:mkdp_preview_options = {
       })
 
       -- configure lua server (with special settings)
-      lspconfig['lua_ls'].setup({
-        -- capabilities = capabilities(),
+      vim.lsp.config('lua_ls', {
         settings = { -- custom settings for lua
           Lua = {
             -- make the language server recognize 'vim' global
@@ -2166,8 +2161,7 @@ let g:mkdp_preview_options = {
       })
 
       -- configure Go language server
-      lspconfig['gopls'].setup({
-        capabilities = capabilities(),
+      vim.lsp.config('gopls', {
         cmd = { 'gopls' },
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
@@ -2181,38 +2175,18 @@ let g:mkdp_preview_options = {
       })
 
       -- configure Bash language server
-      lspconfig['bashls'].setup({
-        capabilities = capabilities(),
+      vim.lsp.config('bashls', {
         cmd = { 'bash-language-server', 'start' },
       })
 
-      lspconfig['fish_lsp'].setup({
-        capabilities = capabilities(),
-      })
-
-      lspconfig['vimls'].setup({
-        capabilities = capabilities(),
-      })
-
       -- configure C and C++ ... language server
-      lspconfig['clangd'].setup({
+      vim.lsp.config('clangd', {
         capabilities = capabilities(),
         cmd = {
           'clangd',
           '--background-index',
         }
       })
-      -- lspconfig['ccls'].setup({
-      --   capabilities = capabilities(),
-      --   filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'opencl' },
-      --   root_dir = function(fname)
-      --     return vim.loop.cwd() -- current working directory
-      --   end,
-      --   init_options = { cache = {
-      --     -- directory = vim.env.XDG_CACHE_HOME .. '/ccls/',
-      --     vim.fs.normalize '~/.cache/ccls' -- if on nvim 0.8 or higher
-      --   } },
-      -- })
     end,
   },
 
