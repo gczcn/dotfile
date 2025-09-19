@@ -1049,11 +1049,11 @@ local plugins = global_config.enabled_plugins and {
       { '<leader>fm', '<cmd>FzfLua manpages<CR>' },
 
       -- LSP
-      { 'gr', '<cmd>FzfLua lsp_references<CR>', desc = 'Show LSP References' },
+      { 'grr', '<cmd>FzfLua lsp_references<CR>', desc = 'Show LSP References' },
       { 'gd', '<cmd>FzfLua lsp_definitions<CR>', desc = 'Show LSP Definitions' },
       { 'gD', '<cmd>FzfLua lsp_declarations<CR>', desc = 'Show LSP Declarations' },
-      { 'gI', '<cmd>FzfLua lsp_implementations<CR>', desc = 'Show LSP Implementations' },
-      { 'gT', '<cmd>FzfLua lsp_typedefs<CR>', desc = 'Show LSP Type Definitions' },
+      { 'gri', '<cmd>FzfLua lsp_implementations<CR>', desc = 'Show LSP Implementations' },
+      { 'grt', '<cmd>FzfLua lsp_typedefs<CR>', desc = 'Show LSP Type Definitions' },
       { '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', desc = 'Show Buffer Diagnostics' },
     },
     init = function()
@@ -2065,70 +2065,12 @@ let g:mkdp_preview_options = {
   -- LSPCONFIG
   {
     'neovim/nvim-lspconfig',
+    lazy = false,
     keys = {
       { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
     config = function()
       local util = require('lspconfig.util')
-
-      local if_nil = function(val, default)
-        if val == nil then return default end
-        return val
-      end
-
-      local capabilities = function(override)
-        override = override or {}
-
-        return {
-          textDocument = {
-            completion = {
-              dynamicRegistration = if_nil(override.dynamicRegistration, false),
-              completionItem = {
-                snippetSupport = if_nil(override.snippetSupport, true),
-                commitCharactersSupport = if_nil(override.commitCharactersSupport, true),
-                deprecatedSupport = if_nil(override.deprecatedSupport, true),
-                preselectSupport = if_nil(override.preselectSupport, true),
-                tagSupport = if_nil(override.tagSupport, { valueSet = {
-                    1, -- Deprecated
-                  }
-                }),
-                insertReplaceSupport = if_nil(override.insertReplaceSupport, true),
-                resolveSupport = if_nil(override.resolveSupport, {
-                  properties = {
-                    'documentation',
-                    'detail',
-                    'additionalTextEdits',
-                    'sortText',
-                    'filterText',
-                    'insertText',
-                    'textEdit',
-                    'insertTextFormat',
-                    'insertTextMode',
-                  },
-                }),
-                insertTextModeSupport = if_nil(override.insertTextModeSupport, {
-                  valueSet = {
-                    1, -- asIs
-                    2, -- adjustIndentation
-                  }
-                }),
-                labelDetailsSupport = if_nil(override.labelDetailsSupport, true),
-              },
-              contextSupport = if_nil(override.snippetSupport, true),
-              insertTextMode = if_nil(override.insertTextMode, 1),
-              completionList = if_nil(override.completionList, {
-                itemDefaults = {
-                  'commitCharacters',
-                  'editRange',
-                  'insertTextFormat',
-                  'insertTextMode',
-                  'data',
-                }
-              })
-            },
-          },
-        }
-      end
 
       vim.lsp.config('basedpyright', {
         settings = {
@@ -2181,7 +2123,6 @@ let g:mkdp_preview_options = {
 
       -- configure C and C++ ... language server
       vim.lsp.config('clangd', {
-        capabilities = capabilities(),
         cmd = {
           'clangd',
           '--background-index',
