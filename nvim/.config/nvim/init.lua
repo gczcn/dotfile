@@ -398,7 +398,6 @@ opt.winblend = 10
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
--- ----- UIOPTIONS ----- --
 -- FIX: When wrap is enabled, fold column doesn't show correctly
 -- I don't know how to fox it!!!!!!! :<
 opt.statuscolumn = table.concat({
@@ -409,39 +408,6 @@ opt.statuscolumn = table.concat({
   '%#NonText#', -- The highlight for the dividing line
   '%{%(&foldcolumn > 1 ? "▐" : "")%}', -- The dividing line between foldcolumn and buffer
   '%{%(&foldcolumn > 0 || &number || &relativenumber ? " " : "")%}', -- Gap between foldcolumn and buffer
-})
-
--- Need the gitsigns plugin
--- TODO: Colorful statusline
-_G.StatusLineGetGitInfo = function()
-  local branch = (vim.b.gitsigns_head or '')
-  local git_status = (vim.b.gitsigns_status or '')
-  local text = branch .. (branch ~= '' and ' ' or '') .. git_status
-  return text .. (text ~= '' and ' ' or '')
-end
-
--- FIX: There're some problems
-_G.StatusLineGetDiagnostic = function()
-  local errors = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))
-  local warns = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))
-  local hints = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT }))
-  local infos = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO }))
-  errors = errors ~= '0' and ('E' .. errors) or ''
-  warns = warns ~= '0' and ('W' .. warns) or ''
-  hints = hints ~= '0' and ('H' .. hints) or ''
-  infos = infos ~= '0' and ('I' .. infos) or ''
-  return (errors .. warns .. hints .. infos) ~= '' and '[' .. errors .. warns .. hints .. infos .. ']' or ''
-end
-
-opt.statusline = table.concat({
-  '%<', -- See the 'statusline' help file
-  '%{mode()} ', -- Current mode
-  '%f ', -- File name
-  '%h%m%r%y%q ', -- Help buffer, Modified, Readonly, Type and ("[Quickfix List]", "[Location List]" or empty)
-  "%{v:lua.StatusLineGetGitInfo()}",
-  "%{v:lua.StatusLineGetDiagnostic()}",
-  '%=', -- See the 'statusline' help file
-  '%{v:register}%-14.(%l,%c%V%)%P', -- Don't care about that
 })
 
 if not global_config.enabled_plugins then
@@ -474,6 +440,147 @@ vim.diagnostic.config({
     },
   },
 })
+
+-- =============================================================================
+-- Custom StatusLine
+-- Dependencies: gitsigns.nvim plugin
+-- Highlights:
+--   CustomStatusLineModeNull
+--   CustomStatusLineModeNormal
+--   CustomStatusLineModeVisual
+--   CustomStatusLineModeSelect
+--   CustomStatusLineModeInsert
+--   CustomStatusLineModeReplace
+--   CustomStatusLineModeCommand
+--   CustomStatusLineModePrompt
+--   CustomStatusLineModeTerminal
+--   CustomStatusLineFileInfo
+--   CustomStatusLineGitHead
+--   CustomStatusLineGitAdded
+--   CustomStatusLineGitChanged
+--   CustomStatusLineGitRemoved
+--   CustomStatusLineDiagnosticError
+--   CustomStatusLineDiagnosticWarn
+--   CustomStatusLineDiagnosticHint
+--   CustomStatusLineDiagnosticInfo
+-- Tags: STATUSLINE
+-- =============================================================================
+
+-- ---------- StatusLine ----------
+_G.GetStatusLine = function()
+  local get_mode = function()
+    local get_hl = function(mode)
+      local hl_map = {
+        n = '%#CustomStatusLineModeNormal#',
+        v = '%#CustomStatusLineModeVisual#',
+        s = '%#CustomStatusLineModeSelect#',
+        i = '%#CustomStatusLineModeInsert#',
+        R = '%#CustomStatusLineModeReplace#',
+        c = '%#CustomStatusLineModeCommand#',
+        r = '%#CustomStatusLineModePrompt#',
+        t = '%#CustomStatusLineModeTerminal#',
+        nl = '%#CustomStatusLineModeNull#',
+      }
+      return hl_map[mode]
+    end
+
+    local mode_map = {
+      ['n'] = get_hl('n') .. 'NOR',
+      ['no'] = get_hl('n') .. 'O-P',
+      ['nov'] = get_hl('n') .. 'O-P',
+      ['noV'] = get_hl('n') .. 'O-P',
+      ['no\22'] = get_hl('n') .. 'O-P',
+      ['niI'] = get_hl('n') .. 'N-I',
+      ['niR'] = get_hl('n') .. 'N-R',
+      ['niV'] = get_hl('n') .. 'N',
+      ['nt'] = get_hl('n') .. 'N-T',
+      ['v'] = get_hl('v') .. 'VIS',
+      ['vs'] = get_hl('v') .. 'V',
+      ['V'] = get_hl('v') .. 'V-L',
+      ['Vs'] = get_hl('v') .. 'V-L',
+      ['\22'] = get_hl('v') .. 'V-B',
+      ['\22s'] = get_hl('v') .. 'V-B',
+      ['s'] = get_hl('s') .. 'S',
+      ['S'] = get_hl('s') .. 'S-L',
+      ['\19'] = get_hl('s') .. 'S-B',
+      ['i'] = get_hl('i') .. 'INS',
+      ['ic'] = get_hl('i') .. 'I-C',
+      ['ix'] = get_hl('i') .. 'I-X',
+      ['R'] = get_hl('R') .. 'REP',
+      ['Rc'] = get_hl('R') .. 'R-C',
+      ['Rx'] = get_hl('R') .. 'R-X',
+      ['Rv'] = get_hl('R') .. 'V-R',
+      ['Rvc'] = get_hl('R') .. 'RVC',
+      ['Rvx'] = get_hl('R') .. 'RVX',
+      ['c'] = get_hl('c') .. 'CMD',
+      ['cv'] = get_hl('c') .. 'EX',
+      ['ce'] = get_hl('c') .. 'EX',
+      ['r'] = get_hl('r') .. 'R',
+      ['rm'] = get_hl('r') .. 'M',
+      ['r?'] = get_hl('r') .. 'C',
+      ['!'] = get_hl('nl') .. 'SH',
+      ['t'] = get_hl('t') .. 'TERM',
+    }
+
+    return (mode_map[vim.fn.mode()] or get_hl('nl') .. 'NULL') .. '%*'
+  end
+
+  -- Need the gitsigns plugin
+  local get_git_info = function(color)
+    local hl_map = {
+      ['+'] = '%#CustomStatusLineGitAdded#',
+      ['~'] = '%#CustomStatusLineGitChanged#',
+      ['-'] = '%#CustomStatusLineGitRemoved#',
+    }
+    local head = (color and '%#CustomStatusLineGitHead#' or '') .. (vim.b.gitsigns_head or '')
+    local git_status = vim.fn.split(vim.b.gitsigns_status or '')
+    if color then
+      for i, v in ipairs(git_status) do
+        git_status[i] = hl_map[v:sub(1, 1)] .. v
+      end
+    end
+    return head .. ' ' .. table.concat(git_status, ' ') .. '%*'
+  end
+
+  -- FIX: There're some problems
+  local get_diagnostic = function(color)
+    local errors = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))
+    local warns = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))
+    local hints = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT }))
+    local infos = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO }))
+    local diagnostic = {}
+    diagnostic[#diagnostic + 1] = errors ~= '0' and ((color and '%#CustomStatusLineDiagnosticError#' or '') .. 'E' .. errors) or nil
+    diagnostic[#diagnostic + 1] = warns ~= '0' and ((color and '%#CustomStatusLineDiagnosticWarn#' or '') .. 'W' .. warns) or nil
+    diagnostic[#diagnostic + 1] = hints ~= '0' and ((color and '%#CustomStatusLineDiagnosticHint#' or '') .. 'H' .. hints) or nil
+    diagnostic[#diagnostic + 1] = infos ~= '0' and ((color and '%#CustomStatusLineDiagnosticInfo#' or '') .. 'I' .. infos) or nil
+    return table.concat(diagnostic, ' ') .. '%*'
+  end
+
+  if vim.api.nvim_get_current_win() == vim.g.statusline_winid then
+    return table.concat({
+      '%<',
+      get_mode(),
+      '%f',
+      '%#CustomStatusLineFileInfo#%H%M%R%Y%Q%*',
+      get_git_info(true),
+      get_diagnostic(true),
+      '%=',
+      '%{v:register}% %l,%c%V  %P',
+    }, ' ')
+  else
+    return table.concat({
+      '%<',
+      '%f',
+      '%H%M%R%Y%Q%*',
+      get_git_info(false),
+      get_diagnostic(false),
+      '%=',
+      '%{v:register}% %l,%c%V  %P',
+    }, ' ')
+  end
+end
+
+opt.statusline = '%!v:lua.GetStatusLine()'
 
 -- =============================================================================
 -- Shell Scripts
@@ -830,47 +937,6 @@ local plugins = global_config.enabled_plugins and {
 
   -- COLORSCHEMES
 
-  --- GRUVBOX-MATERIAL
-  {
-    'sainnhe/gruvbox-material',
-    lazy = true,
-    priority = 1000,
-    config = function()
-      local group_id = api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
-
-      create_autocmd('ColorScheme', {
-        group = group_id,
-        pattern = 'gruvbox-material',
-        callback = function()
-          local config = vim.fn['gruvbox_material#get_configuration']()
-          local palette = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
-          local set_hl = vim.fn['gruvbox_material#highlight']
-
-          set_hl('TSString', palette.green, palette.none)
-          set_hl('CursorLineNr', palette.orange, palette.none)
-          set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
-          set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
-          set_hl('DiagnosticNumHlHint', palette.green, palette.none, 'bold')
-          set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
-          set_hl('MiniFilesCursorLine', palette.none, palette.bg5)
-          set_hl('WinBar', palette.fg1, palette.bg1)
-        end,
-      })
-
-      -- vim.g.gruvbox_material_background = 'hard'
-      -- vim.g.gruvbox_material_foreground = 'original'
-      vim.g.gruvbox_material_disable_italic_comment = 1
-      vim.g.gruvbox_material_enable_bold = 1
-      vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
-      vim.g.gruvbox_material_inlay_hints_background = 'dimmed'
-      vim.g.gruvbox_material_current_word = 'underline'
-      vim.g.gruvbox_material_better_performance = 1
-
-      opt.background = 'dark'
-      vim.cmd.colorscheme('gruvbox-material')
-    end,
-  },
-
   --- GRUVBOX
   {
     'ellisonleao/gruvbox.nvim',
@@ -891,6 +957,25 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'DiagnosticNumHlWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
           set_hl(0, 'DiagnosticNumHlHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
           set_hl(0, 'DiagnosticNumHlInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+
+          set_hl(0, 'CustomStatusLineModeNull', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeNormal', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeVisual', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03', bold = true })
+          set_hl(0, 'CustomStatusLineModeSelect', { fg = vim.o.background == 'dark' and '#d3869b' or '#8f3f71', bold = true })
+          set_hl(0, 'CustomStatusLineModeInsert', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+          set_hl(0, 'CustomStatusLineModeReplace', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+          set_hl(0, 'CustomStatusLineModeCommand', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+          set_hl(0, 'CustomStatusLineModePrompt', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+          set_hl(0, 'CustomStatusLineModeTerminal', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
+          set_hl(0, 'CustomStatusLineFileInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678' })
+          set_hl(0, 'CustomStatusLineGitHead', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
+          set_hl(0, 'CustomStatusLineGitAdded', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e' })
+          set_hl(0, 'CustomStatusLineGitChanged', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03' })
+          set_hl(0, 'CustomStatusLineGitRemoved', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006' })
+          set_hl(0, 'CustomStatusLineDiagnosticError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
 
           -- Illuminate
           set_hl(0, 'IlluminatedWordText', { underline = true })
