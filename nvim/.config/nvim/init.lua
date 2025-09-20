@@ -539,7 +539,8 @@ _G.GetStatusLine = function()
         git_status[i] = hl_map[v:sub(1, 1)] .. v
       end
     end
-    return head .. ' ' .. table.concat(git_status, ' ') .. '%*'
+    local git_status_text = table.concat(git_status, ' ')
+    return head .. (git_status_text ~= '' and ' ' or '') .. git_status_text .. '%*'
   end
 
   -- FIX: There're some problems
