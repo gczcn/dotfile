@@ -1201,7 +1201,7 @@ local plugins = global_config.enabled_plugins and {
     dependencies = {
       'nvim-lua/popup.nvim',
       'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
+      -- 'MunifTanjim/nui.nvim',
       { 'kkharji/sqlite.lua', module = 'sqlite' },
 
       -- Extensions
