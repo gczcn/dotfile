@@ -467,8 +467,12 @@ vim.diagnostic.config({
 -- =============================================================================
 
 -- ---------- StatusLine ----------
+---@return string
 _G.GetStatusLine = function()
+  ---@return string
   local get_mode = function()
+    ---@param mode string
+    ---@return string
     local get_hl = function(mode)
       local hl_map = {
         n = '%#CustomStatusLineModeNormal#',
@@ -526,6 +530,8 @@ _G.GetStatusLine = function()
   end
 
   -- Need the gitsigns plugin
+  ---@param color boolean
+  ---@return string
   local get_git_info = function(color)
     local hl_map = {
       ['+'] = '%#CustomStatusLineGitAdded#',
@@ -544,6 +550,9 @@ _G.GetStatusLine = function()
   end
 
   -- FIX: There're some problems
+
+  ---@param color boolean
+  ---@return string
   local get_diagnostic = function(color)
     local errors = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR }))
     local warns = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN }))
@@ -566,7 +575,7 @@ _G.GetStatusLine = function()
       get_git_info(true),
       get_diagnostic(true),
       '%=',
-      '%{v:register}% %l,%c%V  %P',
+      '%{v:register}% %l,%c%V  %P ',
     }, ' ')
   else
     return table.concat({
@@ -576,7 +585,7 @@ _G.GetStatusLine = function()
       get_git_info(false),
       get_diagnostic(false),
       '%=',
-      '%{v:register}% %l,%c%V  %P',
+      '%{v:register}% %l,%c%V  %P ',
     }, ' ')
   end
 end
@@ -1019,9 +1028,9 @@ local plugins = global_config.enabled_plugins and {
 
   -- MINI.FILES, FILES_MANAGER
   {
-    'echasnovski/mini.files',
+    'nvim-mini/mini.files',
     dependencies = {
-      'echasnovski/mini.icons',
+      'nvim-mini/mini.icons',
     },
     keys = {
       ---@diagnostic disable-next-line: undefined-global
@@ -1068,7 +1077,7 @@ local plugins = global_config.enabled_plugins and {
 
   -- MINI.ICONS
   {
-    'echasnovski/mini.icons',
+    'nvim-mini/mini.icons',
     lazy = true,
     opts = {
       style = global_config.plugins_config.ascii_mode and 'ascii' or 'glyph',
@@ -1098,7 +1107,7 @@ local plugins = global_config.enabled_plugins and {
 
   -- MINI.SURROUND
   {
-    'echasnovski/mini.surround',
+    'nvim-mini/mini.surround',
     keys = {
       { 'sa', mode = { 'n', 'v' } }, 'sd', 'sf', 'sF', 'sh', 'sr', 'sn',
     },
@@ -1121,7 +1130,7 @@ local plugins = global_config.enabled_plugins and {
   {
     'ibhagwan/fzf-lua',
     dependencies = {
-      'echasnovski/mini.icons',
+      'nvim-mini/mini.icons',
       -- 'nvim-treesitter/nvim-treesitter-context',
     },
     cmd = 'FzfLua',
@@ -1446,7 +1455,7 @@ local plugins = global_config.enabled_plugins and {
     'Bekaboo/dropbar.nvim',
     event = 'User FileOpened',
     dependencies = {
-      'echasnovski/mini.icons',
+      'nvim-mini/mini.icons',
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make',
