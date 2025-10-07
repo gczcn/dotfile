@@ -353,7 +353,6 @@ vim.g.encoding = 'UTF-8'
 
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
--- opt.cmdheight = 0 -- Use noice.nvim plugin, no need to display cmdline
 opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
@@ -1664,7 +1663,7 @@ local plugins = global_config.enabled_plugins and {
         exclude = {
           'notify',
           'cmp_menu',
-          'noice',
+          -- 'noice',
           'flash_prompt',
           'bigfile',
           function(win)
