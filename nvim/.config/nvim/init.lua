@@ -324,6 +324,17 @@ vim.lsp.enable('vimls')
 vim.lsp.enable('clangd')
 
 -- Keymaps
+
+-- Default_keymaps:
+--   grn: rename
+--   gra: code action
+--   grr: references
+--   gri: implementation
+--   grt: type_definition
+--   an:  vim.lsp.buf.selection_range(vim.v.count1)
+--   in:  vim.lsp.buf.selection_range(-vim.v.count1)
+--   g0:  document symbol
+
 -- keymap.set('n', '<leader>cl', '<cmd>LspInfo<CR>', { desc = 'Lsp Info' })
 -- keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'References' })
 keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
