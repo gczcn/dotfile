@@ -587,7 +587,7 @@ _G.GetStatusLine = function()
       get_diagnostic(true),
       '%=',
       '%{v:register}% %l,%c%V  %P ',
-      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. "%{strftime('%m.%d %H:%M:%S')}",
+      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. "%{strftime('%m.%d %H:%M')}",
       '',
     }, ' ')
   else
@@ -1122,6 +1122,7 @@ local plugins = global_config.enabled_plugins and {
   -- AUTOPAIRS
   {
     'windwp/nvim-autopairs',
+    enabled = false,
     event = { 'VeryLazy' },
     opts = {},
   },
