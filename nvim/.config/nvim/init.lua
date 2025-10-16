@@ -326,14 +326,15 @@ vim.lsp.enable('clangd')
 -- Keymaps
 
 -- Default_keymaps:
---   grn: rename
---   gra: code action
---   grr: references
---   gri: implementation
---   grt: type_definition
---   an:  vim.lsp.buf.selection_range(vim.v.count1)
---   in:  vim.lsp.buf.selection_range(-vim.v.count1)
---   g0:  document symbol
+--   grn:   rename
+--   gra:   code action
+--   grr:   references
+--   gri:   implementation
+--   grt:   type_definition
+--   an:    vim.lsp.buf.selection_range(vim.v.count1)
+--   in:    vim.lsp.buf.selection_range(-vim.v.count1)
+--   g0:    document symbol
+--   <C-S>: signature help
 
 -- keymap.set('n', '<leader>cl', '<cmd>LspInfo<CR>', { desc = 'Lsp Info' })
 -- keymap.set('n', 'gr', vim.lsp.buf.references, { desc = 'References' })
@@ -479,64 +480,64 @@ vim.diagnostic.config({
 -- ---------- StatusLine ----------
 ---@return string
 _G.GetStatusLine = function()
+  ---@param mode string
+  ---@return string
+  local get_hl = function(mode)
+    local hl_map = {
+      n = '%#CustomStatusLineModeNormal#',
+      v = '%#CustomStatusLineModeVisual#',
+      s = '%#CustomStatusLineModeSelect#',
+      i = '%#CustomStatusLineModeInsert#',
+      R = '%#CustomStatusLineModeReplace#',
+      c = '%#CustomStatusLineModeCommand#',
+      r = '%#CustomStatusLineModePrompt#',
+      t = '%#CustomStatusLineModeTerminal#',
+      nl = '%#CustomStatusLineModeNull#',
+    }
+    return hl_map[mode]
+  end
+
+  local mode_map = {
+    ['n'] = { get_hl('n'), 'NOR' },
+    ['no'] = { get_hl('n'), 'O-P' },
+    ['nov'] = { get_hl('n'), 'O-P' },
+    ['noV'] = { get_hl('n'), 'O-P' },
+    ['no\22'] = { get_hl('n'), 'O-P' },
+    ['niI'] = { get_hl('n'), 'N-I' },
+    ['niR'] = { get_hl('n'), 'N-R' },
+    ['niV'] = { get_hl('n'), 'N' },
+    ['nt'] = { get_hl('n'), 'N-T' },
+    ['v'] = { get_hl('v'), 'VIS' },
+    ['vs'] = { get_hl('v'), 'V' },
+    ['V'] = { get_hl('v'), 'V-L' },
+    ['Vs'] = { get_hl('v'), 'V-L' },
+    ['\22'] = { get_hl('v'), 'V-B' },
+    ['\22s'] = { get_hl('v'), 'V-B' },
+    ['s'] = { get_hl('s'), 'S' },
+    ['S'] = { get_hl('s'), 'S-L' },
+    ['\19'] = { get_hl('s'), 'S-B' },
+    ['i'] = { get_hl('i'), 'INS' },
+    ['ic'] = { get_hl('i'), 'I-C' },
+    ['ix'] = { get_hl('i'), 'I-X' },
+    ['R'] = { get_hl('R'), 'REP' },
+    ['Rc'] = { get_hl('R'), 'R-C' },
+    ['Rx'] = { get_hl('R'), 'R-X' },
+    ['Rv'] = { get_hl('R'), 'V-R' },
+    ['Rvc'] = { get_hl('R'), 'RVC' },
+    ['Rvx'] = { get_hl('R'), 'RVX' },
+    ['c'] = { get_hl('c'), 'CMD' },
+    ['cv'] = { get_hl('c'), 'EX' },
+    ['ce'] = { get_hl('c'), 'EX' },
+    ['r'] = { get_hl('r'), 'R' },
+    ['rm'] = { get_hl('r'), 'M' },
+    ['r?'] = { get_hl('r'), 'C' },
+    ['!'] = { get_hl('nl'), 'SH' },
+    ['t'] = { get_hl('t'), 'TERM' },
+  }
+
   ---@return string
   local get_mode = function()
-    ---@param mode string
-    ---@return string
-    local get_hl = function(mode)
-      local hl_map = {
-        n = '%#CustomStatusLineModeNormal#',
-        v = '%#CustomStatusLineModeVisual#',
-        s = '%#CustomStatusLineModeSelect#',
-        i = '%#CustomStatusLineModeInsert#',
-        R = '%#CustomStatusLineModeReplace#',
-        c = '%#CustomStatusLineModeCommand#',
-        r = '%#CustomStatusLineModePrompt#',
-        t = '%#CustomStatusLineModeTerminal#',
-        nl = '%#CustomStatusLineModeNull#',
-      }
-      return hl_map[mode]
-    end
-
-    local mode_map = {
-      ['n'] = get_hl('n') .. 'NOR',
-      ['no'] = get_hl('n') .. 'O-P',
-      ['nov'] = get_hl('n') .. 'O-P',
-      ['noV'] = get_hl('n') .. 'O-P',
-      ['no\22'] = get_hl('n') .. 'O-P',
-      ['niI'] = get_hl('n') .. 'N-I',
-      ['niR'] = get_hl('n') .. 'N-R',
-      ['niV'] = get_hl('n') .. 'N',
-      ['nt'] = get_hl('n') .. 'N-T',
-      ['v'] = get_hl('v') .. 'VIS',
-      ['vs'] = get_hl('v') .. 'V',
-      ['V'] = get_hl('v') .. 'V-L',
-      ['Vs'] = get_hl('v') .. 'V-L',
-      ['\22'] = get_hl('v') .. 'V-B',
-      ['\22s'] = get_hl('v') .. 'V-B',
-      ['s'] = get_hl('s') .. 'S',
-      ['S'] = get_hl('s') .. 'S-L',
-      ['\19'] = get_hl('s') .. 'S-B',
-      ['i'] = get_hl('i') .. 'INS',
-      ['ic'] = get_hl('i') .. 'I-C',
-      ['ix'] = get_hl('i') .. 'I-X',
-      ['R'] = get_hl('R') .. 'REP',
-      ['Rc'] = get_hl('R') .. 'R-C',
-      ['Rx'] = get_hl('R') .. 'R-X',
-      ['Rv'] = get_hl('R') .. 'V-R',
-      ['Rvc'] = get_hl('R') .. 'RVC',
-      ['Rvx'] = get_hl('R') .. 'RVX',
-      ['c'] = get_hl('c') .. 'CMD',
-      ['cv'] = get_hl('c') .. 'EX',
-      ['ce'] = get_hl('c') .. 'EX',
-      ['r'] = get_hl('r') .. 'R',
-      ['rm'] = get_hl('r') .. 'M',
-      ['r?'] = get_hl('r') .. 'C',
-      ['!'] = get_hl('nl') .. 'SH',
-      ['t'] = get_hl('t') .. 'TERM',
-    }
-
-    return (mode_map[vim.fn.mode()] or get_hl('nl') .. 'NULL') .. '%*'
+    return table.concat(mode_map[vim.fn.mode()] or { get_hl('nl'), 'NULL' }) .. '%*'
   end
 
   -- Need the gitsigns plugin
@@ -586,6 +587,8 @@ _G.GetStatusLine = function()
       get_diagnostic(true),
       '%=',
       '%{v:register}% %l,%c%V  %P ',
+      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. "%{strftime('%m.%d %H:%M:%S')}",
+      '',
     }, ' ')
   else
     return table.concat({
@@ -595,12 +598,20 @@ _G.GetStatusLine = function()
       get_git_info(false),
       get_diagnostic(false),
       '%=',
-      '%{v:register}% %l,%c%V  %P ',
+      '%{v:register}% %l,%c%V  %P',
+      '',
     }, ' ')
   end
 end
 
 opt.statusline = '%!v:lua.GetStatusLine()'
+
+-- auto refresh
+local timer = vim.loop.new_timer()
+---@diagnostic disable-next-line
+timer:start(0, 1000, vim.schedule_wrap(function()
+  vim.cmd('redrawstatus')
+end))
 
 -- =============================================================================
 -- Shell Scripts
