@@ -40,6 +40,7 @@
 --
 -- I hope I can read the code later :)
 -- =============================================================================
+-- TODO: Rewrite plugin configurations with vim.pack???
 -- TODO: Try to use QuickFix
 -- TODO: Remove more useless plugins
 
