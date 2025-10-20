@@ -1,0 +1,53 @@
+{
+  "plugins": {
+    "LuaSnip": [],
+    "antonym.nvim": [],
+    "blink.cmp": [],
+    "code_runner.nvim": [],
+    "conform.nvim": [],
+    "copilot.lua": [],
+    "flash.nvim": [],
+    "flutter-tools.nvim": [],
+    "fzf-lua": [],
+    "gitsigns.nvim": [],
+    "gruvbox.nvim": {
+      "rev": "5e0a460",
+      "src": "https://github.com/ellisonleao/gruvbox.nvim"
+    },
+    "indent-blankline.nvim": [],
+    "lazydev.nvim": [],
+    "markdown-preview.nvim": [],
+    "mini.files": [],
+    "mini.icons": [],
+    "mini.surround": [],
+    "move.nvim": [],
+    "multicursor.nvim": [],
+    "nvim-colorizer.lua": [],
+    "nvim-dap": [],
+    "nvim-dap-go": [],
+    "nvim-dap-ui": [],
+    "nvim-lint": [],
+    "nvim-lspconfig": [],
+    "nvim-nio": [],
+    "nvim-treesitter": {
+      "version": "'main'"
+    },
+    "nvim-treesitter-textobjects": [],
+    "nvim-ufo": [],
+    "plenary.nvim": [],
+    "popup.nvim": [],
+    "promise-async": [],
+    "rainbow-delimiters.nvim": [],
+    "snacks.nvim": [],
+    "sqlite.lua": [],
+    "tabnine-nvim": [],
+    "telescope.nvim": {
+      "version": "'master'"
+    },
+    "todo-comments.nvim": [],
+    "ts-comments.nvim": [],
+    "vim-illuminate": [],
+    "vim-lastplace": [],
+    "vim-suda": []
+  }
+}

@@ -40,7 +40,7 @@
 --
 -- I hope I can read the code later :)
 -- =============================================================================
--- TODO: Rewrite plugin configurations with vim.pack?????
+-- TODO: Rewrite plugin configurations with vim.pack???
 -- TODO: Try to use QuickFix
 -- TODO: Remove more useless plugins
 
@@ -68,7 +68,7 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_tabnine boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
-  enabled_plugins = true,
+  enabled_plugins = false,
   enabled_copilot = false,
   enabled_tabnine = false,
   plugins_config = {
@@ -902,6 +902,192 @@ create_user_command('TranslateText', function(opts)
 end, { nargs = 1 })
 
 keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true })
+
+-- =============================================================================
+-- Install & Update Plugins by vim.pack
+-- Tags: INSTALL_PLUGINS, UPDATE_PLUGINS, PLUGINS
+-- =============================================================================
+vim.pack.add({
+  'https://github.com/ellisonleao/gruvbox.nvim', -- Colorscheme
+  'https://github.com/folke/ts-comments.nvim', -- Comment enhancements
+  'https://github.com/nvim-mini/mini.files', -- File manager, deps: mini.icons
+  'https://github.com/nvim-mini/mini.surround', -- Surround
+  'https://github.com/ibhagwan/fzf-lua', -- Fuzzy finder, deps: mini.icons
+  -- Fuzzy finder, deps: popup.nvim, plenary.nvim, sqlite.lua,
+  -- telescope-fzf-native.nvim, nvim-neoclip.lua, telescope-undo.nvim,
+  -- telescope-file-browser.nvim
+  { src = 'https://github.com/nvim-telescope/telescope.nvim', version = 'master' },
+  'https://github.com/kevinhwang91/nvim-ufo', -- Fold, deps: nvim-treesitter, promise-async
+  'https://github.com/rrethy/vim-illuminate', -- Highlight current word
+  'https://github.com/folke/todo-comments.nvim', -- TODO comments
+  -- Treesitter, deps: nvim-treesitter-textobjects, rainbow-delimiters.nvim
+  { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
+  'https://github.com/nvim-treesitter/nvim-treesitter-textobjects', -- Treesitter textobjects
+  'https://github.com/HiPhish/rainbow-delimiters.nvim', -- Rainbow delimiters
+  'https://github.com/gczcn/antonym.nvim', -- Antonym
+  'https://github.com/fedepujol/move.nvim', -- Move
+  'https://github.com/jake-stewart/multicursor.nvim', -- Multi Cursor
+  'https://github.com/folke/flash.nvim', -- Cursor jump
+  'https://github.com/iamcco/markdown-preview.nvim', -- Markdown preview
+  'https://github.com/CRAG666/code_runner.nvim', -- Code runner
+  'https://github.com/lukas-reineke/indent-blankline.nvim', -- Indent
+  'https://github.com/lambdalisue/vim-suda', -- Write a file with root privileges
+  'https://github.com/farmergreg/vim-lastplace', -- Reopen a file at the last edit position
+  'https://github.com/catgoose/nvim-colorizer.lua', -- Colorizer
+  'https://github.com/folke/snacks.nvim', -- A collection of small QoL plugins for Neovim
+  'https://github.com/zbirenbaum/copilot.lua', -- Github Copilot
+  'https://github.com/codota/tabnine-nvim', -- TabNine
+  'https://github.com/stevearc/conform.nvim', -- Formatter
+  'https://github.com/lewis6991/gitsigns.nvim', -- Sth about Git
+  -- DAP support for Neovim, deps: nvim-nio, nvim-dap-ui, nvim-dap-go
+  'https://github.com/mfussenegger/nvim-dap',
+  'https://github.com/rcarriga/nvim-dap-ui', -- Better UI for nvim-dap
+  'https://github.com/leoluz/nvim-dap-go', -- Sth for starting go debugger
+  'https://github.com/mfussenegger/nvim-lint', -- Linter (TODO)
+  'https://github.com/nvim-flutter/flutter-tools.nvim', -- Flutter tools, deps: plenary.nvim
+  'https://github.com/neovim/nvim-lspconfig', -- A collection of LSs configurations
+  'https://github.com/L3MON4D3/LuaSnip', -- Snippets
+  'https://github.com/folke/lazydev.nvim', -- Sth for configuring Neovim
+  -- Blink.CMP, deps: friendly-snippets, LuaSnip, lazydev.nvim, colorful-menu.nvim
+  -- o-deps: blink-cmp-copilot, copilot.lua
+  'https://github.com/saghen/blink.cmp',
+
+  -- Libraries
+  'https://github.com/nvim-mini/mini.icons', -- Icon provider
+  'https://github.com/nvim-lua/popup.nvim', -- Popup API
+  'https://github.com/nvim-lua/plenary.nvim', -- Some functions
+  'https://github.com/kkharji/sqlite.lua', -- SQLite wrapper
+  'https://github.com/kevinhwang91/promise-async', -- Promise & Async in Lua
+  'https://github.com/nvim-neotest/nvim-nio', -- Asynchronous IO in Neovim
+})
+
+-- =============================================================================
+-- Plugin Configurations
+-- Tags: PLUGIN_CONFIGURATIONS, PLUGINS
+-- =============================================================================
+local plugin_configurations = {}
+
+-- GRUVBOX, COLORSCHEME
+plugin_configurations.gruvbox = function()
+  create_autocmd('ColorScheme', {
+    group = vim.api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+    pattern = 'gruvbox',
+    callback = function()
+      local set_hl = vim.api.nvim_set_hl
+
+      local foldcolumn_fg = Utils.get_hl('FoldColumn')
+      set_hl(0, 'FoldColumn', { fg = foldcolumn_fg })
+      set_hl(0, 'CursorLineFold', { fg = foldcolumn_fg, bg = Utils.get_hl('CursorLine', true) })
+
+      set_hl(0, 'DiagnosticNumHlError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+      set_hl(0, 'DiagnosticNumHlWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+      set_hl(0, 'DiagnosticNumHlHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+      set_hl(0, 'DiagnosticNumHlInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+
+      set_hl(0, 'CustomStatusLineModeNull', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
+      set_hl(0, 'CustomStatusLineModeNormal', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
+      set_hl(0, 'CustomStatusLineModeVisual', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03', bold = true })
+      set_hl(0, 'CustomStatusLineModeSelect', { fg = vim.o.background == 'dark' and '#d3869b' or '#8f3f71', bold = true })
+      set_hl(0, 'CustomStatusLineModeInsert', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+      set_hl(0, 'CustomStatusLineModeReplace', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+      set_hl(0, 'CustomStatusLineModeCommand', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+      set_hl(0, 'CustomStatusLineModePrompt', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+      set_hl(0, 'CustomStatusLineModeTerminal', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
+      set_hl(0, 'CustomStatusLineFileInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678' })
+      set_hl(0, 'CustomStatusLineGitHead', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
+      set_hl(0, 'CustomStatusLineGitAdded', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e' })
+      set_hl(0, 'CustomStatusLineGitChanged', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03' })
+      set_hl(0, 'CustomStatusLineGitRemoved', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006' })
+      set_hl(0, 'CustomStatusLineDiagnosticError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
+      set_hl(0, 'CustomStatusLineDiagnosticWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
+      set_hl(0, 'CustomStatusLineDiagnosticHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
+      set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+
+      -- Illuminate
+      set_hl(0, 'IlluminatedWordText', { underline = true })
+      set_hl(0, 'IlluminatedWordRead', { underline = true })
+      set_hl(0, 'IlluminatedWordWrite', { underline = true })
+
+      set_hl(0, 'GitsignsCurrentLineBlame', { fg = vim.o.background == 'dark' and '#7c6f64' or '#a89984' })
+    end,
+  })
+
+  require('gruvbox').setup({
+    italic = {
+      strings = false,
+      emphasis = false,
+      comments = false,
+      operators = false,
+      folds = false,
+    },
+    overrides = {},
+  })
+
+  vim.cmd.colorscheme('gruvbox')
+end
+
+-- TSCOMMENTS, TS_COMMENTS
+plugin_configurations.ts_comments = function()
+  require('ts-comments').setup({
+    lang = {
+      c = {
+        '/* %s */',
+        '// %s',
+      },
+    },
+  })
+end
+
+plugin_configurations.mini_files = function()
+  local mini_files_open_folder = function(path) require('mini.files').open(path) end
+  Utils.autocmd_attach_file_browser('mini.files', mini_files_open_folder)
+
+  ---@diagnostic disable-next-line: param-type-mismatch
+  create_autocmd('User', {
+    pattern = 'MiniFilesActionRename',
+    callback = function(event)
+      ---@diagnostic disable-next-line: undefined-global
+      Snacks.rename.on_rename_file(event.data.from, event.data.to)
+    end,
+  })
+
+  require('mini.files').setup({
+    mappings = {
+      close       = 'q',
+      go_in       = '<S-CR>',
+      go_in_plus  = '<CR>',
+      go_out      = '<BS>',
+      go_out_plus = '<S-BS>',
+      mark_goto   = "'",
+      mark_set    = 'm',
+      reset       = '-',
+      reveal_cwd  = '@',
+      show_help   = 'g?',
+      synchronize = '=',
+      trim_left   = '<',
+      trim_right  = '>',
+    },
+    options = {
+      permanent_delete = true,
+      use_as_default_explorer = false,
+    },
+  })
+
+  ---@diagnostic disable-next-line: undefined-global
+  keymap.set('n', '<leader>e', function() MiniFiles.open() end)
+  ---@diagnostic disable-next-line: undefined-global
+  keymap.set('n', '<leader>E', function() MiniFiles.open(api.nvim_buf_get_name(0)) end)
+end
+
+-- =============================================================================
+-- Setup Plugins
+-- TAGS: SETUP_PLUGINS, PLUGINS
+-- =============================================================================
+
+-- At start
+plugin_configurations.gruvbox()
+plugin_configurations.ts_comments()
+plugin_configurations.mini_files()
 
 -- =============================================================================
 -- Plugins

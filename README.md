@@ -9,7 +9,7 @@ cd dotfile
 
 ## Neovim
 ### Dependencies
-- [Neovim](https://neovim.io/) (latest stable version or nightly version)
+- [Neovim](https://neovim.io/) (>= 0.12)
 - [ripgrep](https://github.com/BurntSushi/ripgrep/) for fzf.lua
 - [fd](https://github.com/sharkdp/fd/) for fzf.lua
 - make
