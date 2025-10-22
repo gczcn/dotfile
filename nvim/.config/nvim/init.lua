@@ -365,7 +365,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.foldcolumn = '1'
+opt.foldcolumn = '0'
 opt.guicursor = vim.fn.has('nvim-0.11') == 1
   and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
@@ -400,6 +400,8 @@ opt.wrap = false -- Disable line wrap
 
 -- FIX: When wrap is enabled, fold column doesn't show correctly
 -- I don't know how to fox it!!!!!!! :<
+
+--[[
 opt.statuscolumn = table.concat({
   '%s', -- Sign column
   '%l', -- Line number
@@ -409,6 +411,7 @@ opt.statuscolumn = table.concat({
   '%{%(&foldcolumn > 1 ? "▐" : "")%}', -- The dividing line between foldcolumn and buffer
   '%{%(&foldcolumn > 0 || &number || &relativenumber ? " " : "")%}', -- Gap between foldcolumn and buffer
 })
+--]]
 
 if not global_config.enabled_plugins then
   vim.cmd.colorscheme('habamax')
