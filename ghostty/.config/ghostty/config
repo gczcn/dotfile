@@ -63,7 +63,7 @@ font-family = MiSans
 # font-family = Shanggu Sans
 
 # theme = gruvbox-material-medium-dark
-theme = Gruvbox Light
+theme = Gruvbox Dark
 # theme = catppuccin-mocha
 mouse-hide-while-typing = true
 window-padding-x = 0
