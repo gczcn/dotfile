@@ -358,7 +358,7 @@ vim.g.encoding = 'UTF-8'
 
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
-opt.colorcolumn = '80' -- Line number reminder
+-- opt.colorcolumn = '80' -- Line number reminder
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting
@@ -488,41 +488,41 @@ _G.GetStatusLine = function()
   end
 
   local mode_map = {
-    ['n'] = { get_hl('n'), 'NOR' },
-    ['no'] = { get_hl('n'), 'O-P' },
-    ['nov'] = { get_hl('n'), 'O-P' },
-    ['noV'] = { get_hl('n'), 'O-P' },
-    ['no\22'] = { get_hl('n'), 'O-P' },
-    ['niI'] = { get_hl('n'), 'N-I' },
-    ['niR'] = { get_hl('n'), 'N-R' },
-    ['niV'] = { get_hl('n'), 'N' },
-    ['nt'] = { get_hl('n'), 'N-T' },
-    ['v'] = { get_hl('v'), 'VIS' },
-    ['vs'] = { get_hl('v'), 'V' },
-    ['V'] = { get_hl('v'), 'V-L' },
-    ['Vs'] = { get_hl('v'), 'V-L' },
-    ['\22'] = { get_hl('v'), 'V-B' },
-    ['\22s'] = { get_hl('v'), 'V-B' },
-    ['s'] = { get_hl('s'), 'S' },
-    ['S'] = { get_hl('s'), 'S-L' },
-    ['\19'] = { get_hl('s'), 'S-B' },
-    ['i'] = { get_hl('i'), 'INS' },
-    ['ic'] = { get_hl('i'), 'I-C' },
-    ['ix'] = { get_hl('i'), 'I-X' },
-    ['R'] = { get_hl('R'), 'REP' },
-    ['Rc'] = { get_hl('R'), 'R-C' },
-    ['Rx'] = { get_hl('R'), 'R-X' },
-    ['Rv'] = { get_hl('R'), 'V-R' },
-    ['Rvc'] = { get_hl('R'), 'RVC' },
-    ['Rvx'] = { get_hl('R'), 'RVX' },
-    ['c'] = { get_hl('c'), 'CMD' },
-    ['cv'] = { get_hl('c'), 'EX' },
-    ['ce'] = { get_hl('c'), 'EX' },
-    ['r'] = { get_hl('r'), 'R' },
-    ['rm'] = { get_hl('r'), 'M' },
-    ['r?'] = { get_hl('r'), 'C' },
-    ['!'] = { get_hl('nl'), 'SH' },
-    ['t'] = { get_hl('t'), 'TERM' },
+    ['n'] = { get_hl('n'), ' NOR ' },
+    ['no'] = { get_hl('n'), ' O-P ' },
+    ['nov'] = { get_hl('n'), ' O-P ' },
+    ['noV'] = { get_hl('n'), ' O-P ' },
+    ['no\22'] = { get_hl('n'), ' O-P ' },
+    ['niI'] = { get_hl('n'), ' N-I ' },
+    ['niR'] = { get_hl('n'), ' N-R ' },
+    ['niV'] = { get_hl('n'), ' N ' },
+    ['nt'] = { get_hl('n'), ' N-T ' },
+    ['v'] = { get_hl('v'), ' VIS ' },
+    ['vs'] = { get_hl('v'), ' V ' },
+    ['V'] = { get_hl('v'), ' V-L ' },
+    ['Vs'] = { get_hl('v'), ' V-L ' },
+    ['\22'] = { get_hl('v'), ' V-B ' },
+    ['\22s'] = { get_hl('v'), ' V-B ' },
+    ['s'] = { get_hl('s'), ' S ' },
+    ['S'] = { get_hl('s'), ' S-L ' },
+    ['\19'] = { get_hl('s'), ' S-B ' },
+    ['i'] = { get_hl('i'), ' INS ' },
+    ['ic'] = { get_hl('i'), ' I-C ' },
+    ['ix'] = { get_hl('i'), ' I-X ' },
+    ['R'] = { get_hl('R'), ' REP ' },
+    ['Rc'] = { get_hl('R'), ' R-C ' },
+    ['Rx'] = { get_hl('R'), ' R-X ' },
+    ['Rv'] = { get_hl('R'), ' V-R ' },
+    ['Rvc'] = { get_hl('R'), ' RVC ' },
+    ['Rvx'] = { get_hl('R'), ' RVX ' },
+    ['c'] = { get_hl('c'), ' CMD ' },
+    ['cv'] = { get_hl('c'), ' EX ' },
+    ['ce'] = { get_hl('c'), ' EX ' },
+    ['r'] = { get_hl('r'), ' R ' },
+    ['rm'] = { get_hl('r'), ' M ' },
+    ['r?'] = { get_hl('r'), ' C ' },
+    ['!'] = { get_hl('nl'), ' SH ' },
+    ['t'] = { get_hl('t'), ' TERM ' },
   }
 
   ---@return string
@@ -569,15 +569,14 @@ _G.GetStatusLine = function()
 
   if vim.api.nvim_get_current_win() == vim.g.statusline_winid then
     return table.concat({
-      '%<',
-      get_mode(),
+      '%<' .. get_mode(),
       '%f',
       '%#CustomStatusLineFileInfo#%H%M%R%Y%Q%*',
       get_git_info(true),
       get_diagnostic(true),
       '%=',
-      '%{v:register}% %l,%c%V  %P ',
-      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. "%{strftime('%m.%d %H:%M')}",
+      '%{v:register}% %l,%c%V %P',
+      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. " %{strftime('%m.%d %H:%M')}",
       '',
     }, ' ')
   else
@@ -588,7 +587,7 @@ _G.GetStatusLine = function()
       get_git_info(false),
       get_diagnostic(false),
       '%=',
-      '%{v:register}% %l,%c%V  %P',
+      '%{v:register}% %l,%c%V %P',
       '',
     }, ' ')
   end
@@ -798,15 +797,15 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'DiagnosticNumHlHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
           set_hl(0, 'DiagnosticNumHlInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
 
-          set_hl(0, 'CustomStatusLineModeNull', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
-          set_hl(0, 'CustomStatusLineModeNormal', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bold = true })
-          set_hl(0, 'CustomStatusLineModeVisual', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03', bold = true })
-          set_hl(0, 'CustomStatusLineModeSelect', { fg = vim.o.background == 'dark' and '#d3869b' or '#8f3f71', bold = true })
-          set_hl(0, 'CustomStatusLineModeInsert', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
-          set_hl(0, 'CustomStatusLineModeReplace', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
-          set_hl(0, 'CustomStatusLineModeCommand', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
-          set_hl(0, 'CustomStatusLineModePrompt', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
-          set_hl(0, 'CustomStatusLineModeTerminal', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
+          set_hl(0, 'CustomStatusLineModeNull', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeNormal', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeVisual', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeSelect', { fg = vim.o.background == 'dark' and '#d3869b' or '#8f3f71', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeInsert', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeReplace', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeCommand', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModePrompt', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bg = '#665c54', bold = true })
+          set_hl(0, 'CustomStatusLineModeTerminal', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bg = '#665c54', bold = true })
           set_hl(0, 'CustomStatusLineFileInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678' })
           set_hl(0, 'CustomStatusLineGitHead', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
           set_hl(0, 'CustomStatusLineGitAdded', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e' })
