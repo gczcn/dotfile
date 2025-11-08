@@ -346,7 +346,7 @@ keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = tru
 keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
 keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
 keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
-keymap.del('x', 'in')
+-- keymap.del('x', 'in')
 keymap.set('x', 'kn', function() vim.lsp.buf.selection_range(-vim.v.count1) end, keymaps_opts)
 
 -- =============================================================================
