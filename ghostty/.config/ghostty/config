@@ -20,15 +20,15 @@
 # font-size = 12
 
 # IBM Plex
-font-family = BlexMono Nerd Font Mono
-font-size = 13.5
-window-title-font-family = ibm plex sans
-font-feature = onum
+# font-family = BlexMono Nerd Font Mono
+# font-size = 13.5
+# window-title-font-family = ibm plex sans
+# font-feature = onum
 
 # Source Code Pro
-# font-family = SauceCodePro Nerd Font Mono
-# font-size = 14
-# window-title-font-family = SauceCodePro Nerd Font Mono
+font-family = SauceCodePro Nerd Font Mono
+font-size = 14
+window-title-font-family = SauceCodePro Nerd Font Mono
 
 # JetBrains Mono
 # font-family = JetBrainsMono Nerd Font Mono

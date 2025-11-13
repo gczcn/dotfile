@@ -3,34 +3,23 @@
 
 [font]
 # size = 15
-size = 12
+size = 14
 # 1234567890
-# JetBrains Mono
-offset = { x = 1, y = 0 }
 [font.bold]
-family = "Terminess Nerd Font Mono"
+family = "SauceCodePro Nerd Font Mono"
 style = "Bold"
 
 [font.bold_italic]
-family = "Terminess Nerd Font Mono"
+family = "SauceCodePro Nerd Font Mono"
 style = "Bold Italic"
 
 [font.italic]
-family = "Terminess Nerd Font Mono"
+family = "SauceCodePro Nerd Font Mono"
 style = "Italic"
 
 [font.normal]
-family = "Terminess Nerd Font Mono"
+family = "SauceCodePro Nerd Font Mono"
 style = "Regular"
-
-# Noto Sans Mono
-# [font.bold]
-# family = "NotoSansM Nerd Font Mono"
-# style = "Bold"
-#
-# [font.normal]
-# family = "NotoSansM Nerd Font Mono"
-# style = "Regular"
 
 # Set the meta key to the left alt
 [window]
