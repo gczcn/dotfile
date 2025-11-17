@@ -2,9 +2,8 @@
 #            中文：   你好
 
 [font]
-# size = 15
 size = 14
-# 1234567890
+
 [font.bold]
 family = "SauceCodePro Nerd Font Mono"
 style = "Bold"
