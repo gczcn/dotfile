@@ -66,11 +66,13 @@ local create_user_command = api.nvim_create_user_command
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_tabnine boolean
+---@field enabled_custom_statusline boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
   enabled_plugins = true,
   enabled_copilot = false,
   enabled_tabnine = false,
+  enabled_custom_statusline = true,
   plugins_config = {
     border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
     nerd_font_circle_and_square = false,
@@ -331,8 +333,8 @@ vim.lsp.enable('clangd')
 --   grr:   references
 --   gri:   implementation
 --   grt:   type_definition
---   an:    vim.lsp.buf.selection_range(vim.v.count1)
---   in:    vim.lsp.buf.selection_range(-vim.v.count1)
+--   * an:    vim.lsp.buf.selection_range(vim.v.count1)
+--   * in:    vim.lsp.buf.selection_range(-vim.v.count1)
 --   g0:    document symbol
 --   <C-S>: signature help
 
@@ -593,14 +595,16 @@ _G.GetStatusLine = function()
   end
 end
 
-opt.statusline = '%!v:lua.GetStatusLine()'
+if global_config.enabled_custom_statusline then
+  opt.statusline = '%!v:lua.GetStatusLine()'
 
--- auto refresh
-local timer = vim.loop.new_timer()
----@diagnostic disable-next-line
-timer:start(0, 1000, vim.schedule_wrap(function()
-  vim.cmd('redrawstatus')
-end))
+  -- auto refresh
+  local timer = vim.loop.new_timer()
+  ---@diagnostic disable-next-line
+  timer:start(0, 1000, vim.schedule_wrap(function()
+    vim.cmd('redrawstatus')
+  end))
+end
 
 -- =============================================================================
 -- Commands and Aliases
@@ -927,14 +931,6 @@ local plugins = global_config.enabled_plugins and {
     end,
   },
 
-  -- AUTOPAIRS
-  {
-    'windwp/nvim-autopairs',
-    enabled = false,
-    event = { 'VeryLazy' },
-    opts = {},
-  },
-
   -- MINI.SURROUND
   {
     'nvim-mini/mini.surround',
@@ -1036,7 +1032,7 @@ local plugins = global_config.enabled_plugins and {
       { 'kkharji/sqlite.lua', module = 'sqlite' },
 
       -- Extensions
-      dependencies = {
+      {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
       },
@@ -1658,43 +1654,24 @@ let g:mkdp_preview_options = {
     end,
   },
 
-  -- COLORIZER
+  -- NVIM_HIGHLIGHT_COLORS
   -- test: #000000, #ffffff, #ff0000, #00ff00, #0000ff
   {
-    'catgoose/nvim-colorizer.lua',
+    'brenoprata10/nvim-highlight-colors',
     event = 'VeryLazy',
+    cmd = 'HighlightColors',
     config = function()
-      require('colorizer').setup({
-        user_default_options = {
-          always_update = true,
-        },
-      })
-      vim.cmd.ColorizerReloadAllBuffers()
-      vim.cmd.ColorizerToggle()
+      require('nvim-highlight-colors').setup({})
+
+      if vim.fn.has('nvim-0.12.0') == 1 then
+        create_autocmd('LspAttach', {
+          callback = function()
+            vim.lsp.document_color.enable(false)
+          end,
+        })
+      end
     end,
   },
-
-  -- {
-  --   'luukvbaal/statuscol.nvim',
-  --   config = function ()
-  --     local builtin = require("statuscol.builtin")
-  --     require("statuscol").setup({
-  --       relculright = true,
-  --       segments = {
-  --         -- { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
-  --         {
-  --           sign = { namespace = { "diagnostic/signs" }, maxwidth = 2, auto = true },
-  --           click = "v:lua.ScSa"
-  --         },
-  --         { text = { builtin.lnumfunc }, click = "v:lua.ScLa", },
-  --         {
-  --           sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
-  --           click = "v:lua.ScSa"
-  --         },
-  --       }
-  --     })
-  --   end
-  -- },
 
   -- SNACKS
   {
@@ -2295,7 +2272,7 @@ if global_config.enabled_plugins then
   end
   vim.opt.rtp:prepend(lazypath)
 
-  opt.laststatus = 2
+  -- opt.laststatus = 3
   opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
   opt.foldlevelstart = 99
   opt.foldenable = true
