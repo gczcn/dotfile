@@ -48,8 +48,8 @@
 -- Tags: VAR, VARS, GLOBAL
 -- =============================================================================
 
-local keymap = vim.keymap
 local api = vim.api
+local keymap = vim.keymap
 local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
 local create_user_command = api.nvim_create_user_command
@@ -292,13 +292,8 @@ keymap.set('o', '<M-D>', 'D', keymaps_opts)
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
 -- Other
---- Toggle background [ dark | light ]
-keymap.set({ 'n', 'v' }, '<F5>', function()
-  opt.background = vim.o.background == 'dark' and 'light' or 'dark'
-end, keymaps_opts)
-keymap.set('n', '<leader>tc', function()
-  opt.cursorcolumn = not vim.o.cursorcolumn
-end, keymaps_opts)
+keymap.set({ 'n', 'v' }, '<F5>', function() opt.background = vim.o.background == 'dark' and 'light' or 'dark' end, keymaps_opts)
+keymap.set('n', '<leader>tc', function() opt.cursorcolumn = not vim.o.cursorcolumn end, keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
@@ -993,15 +988,15 @@ local plugins = global_config.enabled_plugins and {
       local fzf_lua = require('fzf-lua')
       fzf_lua.setup({
         winopts = {
-          height = global_config.plugins_config.ivy_layout and 0.5 or 0.85,
-          width = global_config.plugins_config.ivy_layout and 1 or 0.80,
-          row = global_config.plugins_config.ivy_layout and 0.9999999 or 0.50,  -- 0.999... hhh
+          height = global_config.plugins_config.ivy_layout and 0.5 or nil,
+          width = global_config.plugins_config.ivy_layout and 1 or nil,
+          row = global_config.plugins_config.ivy_layout and 0.9999999 or nil,  -- 0.999... hhh
           border = global_config.plugins_config.ivy_layout and { '─', '─', '', '', '', '', '', '' } or global_config.plugins_config.border,
           backdrop = 100,
-          title_pos = global_config.plugins_config.ivy_layout and 'left' or 'center',
+          title_pos = global_config.plugins_config.ivy_layout and 'left' or nil,
           preview = {
             border = global_config.plugins_config.ivy_layout and { '┬', '─', '', '', '', '', '', '│' } or global_config.plugins_config.border,
-            title_pos = global_config.plugins_config.ivy_layout and 'left' or 'center',
+            title_pos = global_config.plugins_config.ivy_layout and 'left' or nil,
           },
           on_create = function()
             keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })

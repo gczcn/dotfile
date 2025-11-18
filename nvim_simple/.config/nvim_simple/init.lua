@@ -397,6 +397,7 @@ vim.pack.add({
   'https://github.com/folke/ts-comments.nvim',
   'https://github.com/gczcn/antonym.nvim',
   'https://github.com/neovim/nvim-lspconfig',
+  'https://github.com/ibhagwan/fzf-lua',
 })
 
 -- =============================================================================
@@ -502,3 +503,45 @@ vim.lsp.config('clangd', {
     '--background-index',
   }
 })
+
+-- =============== FZFLUA ===============
+keymap.set('n', '<leader>ff', '<cmd>FzfLua files<CR>')
+keymap.set('n', '<leader>fr', '<cmd>FzfLua oldfiles<CR>')
+keymap.set('n', '<leader>fs', '<cmd>FzfLua live_grep<CR>')
+keymap.set('n', '<leader>fc', '<cmd>FzfLua grep<CR>')
+keymap.set('n', '<leader>fk', '<cmd>FzfLua keymaps<CR>')
+keymap.set('n', '<leader>fb', '<cmd>FzfLua buffers<CR>')
+keymap.set('n', '<leader>ft', '<cmd>FzfLua tabs<CR>')
+keymap.set('n', '<leader>fm', '<cmd>FzfLua manpages<CR>')
+
+-- LSP
+keymap.set('n', 'grr', '<cmd>FzfLua lsp_references<CR>')
+keymap.set('n', 'gd', '<cmd>FzfLua lsp_definitions<CR>')
+keymap.set('n', 'gD', '<cmd>FzfLua lsp_declarations<CR>')
+keymap.set('n', 'gri', '<cmd>FzfLua lsp_implementations<CR>')
+keymap.set('n', 'grt', '<cmd>FzfLua lsp_typedefs<CR>')
+keymap.set('n', '<leader>;', '<cmd>FzfLua lsp_document_symbols<CR>')
+keymap.set('n', '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>')
+
+---@diagnostic disable-next-line: duplicate-set-field
+vim.ui.select = function(...)
+  require('lazy').load({ plugins = { 'fzf-lua' } })
+  return vim.ui.select(...)
+end
+
+require('fzf-lua').setup({
+  winopts = {
+    border = 'single',
+    backdrop = 100,
+    preview = {
+      border = 'single',
+    },
+    on_create = function()
+      keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })
+      keymap.set('t', '<C-u>', '<up>', { silent = true, buffer = true })
+    end,
+  },
+  fzf_colors = true,
+})
+
+require('fzf-lua').register_ui_select()
