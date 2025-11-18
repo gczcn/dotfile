@@ -34,7 +34,6 @@
 --     shfmt
 --
 -- The best way to install these dependencies is to use your distribution's package manager,
--- or you can run :RunShellScripgt<install|update>_deps_<package_manager> to install these dependencies.
 --
 -- Jump to any part of the configuration by searching for an uppercase tag.
 --
@@ -244,6 +243,7 @@ keymap.set({ 'n', 'v', 'o' }, 'k', 'i', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'K', 'I', keymaps_opts)
 keymap.set('t', '<M-q>', '<C-\\><C-n>', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, '0', '`', keymaps_opts)
+keymap.set({ 'n', 'v', 'o' }, '`', ':<C-F>a', keymaps_opts)
 
 -- Indenting
 keymap.set('v', '<', '<gv', keymaps_opts)
@@ -333,10 +333,14 @@ vim.lsp.enable('clangd')
 --   grr:   references
 --   gri:   implementation
 --   grt:   type_definition
---   * an:    vim.lsp.buf.selection_range(vim.v.count1)
---   * in:    vim.lsp.buf.selection_range(-vim.v.count1)
+--   an:    vim.lsp.buf.selection_range(vim.v.count1)
+--   in:    vim.lsp.buf.selection_range(-vim.v.count1)
 --   g0:    document symbol
 --   <C-S>: signature help
+
+if vim.fn.has('nvim-0.12.0') == 1 then
+  keymap.del('x', 'in')
+end
 
 keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
 keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
@@ -348,7 +352,6 @@ keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = tru
 keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
 keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
 keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
--- keymap.del('x', 'in')
 keymap.set('x', 'kn', function() vim.lsp.buf.selection_range(-vim.v.count1) end, keymaps_opts)
 
 -- =============================================================================
@@ -692,8 +695,7 @@ create_autocmd('FileType', {
 create_autocmd('FileType', {
   pattern = { 'markdown' },
   callback = function()
-    -- FIX: Need to fix. see L379
-    -- vim.opt_local.wrap = true
+    vim.opt_local.wrap = true
     vim.opt_local.tabstop = 2
     vim.opt_local.softtabstop = 2
     Utils.setup_markdown()
@@ -716,7 +718,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- Tags: FEATURES
 -- =============================================================================
 
--- WARN: There are a lot of issues, so do not use it!
+-- WARN: There are a lot of issues, so DO NOT USE it!
 -- Translate shell (trans)
 ---@param t string
 ---@param to string
@@ -787,7 +789,7 @@ local plugins = global_config.enabled_plugins and {
     priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
-        group = vim.api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+        group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
         pattern = 'gruvbox',
         callback = function()
           local set_hl = vim.api.nvim_set_hl
