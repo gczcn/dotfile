@@ -1,0 +1,2 @@
+##### Language Server Configurations
+This folder contains all the language server configurations, and most of which come from the [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) project. Therefore, to keep these configurations up-to-date, you may need to periodically compare the configurations here with those in the [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) project and make any necessary modifications.

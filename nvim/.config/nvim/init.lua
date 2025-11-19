@@ -103,6 +103,7 @@ Utils.commenting.operator_rhs = function()
 end
 
 -- Add comment on a new line
+---@param key string
 Utils.commenting.newline = function(key)
   vim.cmd(string.format([[noautocmd exe "norm! %s.\<esc>%sf.x"]], key, Utils.commenting.operator_rhs()))
   local line = api.nvim_get_current_line()
@@ -243,7 +244,7 @@ keymap.set({ 'n', 'v', 'o' }, 'k', 'i', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'K', 'I', keymaps_opts)
 keymap.set('t', '<M-q>', '<C-\\><C-n>', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, '0', '`', keymaps_opts)
-keymap.set({ 'n', 'v', 'o' }, '`', ':<C-F>a', keymaps_opts)
+keymap.set({ 'n', 'v', 'o' }, '`', 'q:a', keymaps_opts)
 
 -- Indenting
 keymap.set('v', '<', '<gv', keymaps_opts)
@@ -1985,9 +1986,9 @@ let g:mkdp_preview_options = {
 
       -- configure Go language server
       vim.lsp.config('gopls', {
-        cmd = { 'gopls' },
-        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-        root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
+        -- cmd = { 'gopls' },
+        -- filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        -- root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
         settings = {
           gopls = {
             analyses = {
