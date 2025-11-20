@@ -32,6 +32,7 @@ opt.pumheight = 30
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
 opt.shiftwidth = 2 -- Number of space inserted for indentation
+opt.shortmess = vim.o.shortmess .. 'I' -- Don't give the intro messages when starting Neovim
 opt.showmode = false -- No display mode
 opt.sidescrolloff = 8 -- Columns of context
 opt.signcolumn = 'auto'

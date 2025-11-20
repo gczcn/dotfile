@@ -39,8 +39,6 @@
 --
 -- I hope I can read the code later :)
 -- =============================================================================
--- TODO: Rewrite plugin configurations with vim.pack?????
--- TODO: Try to use QuickFix
 -- TODO: Remove more useless plugins
 
 -- =============================================================================
@@ -52,6 +50,7 @@ local api = vim.api
 local keymap = vim.keymap
 local opt = vim.opt
 local create_autocmd = api.nvim_create_autocmd
+local create_augroup = api.nvim_create_augroup
 local create_user_command = api.nvim_create_user_command
 
 ---@class PluginsConfig
@@ -299,7 +298,6 @@ keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
 keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
-keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lines=not vim.diagnostic.config().virtual_lines})<CR>')
 
 -- stylua: ignore end
 
@@ -310,7 +308,7 @@ keymap.set('n', '<leader><leader>', '<cmd>lua vim.diagnostic.config({virtual_lin
 -- Tags: LSP, LS
 -- =============================================================================
 
--- Enable
+-- Enable language servers
 vim.lsp.enable('html')
 vim.lsp.enable('ts_ls')
 vim.lsp.enable('cssls')
@@ -321,6 +319,29 @@ vim.lsp.enable('bashls')
 vim.lsp.enable('fish_lsp')
 vim.lsp.enable('vimls')
 vim.lsp.enable('clangd')
+
+-- Diagnostic Config
+vim.diagnostic.config({
+  virtual_text = true,
+  virtual_lines = false,
+  severity_sort = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '',
+      [vim.diagnostic.severity.WARN] = '',
+      [vim.diagnostic.severity.HINT] = '',
+      [vim.diagnostic.severity.INFO] = '',
+    },
+
+    -- The following highlight groups need to be set manually
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticNumHlError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticNumHlWarn',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticNumHlHint',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
+    },
+  },
+})
 
 -- Keymaps
 -- Default_keymaps:
@@ -338,11 +359,40 @@ if vim.fn.has('nvim-0.12.0') == 1 then
   keymap.del('x', 'in')
 end
 
+keymap.set('n', 'grl', function()
+  if vim.diagnostic.config().virtual_lines then
+    vim.diagnostic.config({
+      virtual_text = true,
+      virtual_lines = false,
+    })
+  else
+    vim.diagnostic.config({
+      virtual_text = false,
+      virtual_lines = true,
+    })
+  end
+end, { desc = 'Toggle diagnostic virtual text style' })
+
+keymap.set('n', 'grf', function()
+  vim.diagnostic.open_float()
+end, { desc = 'Show Line Diagnostics' })
+keymap.set('n', 'grF', function()
+  vim.diagnostic.open_float()
+  vim.diagnostic.open_float()
+end, { desc = 'Show Line Diagnostics (focus on the floating window)' })
+
+keymap.set('n', 'grc', function()
+  vim.diagnostic.open_float({ scope = 'cursor' })
+end, { desc = 'Show Cursor Diagnostics' })
+keymap.set('n', 'grC', function()
+  vim.diagnostic.open_float({ scope = 'cursor' })
+  vim.diagnostic.open_float({ scope = 'cursor' })
+end, { desc = 'Show Cursor Diagnostics (focus on the floating window)' })
+
 keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
 keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
 keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
 keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
-keymap.set('n', 'grf', vim.diagnostic.open_float, { desc = 'Show Line Diagnostics' })
 keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
 keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
 keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
@@ -381,9 +431,10 @@ opt.pumheight = 30
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
 opt.shiftwidth = 2 -- Number of space inserted for indentation
+opt.shortmess = vim.o.shortmess .. 'I' -- Don't give the intro messages when starting Neovim
 opt.showmode = false -- No display mode
 opt.sidescrolloff = 8 -- Columns of context
-opt.signcolumn = 'auto'
+opt.signcolumn = 'yes'
 opt.smartcase = true -- Case sensitive searching
 opt.smartindent = true -- Insert indents automatically
 opt.smoothscroll = true
@@ -398,50 +449,6 @@ opt.updatetime = 200 -- Save swap file and trigger CursorHold
 opt.winblend = 10
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
-
--- FIX: When wrap is enabled, fold column doesn't show correctly
--- I don't know how to fox it!!!!!!! :<
-
---[[
-opt.statuscolumn = table.concat({
-  '%s', -- Sign column
-  '%l', -- Line number
-  '%{%(&foldcolumn > 0 && (&signcolumn != "no" || &number || &relativenumber) ? " " : "")%}', -- Gap between SignColumn/number and foldcolumn
-  '%C', -- Fold column
-  '%#NonText#', -- The highlight for the dividing line
-  '%{%(&foldcolumn > 1 ? "▐" : "")%}', -- The dividing line between foldcolumn and buffer
-  '%{%(&foldcolumn > 0 || &number || &relativenumber ? " " : "")%}', -- Gap between foldcolumn and buffer
-})
---]]
-
-if not global_config.enabled_plugins then
-  vim.cmd.colorscheme('habamax')
-end
-
--- Lsp
-vim.diagnostic.config({
-  virtual_text = global_config.plugins_config.nerd_font_circle_and_square and {
-    prefix = '󰝤',
-  } or true,
-  virtual_lines = false, -- press <leader><leader> to toggle this option.
-  severity_sort = true,
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = '',
-      [vim.diagnostic.severity.WARN] = '',
-      [vim.diagnostic.severity.HINT] = '',
-      [vim.diagnostic.severity.INFO] = '',
-    },
-
-    -- The following highlight groups need to be set manually
-    numhl = {
-      [vim.diagnostic.severity.ERROR] = 'DiagnosticNumHlError',
-      [vim.diagnostic.severity.WARN] = 'DiagnosticNumHlWarn',
-      [vim.diagnostic.severity.HINT] = 'DiagnosticNumHlHint',
-      [vim.diagnostic.severity.INFO] = 'DiagnosticNumHlInfo',
-    },
-  },
-})
 
 -- =============================================================================
 -- Custom StatusLine
@@ -471,64 +478,47 @@ vim.diagnostic.config({
 -- ---------- StatusLine ----------
 ---@return string
 _G.GetStatusLine = function()
-  ---@param mode string
-  ---@return string
-  local get_hl = function(mode)
-    local hl_map = {
-      n = '%#CustomStatusLineModeNormal#',
-      v = '%#CustomStatusLineModeVisual#',
-      s = '%#CustomStatusLineModeSelect#',
-      i = '%#CustomStatusLineModeInsert#',
-      R = '%#CustomStatusLineModeReplace#',
-      c = '%#CustomStatusLineModeCommand#',
-      r = '%#CustomStatusLineModePrompt#',
-      t = '%#CustomStatusLineModeTerminal#',
-      nl = '%#CustomStatusLineModeNull#',
-    }
-    return hl_map[mode]
-  end
-
   local mode_map = {
-    ['n'] = { get_hl('n'), ' NOR ' },
-    ['no'] = { get_hl('n'), ' O-P ' },
-    ['nov'] = { get_hl('n'), ' O-P ' },
-    ['noV'] = { get_hl('n'), ' O-P ' },
-    ['no\22'] = { get_hl('n'), ' O-P ' },
-    ['niI'] = { get_hl('n'), ' N-I ' },
-    ['niR'] = { get_hl('n'), ' N-R ' },
-    ['niV'] = { get_hl('n'), ' N ' },
-    ['nt'] = { get_hl('n'), ' N-T ' },
-    ['v'] = { get_hl('v'), ' VIS ' },
-    ['vs'] = { get_hl('v'), ' V ' },
-    ['V'] = { get_hl('v'), ' V-L ' },
-    ['Vs'] = { get_hl('v'), ' V-L ' },
-    ['\22'] = { get_hl('v'), ' V-B ' },
-    ['\22s'] = { get_hl('v'), ' V-B ' },
-    ['s'] = { get_hl('s'), ' S ' },
-    ['S'] = { get_hl('s'), ' S-L ' },
-    ['\19'] = { get_hl('s'), ' S-B ' },
-    ['i'] = { get_hl('i'), ' INS ' },
-    ['ic'] = { get_hl('i'), ' I-C ' },
-    ['ix'] = { get_hl('i'), ' I-X ' },
-    ['R'] = { get_hl('R'), ' REP ' },
-    ['Rc'] = { get_hl('R'), ' R-C ' },
-    ['Rx'] = { get_hl('R'), ' R-X ' },
-    ['Rv'] = { get_hl('R'), ' V-R ' },
-    ['Rvc'] = { get_hl('R'), ' RVC ' },
-    ['Rvx'] = { get_hl('R'), ' RVX ' },
-    ['c'] = { get_hl('c'), ' CMD ' },
-    ['cv'] = { get_hl('c'), ' EX ' },
-    ['ce'] = { get_hl('c'), ' EX ' },
-    ['r'] = { get_hl('r'), ' R ' },
-    ['rm'] = { get_hl('r'), ' M ' },
-    ['r?'] = { get_hl('r'), ' C ' },
-    ['!'] = { get_hl('nl'), ' SH ' },
-    ['t'] = { get_hl('t'), ' TERM ' },
+    ['n'] = 'NOR',
+    ['no'] = 'O-P',
+    ['nov'] = 'O-P',
+    ['noV'] = 'O-P',
+    ['no\22'] = 'O-P',
+    ['niI'] = 'N-I',
+    ['niR'] = 'N-R',
+    ['niV'] = 'N',
+    ['nt'] = 'N-T',
+    ['v'] = 'VIS',
+    ['vs'] = 'V',
+    ['V'] = 'V-L',
+    ['Vs'] = 'V-L',
+    ['\22'] = 'V-B',
+    ['\22s'] = 'V-B',
+    ['s'] = 'S',
+    ['S'] = 'S-L',
+    ['\19'] = 'S-B',
+    ['i'] = 'INS',
+    ['ic'] = 'I-C',
+    ['ix'] = 'I-X',
+    ['R'] = 'REP',
+    ['Rc'] = 'R-C',
+    ['Rx'] = 'R-X',
+    ['Rv'] = 'V-R',
+    ['Rvc'] = 'RVC',
+    ['Rvx'] = 'RVX',
+    ['c'] = 'CMD',
+    ['cv'] = 'EX',
+    ['ce'] = 'EX',
+    ['r'] = 'R',
+    ['rm'] = 'M',
+    ['r?'] = 'C',
+    ['!'] = 'SH',
+    ['t'] = 'TERM',
   }
 
   ---@return string
   local get_mode = function()
-    return table.concat(mode_map[vim.fn.mode()] or { get_hl('nl'), 'NULL' }) .. '%*'
+    return table.concat({' %#CustomStatusLineMode#', mode_map[vim.fn.mode()], '%*'})
   end
 
   -- Need the gitsigns plugin
@@ -570,25 +560,22 @@ _G.GetStatusLine = function()
 
   if vim.api.nvim_get_current_win() == vim.g.statusline_winid then
     return table.concat({
-      '%<' .. get_mode(),
-      '%f',
-      '%#CustomStatusLineFileInfo#%H%M%R%Y%Q%*',
-      get_git_info(true),
+      '%<' .. get_mode() .. ' ',
+      '%f %m%y%r%q ',
+      get_git_info(true) .. ' ',
       get_diagnostic(true),
       '%=',
-      '%{v:register}% %l,%c%V %P',
-      (mode_map[vim.fn.mode()][1] or get_hl('nl')) .. " %{strftime('%m.%d %H:%M')}",
+      '%{v:register}% %l,%c%V  %P',
       '',
     }, ' ')
   else
     return table.concat({
       '%<',
-      '%f',
-      '%H%M%R%Y%Q%*',
-      get_git_info(false),
+      '%f %m%y%r%q ',
+      get_git_info(false) .. ' ',
       get_diagnostic(false),
       '%=',
-      '%{v:register}% %l,%c%V %P',
+      '%{v:register}% %l,%c%V  %P',
       '',
     }, ' ')
   end
@@ -701,7 +688,7 @@ create_autocmd('FileType', {
 -- Events
 ---@diagnostic disable-next-line: param-type-mismatch
 create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
-  group = api.nvim_create_augroup('FileOpened', { clear = true }),
+  group = create_augroup('FileOpened', { clear = true }),
   pattern = '*',
   callback = function()
     ---@diagnostic disable-next-line: param-type-mismatch
@@ -778,52 +765,35 @@ local plugins = global_config.enabled_plugins and {
 
   -- COLORSCHEMES
 
-  --- GRUVBOX
+  -- GRUVBOX
   {
     'ellisonleao/gruvbox.nvim',
     lazy = false,
     priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
-        group = api.nvim_create_augroup('custom_highlights_gruvbox', {}),
+        group = create_augroup('custom_highlights_gruvbox', {}),
         pattern = 'gruvbox',
         callback = function()
           local set_hl = vim.api.nvim_set_hl
+          local bg = vim.o.background
 
-          local foldcolumn_fg = Utils.get_hl('FoldColumn')
-          set_hl(0, 'FoldColumn', { fg = foldcolumn_fg })
-          set_hl(0, 'CursorLineFold', { fg = foldcolumn_fg, bg = Utils.get_hl('CursorLine', true) })
+          set_hl(0, 'DiagnosticNumHlError', { fg = bg == 'dark' and '#fb4934' or '#9d0006', bold = true })
+          set_hl(0, 'DiagnosticNumHlWarn', { fg = bg == 'dark' and '#fabd2f' or '#b57614', bold = true })
+          set_hl(0, 'DiagnosticNumHlHint', { fg = bg == 'dark' and '#8ec07c' or '#427b58', bold = true })
+          set_hl(0, 'DiagnosticNumHlInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
-          set_hl(0, 'DiagnosticNumHlError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
-          set_hl(0, 'DiagnosticNumHlWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
-          set_hl(0, 'DiagnosticNumHlHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
-          set_hl(0, 'DiagnosticNumHlInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
+          set_hl(0, 'CustomStatusLineMode', {})
+          set_hl(0, 'CustomStatusLineGitHead', { fg = bg == 'dark' and '#b8bb26' or '#79740e', bold = true })
+          set_hl(0, 'CustomStatusLineGitAdded', { fg = bg == 'dark' and '#b8bb26' or '#79740e' })
+          set_hl(0, 'CustomStatusLineGitChanged', { fg = bg == 'dark' and '#fe8019' or '#af3a03' })
+          set_hl(0, 'CustomStatusLineGitRemoved', { fg = bg == 'dark' and '#fb4934' or '#9d0006' })
+          set_hl(0, 'CustomStatusLineDiagnosticError', { fg = bg == 'dark' and '#fb4934' or '#9d0006', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticWarn', { fg = bg == 'dark' and '#fabd2f' or '#b57614', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticHint', { fg = bg == 'dark' and '#8ec07c' or '#427b58', bold = true })
+          set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
-          set_hl(0, 'CustomStatusLineModeNull', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeNormal', { fg = vim.o.background == 'dark' and '#bdae93' or '#665c54', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeVisual', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeSelect', { fg = vim.o.background == 'dark' and '#d3869b' or '#8f3f71', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeInsert', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeReplace', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeCommand', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModePrompt', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineModeTerminal', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bg = vim.o.background == 'dark' and '#665c54' or '#bdae93', bold = true })
-          set_hl(0, 'CustomStatusLineFileInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678' })
-          set_hl(0, 'CustomStatusLineGitHead', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e', bold = true })
-          set_hl(0, 'CustomStatusLineGitAdded', { fg = vim.o.background == 'dark' and '#b8bb26' or '#79740e' })
-          set_hl(0, 'CustomStatusLineGitChanged', { fg = vim.o.background == 'dark' and '#fe8019' or '#af3a03' })
-          set_hl(0, 'CustomStatusLineGitRemoved', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006' })
-          set_hl(0, 'CustomStatusLineDiagnosticError', { fg = vim.o.background == 'dark' and '#fb4934' or '#9d0006', bold = true })
-          set_hl(0, 'CustomStatusLineDiagnosticWarn', { fg = vim.o.background == 'dark' and '#fabd2f' or '#b57614', bold = true })
-          set_hl(0, 'CustomStatusLineDiagnosticHint', { fg = vim.o.background == 'dark' and '#8ec07c' or '#427b58', bold = true })
-          set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = vim.o.background == 'dark' and '#83a598' or '#076678', bold = true })
-
-          -- Illuminate
-          set_hl(0, 'IlluminatedWordText', { underline = true })
-          set_hl(0, 'IlluminatedWordRead', { underline = true })
-          set_hl(0, 'IlluminatedWordWrite', { underline = true })
-
-          set_hl(0, 'GitsignsCurrentLineBlame', { fg = vim.o.background == 'dark' and '#7c6f64' or '#a89984' })
+          set_hl(0, 'GitsignsCurrentLineBlame', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
         end,
       })
 
@@ -953,6 +923,7 @@ local plugins = global_config.enabled_plugins and {
   -- FZFLUA
   {
     'ibhagwan/fzf-lua',
+    enabled = false,
     dependencies = {
       'nvim-mini/mini.icons',
       -- 'nvim-treesitter/nvim-treesitter-context',
@@ -1013,6 +984,7 @@ local plugins = global_config.enabled_plugins and {
   -- TELESCOPE
   {
     'nvim-telescope/telescope.nvim',
+    enabled = false,
     branch = 'master',
     cmd = 'Telescope',
     keys = function()
@@ -1183,69 +1155,10 @@ local plugins = global_config.enabled_plugins and {
     end,
   },
 
-  -- VIM-ILLUMINATE, WORD
-  {
-    'rrethy/vim-illuminate',
-    event = 'User FileOpened',
-    opts = {
-      delay = 200,
-      large_file_cutoff = 2000,
-      large_file_overrides = {
-        providers = { 'lsp' },
-      },
-      filetypes_denylist = {
-        'dirbuf',
-        'dirvish',
-        'fugitive',
-        'starter',
-        'telescopeprompt',
-      },
-    },
-    config = function(_, opts)
-      require('illuminate').configure(opts)
-
-      local map = function(key, dir, buffer)
-        keymap.set('n', key, function()
-          require('illuminate')['goto_' .. dir .. '_reference'](false)
-        end, { desc = dir:sub(1, 1):upper() .. dir:sub(2) .. ' reference', buffer = buffer })
-      end
-
-      map(']]', 'next')
-      map('[[', 'prev')
-
-      -- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-      create_autocmd('FileType', {
-        pattern = '*',
-        callback = function()
-          local buffer = api.nvim_get_current_buf()
-          map(']]', 'next', buffer)
-          map('[[', 'prev', buffer)
-        end,
-      })
-
-      create_autocmd('InsertLeave', {
-        pattern = '*',
-        callback = function()
-          require('illuminate').resume()
-        end,
-      })
-
-      create_autocmd('InsertEnter', {
-        pattern = '*',
-        callback = function()
-          require('illuminate').pause()
-        end,
-      })
-    end,
-    keys = {
-      { ']]', desc = 'next reference' },
-      { '[[', desc = 'prev reference' },
-    },
-  },
-
   -- TODO-COMMENTS
   {
     'folke/todo-comments.nvim',
+    enabled = false,
     cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
     event = 'User FileOpened',
     opts = {
@@ -1367,7 +1280,7 @@ local plugins = global_config.enabled_plugins and {
       })
 
       -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
-      --   group = api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+      --   group = create_augroup('TS_FOLD_WORKAROUND', {}),
       --   callback = function()
       --     if require("nvim-treesitter.parsers").has_parser() then
       --       opt.foldmethod = "expr"
@@ -1652,14 +1565,20 @@ let g:mkdp_preview_options = {
     end,
   },
 
-  -- NVIM_HIGHLIGHT_COLORS
+  -- COLORIZER
   -- test: #000000, #ffffff, #ff0000, #00ff00, #0000ff
   {
-    'brenoprata10/nvim-highlight-colors',
+    'catgoose/nvim-colorizer.lua',
     event = 'VeryLazy',
-    cmd = 'HighlightColors',
     config = function()
-      require('nvim-highlight-colors').setup({})
+      require('colorizer').setup({
+        user_default_options = {
+          mode = 'virtualtext',
+          virtualtext = '■',
+          virtualtext_inline = 'before',
+          always_update = true,
+        },
+      })
 
       if vim.fn.has('nvim-0.12.0') == 1 then
         create_autocmd('LspAttach', {
@@ -1668,6 +1587,9 @@ let g:mkdp_preview_options = {
           end,
         })
       end
+
+      vim.cmd.ColorizerReloadAllBuffers()
+      vim.cmd.ColorizerToggle()
     end,
   },
 
@@ -1676,6 +1598,29 @@ let g:mkdp_preview_options = {
     'folke/snacks.nvim',
     lazy = false,
     priority = 1000,
+    ---@diagnostic disable:undefined-global
+    keys = {
+      { '<leader>ff', function() Snacks.picker.files() end },
+      { '<leader>fc', function() Snacks.picker.files() end },
+      { '<leader>fr', function() Snacks.picker.recent() end },
+      { '<leader>fg', function() Snacks.picker.grep() end },
+      { '<leader>fk', function() Snacks.picker.keymaps() end },
+      { '<leader>fb', function() Snacks.picker.buffers() end },
+      { '<leader>fm', function() Snacks.picker.man() end },
+      { '<leader>fh', function() Snacks.picker.help() end },
+      { '<leader>fu', function() Snacks.picker.undo() end },
+      { '<leader>fz', function() Snacks.picker.zoxide() end },
+
+      -- LSP
+      { 'grr', function() Snacks.picker.lsp_references() end, desc = 'Show LSP References' },
+      { 'gd', function() Snacks.picker.lsp_definitions() end, desc = 'Show LSP Definitions' },
+      { 'gD', function() Snacks.picker.lsp_declarations() end, desc = 'Show LSP Declarations' },
+      { 'gri', function() Snacks.picker.lsp_implementations() end, desc = 'Show LSP Implementations' },
+      { 'grt', function() Snacks.picker.lsp_type_definitions() end, desc = 'Show LSP Type Definitions' },
+      { '<leader>;', function() Snacks.picker.lsp_symbols() end, desc = 'Show Buffer Symbols' },
+      { '<leader>D', function() Snacks.picker.diagnostics_buffer() end, desc = 'Show Buffer Diagnostics' },
+    },
+    ---@diagnostic enable
     config = function()
       local Snacks = require('snacks')
       Snacks.setup({
@@ -1687,9 +1632,10 @@ let g:mkdp_preview_options = {
             if vim.fn.exists(':NoMatchParen') ~= 0 then
               vim.cmd([[NoMatchParen]])
             end
-            Snacks.util.wo(0, { foldmethod = 'manual', conceallevel = 0 })
+            Snacks.util.wo(0, { foldmethod = 'manual', statuscolumn = '', conceallevel = 0 })
+            vim.b.completion = false
             vim.b.minianimate_disable = true
-            vim.cmd('IlluminatePauseBuf')
+            vim.b.minihipatterns_disable = true
             vim.schedule(function()
               if vim.api.nvim_buf_is_valid(ctx.buf) then
                 vim.bo[ctx.buf].syntax = ctx.ft
@@ -1697,14 +1643,31 @@ let g:mkdp_preview_options = {
             end)
           end,
         },
+        picker = {
+          prompt = ' ',
+          layout = {
+            layout = {
+              box = 'horizontal',
+              backdrop = false,
+              width = 0.9,
+              min_width = 120,
+              height = 0.85,
+              border = 'none',
+              {
+                box = 'vertical',
+                border = global_config.plugins_config.border,
+                { win = 'input', height = 1, border = 'bottom' },
+                { win = 'list', border = 'none' },
+              },
+              {
+                win = 'preview',
+                border = global_config.plugins_config.border,
+                width = 0.5
+              },
+            },
+          },
+        },
         quickfile = {},
-        -- statuscolumn = {
-        --   folds = {
-        --     open = true,
-        --     git_hl = true,
-        --   },
-        -- },
-
         styles = {
           notification = { border = 'single' },
           notification_history = {
@@ -1803,20 +1766,20 @@ let g:mkdp_preview_options = {
     config = function()
       require('gitsigns').setup({
         signs = {
-          add          = { text = '+' },
-          change       = { text = '~' },
-          delete       = { text = '_' },
-          topdelete    = { text = '-' },
-          changedelete = { text = '~' },
-          untracked    = { text = '?' },
+          add          = { text = '▎' },
+          change       = { text = '▎' },
+          delete       = { text = '▁' },
+          topdelete    = { text = '▔' },
+          changedelete = { text = '▎' },
+          untracked    = { text = '▎' },
         },
         signs_staged = {
-          add          = { text = '+' },
-          change       = { text = '~' },
-          delete       = { text = '_' },
-          topdelete    = { text = '-' },
-          changedelete = { text = '~' },
-          untracked    = { text = '?' },
+          add          = { text = '▎' },
+          change       = { text = '▎' },
+          delete       = { text = '▁' },
+          topdelete    = { text = '▔' },
+          changedelete = { text = '▎' },
+          untracked    = { text = '▎' },
         },
         sign_priority = 11,
         current_line_blame = true,
@@ -1853,23 +1816,22 @@ let g:mkdp_preview_options = {
   {
     'mfussenegger/nvim-dap',
     keys = {
-      { '<leader>dB', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Breakpoint Condition' },
-      { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
-      { '<leader>dc', function() require('dap').continue() end, desc = 'Run/Continue' },
-      -- { '<leader>da', function() require('dap').continue({ before = get_args }) end, desc = 'Run with Args' },
-      { '<leader>dC', function() require('dap').run_to_cursor() end, desc = 'Run to Cursor' },
-      { '<leader>dg', function() require('dap').goto_() end, desc = 'Go to Line (No Execute)' },
-      { '<leader>di', function() require('dap').step_into() end, desc = 'Step Into' },
-      { '<leader>dj', function() require('dap').down() end, desc = 'Down' },
-      { '<leader>dk', function() require('dap').up() end, desc = 'Up' },
-      { '<leader>dl', function() require('dap').run_last() end, desc = 'Run Last' },
-      { '<leader>do', function() require('dap').step_out() end, desc = 'Step Out' },
-      { '<leader>dO', function() require('dap').step_over() end, desc = 'Step Over' },
-      { '<leader>dP', function() require('dap').pause() end, desc = 'Pause' },
-      { '<leader>dr', function() require('dap').repl.toggle() end, desc = 'Toggle REPL' },
-      { '<leader>ds', function() require('dap').session() end, desc = 'Session' },
-      { '<leader>dt', function() require('dap').terminate() end, desc = 'Terminate' },
-      { '<leader>dw', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
+      { 'DB', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Breakpoint Condition' },
+      { 'Db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
+      { 'Dc', function() require('dap').continue() end, desc = 'Run/Continue' },
+      { 'DC', function() require('dap').run_to_cursor() end, desc = 'Run to Cursor' },
+      { 'Dg', function() require('dap').goto_() end, desc = 'Go to Line (No Execute)' },
+      { 'Di', function() require('dap').step_into() end, desc = 'Step Into' },
+      { 'Dj', function() require('dap').down() end, desc = 'Down' },
+      { 'Dk', function() require('dap').up() end, desc = 'Up' },
+      { 'Dl', function() require('dap').run_last() end, desc = 'Run Last' },
+      { 'Do', function() require('dap').step_out() end, desc = 'Step Out' },
+      { 'DO', function() require('dap').step_over() end, desc = 'Step Over' },
+      { 'DP', function() require('dap').pause() end, desc = 'Pause' },
+      { 'Dr', function() require('dap').repl.toggle() end, desc = 'Toggle REPL' },
+      { 'Ds', function() require('dap').session() end, desc = 'Session' },
+      { 'Dt', function() require('dap').terminate() end, desc = 'Terminate' },
+      { 'Dw', function() require('dap.ui.widgets').hover() end, desc = 'Widgets' },
     },
     dependencies = {
       'nvim-neotest/nvim-nio',
@@ -1952,7 +1914,7 @@ let g:mkdp_preview_options = {
       { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
     config = function()
-      local util = require('lspconfig.util')
+      -- local util = require('lspconfig.util')
 
       vim.lsp.config('basedpyright', {
         settings = {
@@ -2219,7 +2181,7 @@ let g:mkdp_preview_options = {
       }
 
       if global_config.enabled_copilot then
-        opts.sources.provides.copilot = {
+        opts.sources.providers.copilot = {
           name = 'copilot',
           module = 'blink-cmp-copilot',
           score_offset = 100,
