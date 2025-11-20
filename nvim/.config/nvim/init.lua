@@ -426,7 +426,7 @@ opt.list = true -- Show some hidden characters
 opt.listchars = { tab = '> ', trail = '-', extends = '>', precedes = '<', nbsp = '+' }
 opt.maxmempattern = 5000
 opt.number = true
-opt.pumblend = 10
+-- opt.pumblend = 10
 opt.pumheight = 30
 opt.scrolloff = 8 -- Lines of context
 opt.shiftround = true -- Round indent
@@ -446,7 +446,7 @@ opt.termguicolors = true -- Enable true colors
 opt.undofile = true
 opt.undolevels = 10000
 opt.updatetime = 200 -- Save swap file and trigger CursorHold
-opt.winblend = 10
+-- opt.winblend = 10
 opt.winminwidth = 5 -- Minimum window width
 opt.wrap = false -- Disable line wrap
 
@@ -917,179 +917,6 @@ local plugins = global_config.enabled_plugins and {
           update_n_lines = 'sn', -- Update `n_lines`
         },
       })
-    end,
-  },
-
-  -- FZFLUA
-  {
-    'ibhagwan/fzf-lua',
-    enabled = false,
-    dependencies = {
-      'nvim-mini/mini.icons',
-      -- 'nvim-treesitter/nvim-treesitter-context',
-    },
-    cmd = 'FzfLua',
-    keys = {
-      { '<leader>ff', '<cmd>FzfLua files<CR>' },
-      { '<leader>fr', '<cmd>FzfLua oldfiles<CR>' },
-      { '<leader>fs', '<cmd>FzfLua live_grep<CR>' },
-      { '<leader>fc', '<cmd>FzfLua grep<CR>' },
-      { '<leader>fk', '<cmd>FzfLua keymaps<CR>' },
-      -- { '<leader>fo', string.format('<cmd>FzfLua files cwd=%s<CR>', vim.fn.stdpath('config')) },
-      { '<leader>fb', '<cmd>FzfLua buffers<CR>' },
-      { '<leader>fw', '<cmd>FzfLua colorschemes<CR>' },
-      { '<leader>fm', '<cmd>FzfLua manpages<CR>' },
-
-      -- LSP
-      { 'grr', '<cmd>FzfLua lsp_references<CR>', desc = 'Show LSP References' },
-      { 'gd', '<cmd>FzfLua lsp_definitions<CR>', desc = 'Show LSP Definitions' },
-      { 'gD', '<cmd>FzfLua lsp_declarations<CR>', desc = 'Show LSP Declarations' },
-      { 'gri', '<cmd>FzfLua lsp_implementations<CR>', desc = 'Show LSP Implementations' },
-      { 'grt', '<cmd>FzfLua lsp_typedefs<CR>', desc = 'Show LSP Type Definitions' },
-      { '<leader>;', '<cmd>FzfLua lsp_document_symbols<CR>', desc = 'Show Buffer Symbols' },
-      { '<leader>D', '<cmd>FzfLua lsp_document_diagnostics<CR>', desc = 'Show Buffer Diagnostics' },
-    },
-    init = function()
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.ui.select = function(...)
-        require('lazy').load({ plugins = { 'fzf-lua' } })
-        return vim.ui.select(...)
-      end
-    end,
-    config = function()
-      local fzf_lua = require('fzf-lua')
-      fzf_lua.setup({
-        winopts = {
-          height = global_config.plugins_config.ivy_layout and 0.5 or nil,
-          width = global_config.plugins_config.ivy_layout and 1 or nil,
-          row = global_config.plugins_config.ivy_layout and 0.9999999 or nil,  -- 0.999... hhh
-          border = global_config.plugins_config.ivy_layout and { '─', '─', '', '', '', '', '', '' } or global_config.plugins_config.border,
-          backdrop = 100,
-          title_pos = global_config.plugins_config.ivy_layout and 'left' or nil,
-          preview = {
-            border = global_config.plugins_config.ivy_layout and { '┬', '─', '', '', '', '', '', '│' } or global_config.plugins_config.border,
-            title_pos = global_config.plugins_config.ivy_layout and 'left' or nil,
-          },
-          on_create = function()
-            keymap.set('t', '<C-e>', '<down>', { silent = true, buffer = true })
-            keymap.set('t', '<C-u>', '<up>', { silent = true, buffer = true })
-          end,
-        },
-        fzf_colors = true,
-      })
-      fzf_lua.register_ui_select()
-    end,
-  },
-
-  -- TELESCOPE
-  {
-    'nvim-telescope/telescope.nvim',
-    enabled = false,
-    branch = 'master',
-    cmd = 'Telescope',
-    keys = function()
-      local theme = global_config.plugins_config.ivy_layout and 'ivy' or ''
-      return {
-        { '<leader>fe', string.format('<cmd>Telescope file_browser theme=%s<CR>', theme) },
-        { '<leader>fu', string.format('<cmd>Telescope undo theme=%s<CR>', theme) },
-        { '<leader>fp', string.format('<cmd>Telescope neoclip theme=%s<CR>', theme) },
-      }
-    end,
-    dependencies = {
-      'nvim-lua/popup.nvim',
-      'nvim-lua/plenary.nvim',
-      -- 'MunifTanjim/nui.nvim',
-      { 'kkharji/sqlite.lua', module = 'sqlite' },
-
-      -- Extensions
-      {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'make'
-      },
-      'AckslD/nvim-neoclip.lua',
-      'debugloop/telescope-undo.nvim',
-      'nvim-telescope/telescope-file-browser.nvim',
-    },
-    config = function()
-      local telescope = require('telescope')
-      local actions = require('telescope.actions')
-
-      local get_borderchars_table = function()
-        local b = global_config.plugins_config.border
-        return {
-          b[2],
-          b[4],
-          b[6],
-          b[8],
-          b[1],
-          b[3],
-          b[5],
-          b[7],
-        }
-      end
-
-      telescope.setup({
-        defaults = {
-          borderchars = {
-            prompt = get_borderchars_table(),
-            results = get_borderchars_table(),
-            preview = get_borderchars_table(),
-          },
-          mappings = {
-            i = {
-              ['<C-u>'] = actions.move_selection_previous,
-              ['<C-e>'] = actions.move_selection_next,
-            },
-          },
-          winblend = vim.o.winblend,
-        },
-        pickers = {
-          find_files = {
-            theme = 'ivy',
-          }
-        },
-        extensions = {
-          file_browser = {
-            hijack_netrw = true,
-            hidden = { file_browser = true, folder_browser = true },
-          },
-          emoji = {
-            action = function(emoji)
-              -- argument emoji is a table.
-              -- { name='', value='', cagegory='', description='' }
-
-              vim.fn.setreg('+', emoji.value)
-              print([[Press "+p or <M-p> to paste this emoji ]] .. emoji.value)
-
-              -- insert emoji when picked
-              -- api.nvim_put({ emoji.value }, 'c', false, true)
-            end,
-          },
-        },
-      })
-
-      require('neoclip').setup({
-        keys = {
-          telescope = {
-            i = {
-              select = '<c-y>',
-              paste = '<cr>',
-              paste_behind = '<c-g>',
-              replay = '<c-q>', -- replay a macro
-              delete = '<c-d>', -- delete an entry
-              edit = '<c-k>', -- edit an entry
-              custom = {},
-            },
-          },
-        },
-      })
-
-      local load_extension = telescope.load_extension
-
-      load_extension('fzf')
-      load_extension('neoclip')
-      load_extension('undo')
-      load_extension('file_browser')
     end,
   },
 
