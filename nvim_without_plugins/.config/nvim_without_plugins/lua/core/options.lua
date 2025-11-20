@@ -9,6 +9,7 @@ local opt = vim.opt
 opt.autowrite = true
 opt.breakindent = true -- Wrap indent to match line start
 opt.colorcolumn = '80' -- Line number reminder
+opt.completeopt = 'menu,popup,menuone,noselect'
 opt.conceallevel = 2 -- Hide * markup for hold and italic, but not markers with substitutions
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.copyindent = true -- Copy the previous indentation on autoindenting

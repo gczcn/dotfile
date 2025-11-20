@@ -3,21 +3,23 @@
 -- See :h lsp-config
 -- ===================
 
-local virtual_text_prefix = '#'
+local virtual_text_prefix = '\\'
 local current_line = true
+local lsp = vim.lsp
+local api = vim.api
 
 -- Enable configured language servers
 -- You can find server configurations from lua/*.lua files
-vim.lsp.enable('html')
-vim.lsp.enable('cssls')
-vim.lsp.enable('jsonls')
-vim.lsp.enable('basedpyright')
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('gopls')
-vim.lsp.enable('bashls')
-vim.lsp.enable('fish_lsp')
-vim.lsp.enable('vimls')
-vim.lsp.enable('clangd')
+lsp.enable('html')
+lsp.enable('cssls')
+lsp.enable('jsonls')
+lsp.enable('basedpyright')
+lsp.enable('lua_ls')
+lsp.enable('gopls')
+lsp.enable('bashls')
+lsp.enable('fish_lsp')
+lsp.enable('vimls')
+lsp.enable('clangd')
 
 -- Diagnostic Config
 vim.diagnostic.config({
@@ -49,6 +51,19 @@ vim.diagnostic.config({
   },
 })
 
+-- Enable LSP Completion
+local augroup = api.nvim_create_augroup('auto_completion', {})
+
+api.nvim_create_autocmd('LspAttach', {
+  group = augroup,
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client ~= nil and client:supports_method('textDocument/completion') then
+      lsp.completion.enable(true, client.id, ev.buf, {})
+    end
+  end,
+})
+
 -- Keymaps
 -- Keymaps defined by Neovim runtimes (not sure):
 --   grn:   rename
@@ -63,6 +78,21 @@ vim.diagnostic.config({
 
 local keyset = vim.keymap.set
 local keydel = vim.keymap.del
+
+-- Completion
+keyset('i', '<M-space>', vim.lsp.completion.get)
+keyset(
+  'i',
+  '<Tab>',
+  'pumvisible() ? "\\<C-n>" : "\\<Tab>"',
+  { expr = true, noremap = true }
+)
+keyset(
+  'i',
+  '<S-Tab>',
+  'pumvisible() ? "\\<C-p>" : "\\<S-Tab>"',
+  { expr = true, noremap = true }
+)
 
 -- Toggle virtual text style
 keyset('n', 'grl', function()
