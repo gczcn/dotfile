@@ -4,7 +4,7 @@
 -- Author: Zixuan Chu <494353540@qq.com>
 --
 -- Dependencies:
---   Neovim >= 0.11
+--   Neovim >= 0.11 (Nightly version is recommended)
 --   ripgrep - for fzf.lua
 --   fd - for fzf.lua
 --   make
@@ -55,7 +55,6 @@ local create_user_command = api.nvim_create_user_command
 
 ---@class PluginsConfig
 ---@field border string[]
----@field nerd_font_circle_and_square boolean
 ---@field ascii_mode boolean
 ---@field ivy_layout boolean
 
@@ -63,17 +62,14 @@ local create_user_command = api.nvim_create_user_command
 ---@field auto_toggle_relativenumber boolean
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
----@field enabled_tabnine boolean
 ---@field enabled_custom_statusline boolean
 ---@field plugins_config PluginsConfig
 local global_config = {
   enabled_plugins = true,
   enabled_copilot = false,
-  enabled_tabnine = false,
   enabled_custom_statusline = true,
   plugins_config = {
     border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-    nerd_font_circle_and_square = false,
     ascii_mode = false,
     ivy_layout = false,
   },
@@ -305,7 +301,7 @@ keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end
 -- Language Server Configuration
 -- Because these language servers has no configurations, you need to install the
 -- nvim-lspconfig plugin.
--- Tags: LSP, LS
+-- Tags: LSPC, LSC
 -- =============================================================================
 
 -- Enable language servers
@@ -701,43 +697,6 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 })
 
 -- =============================================================================
--- Features
--- Tags: FEATURES
--- =============================================================================
-
--- WARN: There are a lot of issues, so DO NOT USE it!
--- Translate shell (trans)
----@param t string
----@param to string
-local translate = function(t, to)
-  vim.cmd.split()
-  local text = t
-  text = string.gsub(text, '"', [["'"'"]])
-  text = string.gsub(text, '\\', '\\\\')
-  text = string.gsub(text, '#', '\\#')
-  vim.cmd.term('trans :' .. to .. ' "' .. text .. '"')
-
-  keymap.set('n', 'q', '<cmd>bd<CR>', { buffer = true })
-end
-
-create_user_command('TranslateRegt', function(opts)
-  local text = vim.fn.getreg('t')
-  translate(text, opts.args)
-end, {
-  range = true,
-  nargs = 1,
-})
-
--- FIX: Need to fix
-create_user_command('TranslateText', function(opts)
-  local arg1 = vim.fn.split(opts.args, ' ')[2]
-  local arg2 = vim.fn.split(opts.args, ' ')[1]
-  translate(arg2, arg1)
-end, { nargs = 1 })
-
-keymap.set('v', '<leader>tr', '"ty<cmd>TranslateRegt zh<CR>', { noremap = true })
-
--- =============================================================================
 -- Plugins
 -- Tags: PLUG, PLUGIN, PLUGINS
 -- =============================================================================
@@ -748,13 +707,7 @@ local lazy_config = global_config.enabled_plugins and {
   checker = { enabled = true, notify = false },
   change_detection = { notify = false },
   ui = {
-    -- My font does not display the default icon properly
-    -- Need Nerd Font
-    icons = global_config.plugins_config.nerd_font_circle_and_square and {
-      debug = ' ',
-      loaded = '',
-      not_loaded = '',
-    } or {},
+    icons = {},
   },
   performance = {
     rtp = {
@@ -780,6 +733,8 @@ local plugins = global_config.enabled_plugins and {
           local set_hl = vim.api.nvim_set_hl
           local bg = vim.o.background
 
+          set_hl(0, 'Title', { fg = bg == 'dark' and '#b8bb26' or '#79740e', bg = bg == 'dark' and '#3c3836' or '#ebdbb2', bold = true })
+
           set_hl(0, 'FoldColumn', { fg = '#928374', bg = bg == 'dark' and '#282828' or '#fbf1c7' })
           set_hl(0, 'CursorLineFold', { fg = '#928374', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
           set_hl(0, 'SignColumn', { bg = bg == 'dark' and '#282828' or '#fbf1c7' })
@@ -790,7 +745,7 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'DiagnosticNumHlHint', { fg = bg == 'dark' and '#8ec07c' or '#427b58', bold = true })
           set_hl(0, 'DiagnosticNumHlInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
-          set_hl(0, 'CustomStatusLineMode', {})
+          set_hl(0, 'CustomStatusLineMode', { bold = true })
           set_hl(0, 'CustomStatusLineGitHead', { fg = bg == 'dark' and '#b8bb26' or '#79740e', bold = true })
           set_hl(0, 'CustomStatusLineGitAdded', { fg = bg == 'dark' and '#b8bb26' or '#79740e' })
           set_hl(0, 'CustomStatusLineGitChanged', { fg = bg == 'dark' and '#fe8019' or '#af3a03' })
@@ -801,6 +756,8 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
           set_hl(0, 'GitsignsCurrentLineBlame', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
+
+          set_hl(0, 'MiniFilesTitleFocused', { fg = bg == 'dark' and '#fe8019' or '#af3a03', bg = bg == 'dark' and '#3c3836' or '#ebdbb2', bold = true })
         end,
       })
 
@@ -1446,7 +1403,7 @@ let g:mkdp_preview_options = {
       { '<leader>fz', function() Snacks.picker.zoxide() end },
       { '<leader>fw', function() Snacks.picker.colorschemes() end },
 
-      -- LSP
+      -- Lsp
       { 'grr', function() Snacks.picker.lsp_references() end, desc = 'Show LSP References' },
       { 'gd', function() Snacks.picker.lsp_definitions() end, desc = 'Show LSP Definitions' },
       { 'gD', function() Snacks.picker.lsp_declarations() end, desc = 'Show LSP Declarations' },
@@ -1578,25 +1535,6 @@ let g:mkdp_preview_options = {
         },
       })
     end
-  },
-
-  -- TABNINE
-  {
-    'codota/tabnine-nvim',
-    enabled = global_config.enabled_tabnine,
-    build = './dl_binaries.sh',
-    config = function()
-      require('tabnine').setup({
-        disable_auto_comment = true,
-        accept_keymap = '<M-a>',
-        dismiss_keymap = '<C-]>',
-        debounce_ms = 800,
-        suggestion_color = { gui = Utils.get_hl('Comment'), cterm = 244 },
-        exclude_filetypes = { 'TelescopePrompt', 'NvimTree', 'fzf' },
-        log_file_path = nil, -- absolute path to Tabnine log file
-        ignore_certificate_errors = false,
-      })
-    end,
   },
 
   -- CONFORM, FORMATTER
@@ -1820,9 +1758,6 @@ let g:mkdp_preview_options = {
 
       -- configure Go language server
       vim.lsp.config('gopls', {
-        -- cmd = { 'gopls' },
-        -- filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-        -- root_dir = util.root_pattern('go.work', 'go.mod', '.git'),
         settings = {
           gopls = {
             analyses = {
@@ -1830,11 +1765,6 @@ let g:mkdp_preview_options = {
             },
           },
         },
-      })
-
-      -- configure Bash language server
-      vim.lsp.config('bashls', {
-        cmd = { 'bash-language-server', 'start' },
       })
 
       -- configure C and C++ ... language server
@@ -1900,10 +1830,6 @@ let g:mkdp_preview_options = {
           require('colorful-menu').setup()
         end,
       },
-
-      -- nvim-cmp sources
-      -- { 'Saghen/blink.compat', opts = { impersonate_nvim_cmp = true } },
-      -- { 'tzachar/cmp-tabnine', enabled = enabled_tabnine, build = './install.sh' },
     },
     version = '*',
     config = function()
@@ -1993,7 +1919,7 @@ let g:mkdp_preview_options = {
             auto_show = true,
             draw = {
               -- padding = { 0, 1 },
-              treesitter = { 'lsp', 'copilot', 'cmp_tabnine', 'snippets' },
+              treesitter = { 'lsp', 'copilot', 'snippets' },
               columns = {
                 -- { 'kind_icon' },
                 -- { 'label', 'label_description', gap = 1 },
@@ -2039,7 +1965,6 @@ let g:mkdp_preview_options = {
         sources = {
           default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer',
             global_config.enabled_copilot and 'copilot' or nil,
-            -- enabled_tabnine and 'cmp_tabnine' or nil,
           },
           providers = {
             lazydev = {
@@ -2069,14 +1994,6 @@ let g:mkdp_preview_options = {
           end,
         }
       end
-
-      -- if global_config.enabled_tabnine then
-      --   opts.sources.providers.cmp_tabnine = {
-      --     name = 'cmp_tabnine',
-      --     module = 'blink.compat.source',
-      --     score_offset = -3,
-      --   }
-      -- end
 
       require('blink.cmp').setup(opts)
     end,
