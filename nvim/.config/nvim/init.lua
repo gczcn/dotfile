@@ -416,7 +416,11 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.foldcolumn = '0'
+opt.fillchars = { foldsep = ' ' }
+opt.foldcolumn = '1'
+opt.foldenable = true
+opt.foldlevel = 99
+opt.foldlevelstart = 99
 opt.guicursor = vim.fn.has('nvim-0.11') == 1
   and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
@@ -763,9 +767,7 @@ local lazy_config = global_config.enabled_plugins and {
 
 local plugins = global_config.enabled_plugins and {
 
-  -- COLORSCHEMES
-
-  -- GRUVBOX
+  -- GRUVBOX, COLORSCHEME
   {
     'ellisonleao/gruvbox.nvim',
     lazy = false,
@@ -777,6 +779,11 @@ local plugins = global_config.enabled_plugins and {
         callback = function()
           local set_hl = vim.api.nvim_set_hl
           local bg = vim.o.background
+
+          set_hl(0, 'FoldColumn', { fg = '#928374', bg = bg == 'dark' and '#282828' or '#fbf1c7' })
+          set_hl(0, 'CursorLineFold', { fg = '#928374', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
+          set_hl(0, 'SignColumn', { bg = bg == 'dark' and '#282828' or '#fbf1c7' })
+          set_hl(0, 'CursorLineSign', { bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
 
           set_hl(0, 'DiagnosticNumHlError', { fg = bg == 'dark' and '#fb4934' or '#9d0006', bold = true })
           set_hl(0, 'DiagnosticNumHlWarn', { fg = bg == 'dark' and '#fabd2f' or '#b57614', bold = true })
@@ -1437,6 +1444,7 @@ let g:mkdp_preview_options = {
       { '<leader>fh', function() Snacks.picker.help() end },
       { '<leader>fu', function() Snacks.picker.undo() end },
       { '<leader>fz', function() Snacks.picker.zoxide() end },
+      { '<leader>fw', function() Snacks.picker.colorschemes() end },
 
       -- LSP
       { 'grr', function() Snacks.picker.lsp_references() end, desc = 'Show LSP References' },
@@ -1493,6 +1501,14 @@ let g:mkdp_preview_options = {
               },
             },
           },
+          win = {
+            input = {
+              keys = {
+                ['<c-e>'] = { 'list_down', mode = { 'i', 'n' } },
+                ['<c-u>'] = { 'list_up', mode = { 'i', 'n' } },
+              },
+            },
+          },
         },
         quickfile = {},
         styles = {
@@ -1508,6 +1524,35 @@ let g:mkdp_preview_options = {
       })
 
       keymap.set('n', '<leader>rN', Snacks.rename.rename_file)
+    end,
+  },
+
+  -- STATUSCOL
+  {
+    'luukvbaal/statuscol.nvim',
+    config = function()
+      local builtin = require('statuscol.builtin')
+      require('statuscol').setup({
+        relculright = true,
+        segments = {
+          {
+            click = 'v:lua.ScSa',
+            sign = {
+              name = { '.*' },
+              text = { '.*' },
+              namespace = { '.*' },
+              maxwidth = 1,
+              colwidth = 1,
+              fillchar = ' ',
+            },
+          },
+          {
+            text = { builtin.lnumfunc, ' ' },
+            condition = { true, builtin.not_empty },
+            click = 'v:lua.ScLa',
+          },
+        }
+      })
     end,
   },
 
@@ -1593,20 +1638,20 @@ let g:mkdp_preview_options = {
     config = function()
       require('gitsigns').setup({
         signs = {
-          add          = { text = '▎' },
-          change       = { text = '▎' },
+          add          = { text = '▍' },
+          change       = { text = '▍' },
           delete       = { text = '▁' },
           topdelete    = { text = '▔' },
-          changedelete = { text = '▎' },
-          untracked    = { text = '▎' },
+          changedelete = { text = '▍' },
+          untracked    = { text = '▍' },
         },
         signs_staged = {
-          add          = { text = '▎' },
-          change       = { text = '▎' },
+          add          = { text = '▍' },
+          change       = { text = '▍' },
           delete       = { text = '▁' },
           topdelete    = { text = '▔' },
-          changedelete = { text = '▎' },
-          untracked    = { text = '▎' },
+          changedelete = { text = '▍' },
+          untracked    = { text = '▍' },
         },
         sign_priority = 11,
         current_line_blame = true,
@@ -2058,11 +2103,6 @@ if global_config.enabled_plugins then
     end
   end
   vim.opt.rtp:prepend(lazypath)
-
-  -- opt.laststatus = 3
-  opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
-  opt.foldlevelstart = 99
-  opt.foldenable = true
 
   keymap.set('n', '<leader>als', '<cmd>Lazy sync<CR>', { noremap = true })
   keymap.set('n', '<leader>tl', function()
