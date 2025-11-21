@@ -3,21 +3,21 @@
 # 你好。
 
 # Monaspace
-font-family = Monaspace Argon NF
-font-feature = ss01
-font-feature = ss02
-font-feature = ss03
-font-feature = ss04
-font-feature = ss05
-font-feature = ss06
-font-feature = ss07
-font-feature = ss08
-font-feature = ss09
-font-feature = ss10
-font-feature = liga
-font-feature = cv62
-font-feature = cv10
-font-size = 14.1
+# font-family = Monaspace Argon NF
+# font-feature = ss01
+# font-feature = ss02
+# font-feature = ss03
+# font-feature = ss04
+# font-feature = ss05
+# font-feature = ss06
+# font-feature = ss07
+# font-feature = ss08
+# font-feature = ss09
+# font-feature = ss10
+# font-feature = liga
+# font-feature = cv62
+# font-feature = cv10
+# font-size = 14.1
 
 # IBM Plex
 # font-family = BlexMono Nerd Font Mono
@@ -31,9 +31,9 @@ font-size = 14.1
 # window-title-font-family = SauceCodePro Nerd Font Mono
 
 # JetBrains Mono
-# font-family = JetBrainsMono Nerd Font Mono
-# font-feature = ss01
-# font-size = 13.3
+font-family = JetBrainsMono Nerd Font Mono
+font-feature = ss01
+font-size = 13.3
 
 # Fira Code
 # font-family = FiraCode Nerd Font Mono
