@@ -7,6 +7,7 @@
 --   Neovim >= 0.11 (Nightly version is recommended)
 --   ripgrep - for fzf.lua
 --   fd - for fzf.lua
+--   cmake
 --   make
 --   node
 --   npm
@@ -40,6 +41,7 @@
 -- I hope I can read the code later :)
 -- =============================================================================
 -- TODO: Remove more useless plugins
+-- TODO: main branch of nvim-treesitter and nvim-treesitter-textobjects.
 
 -- =============================================================================
 -- Globar vars
@@ -1392,7 +1394,7 @@ let g:mkdp_preview_options = {
     ---@diagnostic disable:undefined-global
     keys = {
       { '<leader>ff', function() Snacks.picker.files() end },
-      { '<leader>fc', function() Snacks.picker.files() end },
+      { '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end },
       { '<leader>fr', function() Snacks.picker.recent() end },
       { '<leader>fg', function() Snacks.picker.grep() end },
       { '<leader>fk', function() Snacks.picker.keymaps() end },
@@ -1402,6 +1404,7 @@ let g:mkdp_preview_options = {
       { '<leader>fu', function() Snacks.picker.undo() end },
       { '<leader>fz', function() Snacks.picker.zoxide() end },
       { '<leader>fw', function() Snacks.picker.colorschemes() end },
+      { '<leader>fs', function() Snacks.picker.smart() end },
 
       -- Lsp
       { 'grr', function() Snacks.picker.lsp_references() end, desc = 'Show LSP References' },
@@ -1437,6 +1440,26 @@ let g:mkdp_preview_options = {
         },
         picker = {
           prompt = ' ',
+          actions = {
+            flash = function(picker)
+              require('flash').jump({
+                pattern = '^',
+                label = { after = { 0, 0 } },
+                search = {
+                  mode = 'search',
+                  exclude = {
+                    function(win)
+                      return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= 'snacks_picker_list'
+                    end,
+                  },
+                },
+                action = function(match)
+                  local idx = picker.list:row2idx(match.pos[1])
+                  picker.list:_move(idx, true, true)
+                end,
+              })
+            end,
+          },
           layout = {
             layout = {
               box = 'horizontal',
@@ -1461,6 +1484,8 @@ let g:mkdp_preview_options = {
           win = {
             input = {
               keys = {
+                ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
+                ['/'] = { 'flash' },
                 ['<c-e>'] = { 'list_down', mode = { 'i', 'n' } },
                 ['<c-u>'] = { 'list_up', mode = { 'i', 'n' } },
               },

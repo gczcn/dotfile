@@ -1,0 +1,14 @@
+[editor]
+scrolloff = 8
+line-number = 'relative'
+cursorline = true
+continue-comments = false
+# gutters = [ 'diagnostics', 'line-numbers', 'spacer', 'diff' ]
+# gutters = [ 'diagnostics', 'spacer', 'diff', 'line-numbers', 'spacer' ]
+auto-format = false
+completion-timeout = 5
+completion-trigger-len = 1
+completion-replace = true
+
+[editor.lsp]
+display-progress-messages = true
