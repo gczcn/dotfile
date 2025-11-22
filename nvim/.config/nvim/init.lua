@@ -55,26 +55,16 @@ local create_autocmd = api.nvim_create_autocmd
 local create_augroup = api.nvim_create_augroup
 local create_user_command = api.nvim_create_user_command
 
----@class PluginsConfig
----@field border string[]
----@field ascii_mode boolean
----@field ivy_layout boolean
-
 ---@class global_config
----@field auto_toggle_relativenumber boolean
 ---@field enabled_plugins boolean
 ---@field enabled_copilot boolean
 ---@field enabled_custom_statusline boolean
----@field plugins_config PluginsConfig
+---@field border string[]
 local global_config = {
   enabled_plugins = true,
   enabled_copilot = false,
   enabled_custom_statusline = true,
-  plugins_config = {
-    border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
-    ascii_mode = false,
-    ivy_layout = false,
-  },
+  border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 }
 
 -- =============================================================================
@@ -212,8 +202,6 @@ end
 -- Tags: KEY, KEYS, KEYMAP, KEYMAPS
 -- =============================================================================
 
--- stylua: ignore start
-
 ---@type table<string, boolean>
 local keymaps_opts = { noremap = true }
 
@@ -296,8 +284,6 @@ keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
 keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
-
--- stylua: ignore end
 
 -- =============================================================================
 -- Language Server Configuration
@@ -414,7 +400,7 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.fillchars = { foldsep = ' ' }
+opt.fillchars = { foldsep = ' ', eob = ' ' }
 opt.foldcolumn = '1'
 opt.foldenable = true
 opt.foldlevel = 99
@@ -630,6 +616,9 @@ vim.cmd.cabbrev('W w')
 vim.cmd.cabbrev('Q q')
 vim.cmd.cabbrev('Qa qa')
 vim.cmd.cabbrev('Qall qall')
+
+vim.cmd.cabbrev('rnu set relativenumber')
+vim.cmd.cabbrev('nornu set norelativenumber')
 
 -- =============================================================================
 -- Autocmds
@@ -847,14 +836,14 @@ local plugins = global_config.enabled_plugins and {
     'nvim-mini/mini.icons',
     lazy = true,
     opts = {
-      style = global_config.plugins_config.ascii_mode and 'ascii' or 'glyph',
+      style = 'glyph',
       file = {
-        ['.keep'] = { glyph = global_config.plugins_config.ascii_mode and 'G' or '󰊢', hl = 'MiniIconsGrey' },
-        ['devcontainer.json'] = { glyph = global_config.plugins_config.ascii_mode and 'D' or '', hl = 'MiniIconsAzure' },
+        ['.keep'] = { glyph = '󰊢', hl = 'MiniIconsGrey' },
+        ['devcontainer.json'] = { glyph = '', hl = 'MiniIconsAzure' },
       },
       filetype = {
-        dotenv = { glyph = global_config.plugins_config.ascii_mode and 'D' or '', hl = 'MiniIconsYellow' },
-        go = { glyph = global_config.plugins_config.ascii_mode and 'G' or '', hl = 'MiniIconsBlue' },
+        dotenv = { glyph = '', hl = 'MiniIconsYellow' },
+        go = { glyph = '', hl = 'MiniIconsBlue' },
       },
     },
     init = function()
@@ -886,101 +875,6 @@ local plugins = global_config.enabled_plugins and {
     end,
   },
 
-  -- NVIM-UFO
-  {
-    'kevinhwang91/nvim-ufo',
-    enabled = true,
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'kevinhwang91/promise-async',
-    },
-    keys = { 'z' },
-    event = { 'BufAdd', 'User FileOpened' },
-    config = function()
-      keymap.set('n', 'zR', require('ufo').openAllFolds)
-      keymap.set('n', 'zM', require('ufo').closeAllFolds)
-
-      local handler = function(virtText, lnum, endLnum, width, truncate)
-        local newVirtText = {}
-        local suffix = (' < fold %d '):format(endLnum - lnum)
-        local sufWidth = vim.fn.strdisplaywidth(suffix)
-        local targetWidth = width - sufWidth
-        local curWidth = 0
-        for _, chunk in ipairs(virtText) do
-          local chunkText = chunk[1]
-          local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-          if targetWidth > curWidth + chunkWidth then
-            newVirtText[#newVirtText + 1] = chunk
-          else
-            chunkText = truncate(chunkText, targetWidth - curWidth)
-            local hlGroup = chunk[2]
-            newVirtText[#newVirtText + 1] = { chunkText, hlGroup }
-            chunkWidth = vim.fn.strdisplaywidth(chunkText)
-            -- str width returned from truncate() may less than 2nd argument, need padding
-            if curWidth + chunkWidth < targetWidth then
-              suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
-            end
-            break
-          end
-          curWidth = curWidth + chunkWidth
-        end
-        newVirtText[#newVirtText + 1] = { suffix, 'MoreMsg' }
-        return newVirtText
-      end
-
-      require('ufo').setup({
-        fold_virt_text_handler = handler,
-        provider_selector = function()
-          if require('nvim-treesitter.parsers').has_parser() then
-            return { 'treesitter' }
-          end
-          return { 'treesitter', 'indent' }
-        end,
-      })
-
-      ---@diagnostic disable-next-line: param-type-mismatch
-      create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
-        callback = function()
-          -- vim.cmd.UfoDisable()
-          vim.cmd.UfoEnable()
-        end,
-      })
-    end,
-  },
-
-  -- TODO-COMMENTS
-  {
-    'folke/todo-comments.nvim',
-    enabled = false,
-    cmd = { 'TodoTrouble', 'TodoTelescope', 'TodoFzfLua', 'TodoLocList', 'TodoQuickFix' },
-    event = 'User FileOpened',
-    opts = {
-      keywords = {
-        FIX = {
-          icon = 'FX', -- icon used for the sign, and in search results
-          color = 'error', -- can be a hex color, or a named color (see below)
-          alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, -- a set of other keywords that all map to this FIX keywords
-          -- signs = false, -- configure signs for some keywords individually
-        },
-        TODO = { icon = 'TO', color = 'info' },
-        HACK = { icon = 'HK', color = 'warning' },
-        WARN = { icon = 'WN', color = 'warning', alt = { 'WARNING', 'XXX' } },
-        PERF = { icon = 'PF', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
-        NOTE = { icon = 'NE', color = 'hint', alt = { 'INFO' } },
-        TEST = { icon = 'TE', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
-      },
-    },
-    -- stylua: ignore
-    keys = {
-      { ']c', function() require('todo-comments').jump_next() end, desc = 'Next Todo Comment' },
-      { '[c', function() require('todo-comments').jump_prev() end, desc = 'Previous Todo Comment' },
-      -- { '<leader>xt', '<cmd>Trouble todo toggle<cr>', desc = 'Todo (Trouble)' },
-      -- { '<leader>xT', '<cmd>Trouble todo toggle filter = {tag = {TODO,FIX,FIXME}}<cr>', desc = 'Todo/Fix/Fixme (Trouble)' },
-      { '<leader>ft', string.format('<cmd>TodoTelescope theme=%s<cr>', global_config.plugins_config.ivy_layout and 'ivy' or ''), desc = 'Todo' },
-      { '<leader>fT', '<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>', desc = 'Todo/Fix/Fixme' },
-    },
-  },
-
   -- TREESITTER
   {
     'nvim-treesitter/nvim-treesitter',
@@ -996,7 +890,7 @@ local plugins = global_config.enabled_plugins and {
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
       -- 'nvim-treesitter/nvim-treesitter-context',
-      { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
+      -- { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
     },
     init = function(plugin)
       require('lazy.core.loader').add_to_rtp(plugin)
@@ -1041,7 +935,7 @@ local plugins = global_config.enabled_plugins and {
           enable = true,
         },
         incremental_selection = {
-          enable = true,
+          enable = false,
           keymaps = {
             init_selection = '<CR>',
             node_incremental = '<CR>',
@@ -1175,9 +1069,6 @@ local plugins = global_config.enabled_plugins and {
     opts = {
       search = {
         exclude = {
-          'notify',
-          'cmp_menu',
-          -- 'noice',
           'flash_prompt',
           'bigfile',
           function(win)
@@ -1199,8 +1090,8 @@ local plugins = global_config.enabled_plugins and {
     },
     -- stylua: ignore
     keys = {
-      { '<leader>/', function() require('flash').jump() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash' },
-      { '<leader>?', function() require('flash').treesitter() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash Treesitter' },
+      { '\\', function() require('flash').jump() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash' },
+      { '<CR>', function() require('flash').treesitter() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash Treesitter' },
       { '<leader>\\', function() require('flash').remote() end, mode = 'o', desc = 'Remote Flash' },
       { '<leader>|', function() require('flash').treesitter_search() end, mode = { 'o', 'x', 'v' }, desc = 'Treesitter Search' },
       { '<C-s>', function() require('flash').toggle() end, mode = 'c', desc = 'Toggle Flash Search' },
@@ -1331,7 +1222,7 @@ let g:mkdp_preview_options = {
     config = function()
       require('ibl').setup({
         indent = {
-          char = global_config.plugins_config.ascii_mode and '|' or '▏',
+          char = '▏',
           tab_char = '>',
         },
       })
@@ -1391,31 +1282,31 @@ let g:mkdp_preview_options = {
     'folke/snacks.nvim',
     lazy = false,
     priority = 1000,
-    ---@diagnostic disable:undefined-global
     keys = {
-      { '<leader>ff', function() Snacks.picker.files() end },
-      { '<leader>fc', function() Snacks.picker.files({ cwd = vim.fn.stdpath('config') }) end },
-      { '<leader>fr', function() Snacks.picker.recent() end },
-      { '<leader>fg', function() Snacks.picker.grep() end },
-      { '<leader>fk', function() Snacks.picker.keymaps() end },
-      { '<leader>fb', function() Snacks.picker.buffers() end },
-      { '<leader>fm', function() Snacks.picker.man() end },
-      { '<leader>fh', function() Snacks.picker.help() end },
-      { '<leader>fu', function() Snacks.picker.undo() end },
-      { '<leader>fz', function() Snacks.picker.zoxide() end },
-      { '<leader>fw', function() Snacks.picker.colorschemes() end },
-      { '<leader>fs', function() Snacks.picker.smart() end },
+      { '<leader>rN', '<cmd>lua Snacks.rename.rename_file()<CR>' },
+
+      { '<leader>ff', '<cmd>lua Snacks.picker.files()<CR>' },
+      { '<leader>fr', '<cmd>lua Snacks.picker.recent()<CR>' },
+      { '<leader>fg', '<cmd>lua Snacks.picker.grep()<CR>' },
+      { '<leader>fk', '<cmd>lua Snacks.picker.keymaps()<CR>' },
+      { '<leader>fb', '<cmd>lua Snacks.picker.buffers()<CR>' },
+      { '<leader>fm', '<cmd>lua Snacks.picker.man()<CR>' },
+      { '<leader>fh', '<cmd>lua Snacks.picker.help()<CR>' },
+      { '<leader>fu', '<cmd>lua Snacks.picker.undo()<CR>' },
+      { '<leader>fz', '<cmd>lua Snacks.picker.zoxide()<CR>' },
+      { '<leader>fw', '<cmd>lua Snacks.picker.colorschemes()<CR>' },
+      { '<leader>fs', '<cmd>lua Snacks.picker.smart()<CR>' },
+      { '<leader>fn', '<cmd>lua Snacks.picker.notifications()<CR>' },
 
       -- Lsp
-      { 'grr', function() Snacks.picker.lsp_references() end, desc = 'Show LSP References' },
-      { 'gd', function() Snacks.picker.lsp_definitions() end, desc = 'Show LSP Definitions' },
-      { 'gD', function() Snacks.picker.lsp_declarations() end, desc = 'Show LSP Declarations' },
-      { 'gri', function() Snacks.picker.lsp_implementations() end, desc = 'Show LSP Implementations' },
-      { 'grt', function() Snacks.picker.lsp_type_definitions() end, desc = 'Show LSP Type Definitions' },
-      { '<leader>;', function() Snacks.picker.lsp_symbols() end, desc = 'Show Buffer Symbols' },
-      { '<leader>D', function() Snacks.picker.diagnostics_buffer() end, desc = 'Show Buffer Diagnostics' },
+      { 'grr', '<cmd>lua Snacks.picker.lsp_references()<CR>' , desc = 'Show LSP References' },
+      { 'gd', '<cmd>lua Snacks.picker.lsp_definitions()<CR>' , desc = 'Show LSP Definitions' },
+      { 'gD', '<cmd>lua Snacks.picker.lsp_declarations()<CR>' , desc = 'Show LSP Declarations' },
+      { 'gri', '<cmd>lua Snacks.picker.lsp_implementations()<CR>' , desc = 'Show LSP Implementations' },
+      { 'grt', '<cmd>lua Snacks.picker.lsp_type_definitions()<CR>' , desc = 'Show LSP Type Definitions' },
+      { '<leader>;', '<cmd>lua Snacks.picker.lsp_symbols()<CR>' , desc = 'Show Buffer Symbols' },
+      { '<leader>D', '<cmd>lua Snacks.picker.diagnostics_buffer()<CR>' , desc = 'Show Buffer Diagnostics' },
     },
-    ---@diagnostic enable
     config = function()
       local Snacks = require('snacks')
       Snacks.setup({
@@ -1470,13 +1361,13 @@ let g:mkdp_preview_options = {
               border = 'none',
               {
                 box = 'vertical',
-                border = global_config.plugins_config.border,
+                border = global_config.border,
                 { win = 'input', height = 1, border = 'bottom' },
                 { win = 'list', border = 'none' },
               },
               {
                 win = 'preview',
-                border = global_config.plugins_config.border,
+                border = global_config.border,
                 width = 0.5
               },
             },
@@ -1485,7 +1376,7 @@ let g:mkdp_preview_options = {
             input = {
               keys = {
                 ['<a-s>'] = { 'flash', mode = { 'n', 'i' } },
-                ['/'] = { 'flash' },
+                ['\\'] = { 'flash' },
                 ['<c-e>'] = { 'list_down', mode = { 'i', 'n' } },
                 ['<c-u>'] = { 'list_up', mode = { 'i', 'n' } },
               },
@@ -1493,19 +1384,8 @@ let g:mkdp_preview_options = {
           },
         },
         quickfile = {},
-        styles = {
-          notification = { border = 'single' },
-          notification_history = {
-            border = 'none',
-            keys = {
-              q = 'close',
-              ['<ESC>'] = 'close',
-            }
-          },
-        },
+        styles = {},
       })
-
-      keymap.set('n', '<leader>rN', Snacks.rename.rename_file)
     end,
   },
 
@@ -1703,44 +1583,6 @@ let g:mkdp_preview_options = {
     end,
   },
 
-  -- FLUTTERTOOLS
-  {
-    'nvim-flutter/flutter-tools.nvim',
-    cmd = {
-      'FlutterRun',
-      'FlutterDebug',
-      'FlutterDevices',
-      'FlutterEmulators',
-      'FlutterReload',
-      'FlutterRestart',
-      'FlutterQuit',
-      'FlutterAttach',
-      'FlutterDetach',
-      'FlutterOutlineToggle',
-      'FlutterOutlineOpen',
-      'FlutterDevTools',
-      'FlutterDevToolsActivate',
-      'FlutterCopyProfilerUrl',
-      'FlutterLspRestart',
-      'FlutterSuper',
-      'FlutterReanalyze',
-      'FlutterRename',
-      'FlutterLogClear',
-      'FlutterLogToggle',
-    },
-    event = { 'BufReadPre', 'BufNewFile' },
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = function()
-      require('flutter-tools').setup({
-        ui = {
-          border = global_config.plugins_config.border,
-        },
-      })
-    end,
-  },
-
   -- LSPCONFIG
   {
     'neovim/nvim-lspconfig',
@@ -1749,8 +1591,6 @@ let g:mkdp_preview_options = {
       { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
     config = function()
-      -- local util = require('lspconfig.util')
-
       vim.lsp.config('basedpyright', {
         settings = {
           basedpyright = {
@@ -1943,13 +1783,10 @@ let g:mkdp_preview_options = {
           menu = {
             auto_show = true,
             draw = {
-              -- padding = { 0, 1 },
               treesitter = { 'lsp', 'copilot', 'snippets' },
               columns = {
-                -- { 'kind_icon' },
-                -- { 'label', 'label_description', gap = 1 },
                 { 'label' },
-                global_config.plugins_config.ascii_mode and { 'kind' } or { 'kind_icon', 'kind', gap = 1 },
+                { 'kind_icon', 'kind', gap = 1 },
                 { 'source_name' },
               },
               components = {
@@ -1961,17 +1798,6 @@ let g:mkdp_preview_options = {
                     return require('colorful-menu').blink_components_highlight(ctx)
                   end,
                 },
-                -- kind_icon = {
-                --   ellipsis = false,
-                --   text = function(ctx)
-                --     return ' ' .. ctx.kind_icon .. ' '
-                --   end,
-                --   highlight = function(ctx)
-                --     ---@diagnostic disable-next-line: ambiguity-1
-                --     return require('blink.cmp.completion.windows.render.tailwind').get_hl(ctx)
-                --       or 'BlinkCmpKind' .. ctx.kind
-                --   end,
-                -- },
                 source_name = {
                   width = { max = 30 },
                   text = function(ctx)
@@ -1981,7 +1807,6 @@ let g:mkdp_preview_options = {
                 },
               },
             },
-            -- border = 'single',
             winblend = vim.o.pumblend,
             max_height = 30,
           },
