@@ -400,8 +400,9 @@ opt.copyindent = true -- Copy the previous indentation on autoindenting
 opt.cursorline = true -- Highlight the text line of the cursor
 opt.expandtab = true
 opt.fileencoding = 'utf-8' -- File content encoding for the buffer
-opt.fillchars = { foldsep = ' ', eob = ' ' }
-opt.foldcolumn = '1'
+-- opt.fillchars = { foldsep = ' ', eob = ' ' }
+opt.fillchars = { foldsep = ' ' }
+opt.foldcolumn = '0'
 opt.foldenable = true
 opt.foldlevel = 99
 opt.foldlevelstart = 99
@@ -694,7 +695,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 
 -- LAZYNVIM
 local lazy_config = global_config.enabled_plugins and {
-  install = { colorscheme = { 'gruvbox', 'habamax' } },
+  install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
   checker = { enabled = true, notify = false },
   change_detection = { notify = false },
   ui = {
@@ -711,10 +712,73 @@ local lazy_config = global_config.enabled_plugins and {
 
 local plugins = global_config.enabled_plugins and {
 
+  -- CATPPUCCIN, COLORSCHEME
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('catppuccin').setup({
+        flavour = 'mocha',
+        float = {
+          transparent = true,
+        },
+        styles = {
+          comments = {},
+        },
+        lsp_styles = {
+          virtual_text = {
+            errors = {},
+            hints = {},
+            warnings = {},
+            information = {},
+            ok = {},
+          },
+        },
+        custom_highlights = function(colors)
+          local U = require('catppuccin.utils.colors')
+          return {
+            CursorLineFold = { fg = colors.overlay0, bg =
+              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            },
+            CursorLineSign = { bg =
+              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            },
+            CursorLineNr = { fg = colors.lavender, bg =
+              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            },
+
+            DiagnosticNumHlError = { fg = colors.red, bold = true },
+            DiagnosticNumHlWarn = { fg = colors.yellow, bold = true },
+            DiagnosticNumHlHint = { fg = colors.teal, bold = true },
+            DiagnosticNumHlInfo = { fg = colors.sky, bold = true },
+
+            CustomStatusLineMode = { bold = true },
+            CustomStatusLineGitHead = { fg = colors.green, bold = true },
+            CustomStatusLineGitAdded = { fg = colors.green },
+            CustomStatusLineGitChanged = { fg = colors.yellow },
+            CustomStatusLineGitRemoved = { fg = colors.red },
+            CustomStatusLineDiagnosticError = { fg = colors.red, bold = true },
+            CustomStatusLineDiagnosticWarn = { fg = colors.yellow, bold = true },
+            CustomStatusLineDiagnosticHint = { fg = colors.teal, bold = true },
+            CustomStatusLineDiagnosticInfo = { fg = colors.sky, bold = true },
+
+            SnacksIndent = { fg = colors.surface0 },
+            SnacksIndentScope = { fg = colors.surface2 },
+            SnacksIndentChunk = { fg = colors.surface2 },
+          }
+        end,
+      })
+
+      vim.cmd.colorscheme('catppuccin')
+    end,
+  },
+
   -- GRUVBOX, COLORSCHEME
   {
     'ellisonleao/gruvbox.nvim',
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
@@ -1214,21 +1278,6 @@ let g:mkdp_preview_options = {
     end,
   },
 
-  -- INDENT-BLANKLINE
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    main = 'ibl',
-    event = 'User FileOpened',
-    config = function()
-      require('ibl').setup({
-        indent = {
-          char = '▏',
-          tab_char = '>',
-        },
-      })
-    end,
-  },
-
   -- SUDA, SUDO
   {
     'lambdalisue/vim-suda',
@@ -1383,6 +1432,9 @@ let g:mkdp_preview_options = {
             },
           },
         },
+        indent = {
+          animate = { enabled = false },
+        },
         quickfile = {},
         styles = {},
       })
@@ -1397,6 +1449,10 @@ let g:mkdp_preview_options = {
       require('statuscol').setup({
         relculright = true,
         segments = {
+          {
+            text = { builtin.foldfunc },
+            click = 'v:lua.ScFa',
+          },
           {
             click = 'v:lua.ScSa',
             sign = {
@@ -1701,36 +1757,7 @@ let g:mkdp_preview_options = {
       require('luasnip.loaders.from_vscode').lazy_load()
 
       local opts = {
-        appearance = {
-          kind_icons = {
-            Text = '󰉿',
-            Method = '󰆧',
-            Function = '󰊕',
-            Constructor = '',
-            Field = '󰜢',
-            Variable = '󰀫',
-            Class = '󰠱',
-            Interface = '',
-            Module = '',
-            Property = '󰜢',
-            Unit = '󰑭',
-            Value = '󰎠',
-            Enum = '',
-            Keyword = '󰌋',
-            Snippet = '',
-            Color = '󰏘',
-            File = '󰈙',
-            Reference = '󰈇',
-            Folder = '󰉋',
-            EnumMember = '',
-            Constant = '󰏿',
-            Struct = '󰙅',
-            Event = '',
-            Operator = '󰆕',
-            TypeParameter = '󰬛',
-            Copilot = '',
-          },
-        },
+        appearance = {},
         keymap = {
           preset = 'default',
           ['<M-.>'] = { 'show', 'show_documentation', 'hide_documentation' },
@@ -1786,7 +1813,8 @@ let g:mkdp_preview_options = {
               treesitter = { 'lsp', 'copilot', 'snippets' },
               columns = {
                 { 'label' },
-                { 'kind_icon', 'kind', gap = 1 },
+                -- { 'kind_icon', 'kind', gap = 1 },
+                { 'kind' },
                 { 'source_name' },
               },
               components = {
