@@ -63,7 +63,7 @@ local create_user_command = api.nvim_create_user_command
 local global_config = {
   enabled_plugins = true,
   enabled_copilot = false,
-  enabled_custom_statusline = true,
+  enabled_custom_statusline = false,
   border = { '┌', '─', '┐', '│', '┘', '─', '└', '│' },
 }
 
@@ -410,7 +410,7 @@ opt.guicursor = vim.fn.has('nvim-0.11') == 1
   and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 opt.ignorecase = true -- Ignore case
-opt.laststatus = 2
+-- opt.laststatus = 2
 opt.list = true -- Show some hidden characters
 opt.listchars = { tab = '> ', trail = '-', extends = '>', precedes = '<', nbsp = '+' }
 opt.maxmempattern = 5000
@@ -831,6 +831,124 @@ local plugins = global_config.enabled_plugins and {
     end,
   },
 
+  -- NOICE
+  {
+    'folke/noice.nvim',
+    event = { 'VeryLazy' },
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+    },
+    init = function()
+      opt.cmdheight = 0
+    end,
+    opts = {
+      lsp = {
+        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        override = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+          ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+        },
+      },
+      presets = {
+        bottom_search = true, -- use a classic bottom cmdline for search
+      },
+      cmdline = {
+        enabled = true, -- enables the Noice cmdline UI
+        view = 'cmdline_popup', -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
+        opts = {}, -- global options for the cmdline. See section on views
+        format = {
+          -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
+          -- view: (default is cmdline view)
+          -- opts: any options passed to the view
+          -- icon_hl_group: optional hl_group for the icon
+          -- title: set to anything or empty string to hide
+          cmdline = { pattern = '^:', icon = ' >', lang = 'vim', view = 'cmdline' },
+          search_down = { kind = 'search', pattern = '^/', icon = ' Search Down', lang = 'regex' },
+          search_up = { kind = 'search', pattern = '^%?', icon = ' Search Up', lang = 'regex' },
+          filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash', view = 'cmdline' },
+          lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' > lua', lang = 'lua', view = 'cmdline' },
+          help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?', view = 'cmdline' },
+          input = { view = 'cmdline', icon = ' Input' }, -- Used by input()
+          -- lua = false, -- to disable a format, set to `false`
+        },
+      },
+      views = {
+        mini = {
+          timeout = 5000,
+          position = {
+            row = -1,
+            col = -1,
+          },
+        },
+      },
+    },
+  },
+
+  -- LUALINE
+  {
+    'nvim-lualine/lualine.nvim',
+    event = { 'VeryLazy', 'User FileOpened' },
+    init = function()
+      opt.statusline = ' '
+      opt.showtabline = 0
+    end,
+    config = function()
+      require('lualine').setup({
+        options = {
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
+          disabled_filetypes = {
+            statusline = {},
+          },
+          globalstatus = true,
+        },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = {
+            {
+              'tabs',
+              mode = 2,
+              path = 1,
+              use_mode_colors = true,
+            },
+          },
+          lualine_c = { 'branch', 'diff',
+            {
+              'diagnostics',
+              symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' },
+            },
+          },
+          lualine_x = {
+            {
+              function() return require('noice').api.status.command.get() end,
+              cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
+              color = function() return { fg = Utils.get_hl('Statement') } end,
+            },
+            {
+              function() return require('noice').api.status.mode.get() end,
+              cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
+              color = function() return { fg = Utils.get_hl('Constant') } end,
+            },
+            {
+              function() return '  ' .. require('dap').status() end,
+              cond = function() return package.loaded['dap'] and require('dap').status() ~= '' end,
+              color = function() return { fg = Utils.get_hl('Debug') } end,
+            },
+            {
+              require('lazy.status').updates,
+              cond = require('lazy.status').has_updates,
+              color = function() return { fg = Utils.get_hl('Special') } end,
+            },
+            'searchcount', 'encoding', 'fileformat', 'filetype'
+          },
+          lualine_y = { 'progress', 'location' },
+          lualine_z = { function() return os.date('%R') end },
+        },
+      })
+    end,
+  },
+
   -- TSCOMMENTS, TS-COMMENTS
   {
     'folke/ts-comments.nvim',
@@ -1033,11 +1151,11 @@ local plugins = global_config.enabled_plugins and {
       -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
       --   group = create_augroup('TS_FOLD_WORKAROUND', {}),
       --   callback = function()
-      --     if require("nvim-treesitter.parsers").has_parser() then
-      --       opt.foldmethod = "expr"
-      --       opt.foldexpr = "nvim_treesitter#foldexpr()"
+      --     if require('nvim-treesitter.parsers').has_parser() then
+      --       opt.foldmethod = 'expr'
+      --       opt.foldexpr = 'nvim_treesitter#foldexpr()'
       --     else
-      --       opt.foldmethod = "syntax"
+      --       opt.foldmethod = 'syntax'
       --     end
       --   end,
       -- })
