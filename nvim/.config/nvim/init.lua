@@ -880,6 +880,20 @@ local plugins = global_config.enabled_plugins and {
             row = -1,
             col = -1,
           },
+          size = {
+            width = 'auto',
+            height = 'auto',
+            max_height = 100,
+          },
+        },
+      },
+      routes = {
+        {
+          view = 'mini',
+          filter = {
+            event = 'msg_show',
+            kind = 'shell_out',
+          },
         },
       },
     },
