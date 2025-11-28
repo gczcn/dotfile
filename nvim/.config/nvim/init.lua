@@ -779,6 +779,8 @@ local plugins = global_config.enabled_plugins and {
             SnacksIndent = { fg = colors.surface0 },
             SnacksIndentScope = { fg = colors.surface2 },
             SnacksIndentChunk = { fg = colors.surface2 },
+
+            NoiceCmdline = { fg = colors.text, bg = colors.mantle },
           }
         end,
       })
@@ -823,7 +825,6 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
           set_hl(0, 'GitsignsCurrentLineBlame', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
-
           set_hl(0, 'MiniFilesTitleFocused', { fg = bg == 'dark' and '#fe8019' or '#af3a03', bg = bg == 'dark' and '#3c3836' or '#ebdbb2', bold = true })
         end,
       })
@@ -888,6 +889,7 @@ local plugins = global_config.enabled_plugins and {
       views = {
         mini = {
           timeout = 5000,
+          focusable = true,
           position = {
             row = -1,
             col = -1,
@@ -901,11 +903,15 @@ local plugins = global_config.enabled_plugins and {
       },
       routes = {
         {
-          view = 'mini',
           filter = {
             event = 'msg_show',
-            kind = 'shell_out',
+            any = {
+              { find = '%d+L, %d+B' },
+              { find = '; after #%d+' },
+              { find = '; before #%d+' },
+            },
           },
+          view = 'mini',
         },
       },
     },
@@ -1611,9 +1617,9 @@ let g:mkdp_preview_options = {
     config = function()
       require('colorizer').setup({
         user_default_options = {
-          mode = 'virtualtext',
-          virtualtext = '■',
-          virtualtext_inline = 'before',
+          -- mode = 'virtualtext',
+          -- virtualtext = '■',
+          -- virtualtext_inline = 'before',
           always_update = true,
         },
       })
