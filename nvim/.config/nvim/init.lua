@@ -229,7 +229,6 @@ keymap.set({ 'n', 'v', 'o' }, 'k', 'i', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, 'K', 'I', keymaps_opts)
 keymap.set('t', '<M-q>', '<C-\\><C-n>', keymaps_opts)
 keymap.set({ 'n', 'v', 'o' }, '0', '`', keymaps_opts)
-keymap.set({ 'n', 'v', 'o' }, '`', 'q:a', keymaps_opts)
 
 -- Indenting
 keymap.set('v', '<', '<gv', keymaps_opts)
@@ -700,6 +699,8 @@ local lazy_config = global_config.enabled_plugins and {
   change_detection = { notify = false },
   ui = {
     icons = {},
+    border = global_config.border,
+    backdrop = 100,
   },
   performance = {
     rtp = {
@@ -726,6 +727,17 @@ local plugins = global_config.enabled_plugins and {
         },
         styles = {
           comments = {},
+          conditionals = { 'italic' },
+          loops = {},
+          functions = { 'bold' },
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
         },
         lsp_styles = {
           virtual_text = {
@@ -904,7 +916,7 @@ local plugins = global_config.enabled_plugins and {
     'nvim-lualine/lualine.nvim',
     event = { 'VeryLazy', 'User FileOpened' },
     init = function()
-      opt.statusline = ' '
+      opt.laststatus = 0
       opt.showtabline = 0
     end,
     config = function()
@@ -913,7 +925,7 @@ local plugins = global_config.enabled_plugins and {
           component_separators = { left = '', right = '' },
           section_separators = { left = '', right = '' },
           disabled_filetypes = {
-            statusline = {},
+            statusline = { 'ministarter' },
           },
           globalstatus = true,
         },
@@ -976,6 +988,167 @@ local plugins = global_config.enabled_plugins and {
     },
     event = 'VeryLazy',
     enabled = vim.fn.has('nvim-0.10.0') == 1,
+  },
+
+  -- MINI.STARTER
+  {
+    'nvim-mini/mini.starter',
+    lazy = false,
+    dependencies = {
+      'nvim-mini/mini.icons',
+    },
+    keys = {
+      { '<leader>ts', '<cmd>MiniStarterToggle<CR>' },
+    },
+    config = function()
+      vim.cmd([[autocmd User MiniStarterOpened setlocal nofoldenable fillchars=eob:\ ]])
+
+      local starter = require('mini.starter')
+
+      local version = function()
+        local v = vim.version()
+        local prerelease = v.api_prerelease and '(Pre-release) v' or 'v'
+        return 'NVIM ' .. prerelease .. tostring(vim.version())
+      end
+
+      local header = function()
+        return version() .. '\n\n' .. [[
+Nvim is open source and freely distributable
+https://neovim.io/#chat
+
+This Configuration:
+https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
+      end
+
+      local footer = function()
+        return os.date()
+      end
+
+      ---@param n integer|nil
+      ---@param the_char_before_index string
+      ---@param index integer
+      ---@param current_dir string|boolean|nil
+      ---@param show_path boolean|function|nil
+      ---@param show_icons boolean|function|nil
+      local recent_files = function(n, the_char_before_index, index, current_dir, show_path, show_icons)
+        n = n or 5
+        if current_dir == nil then current_dir = false end
+
+        if show_path == nil then show_path = true end
+        if show_path == false then show_path = function() return '' end end
+        if show_path == true then
+          show_path = function(path) return string.format(' (%s)', vim.fn.fnamemodify(path, ':~:.')) end
+        end
+
+        if show_icons == nil then show_icons = true end
+        if show_icons == nil then show_icons = function() return '' end end
+        if show_icons == true then
+          show_icons = function(file_name)
+            local icon, _ = require('nvim-web-devicons').get_icon(file_name)
+            if not icon then icon = '󰈔' end
+            return icon .. ' '
+          end
+        end
+
+        return function()
+          local section = string.format('Recent files%s', current_dir and ' ' .. current_dir or '')
+
+          -- Use only actual readable files
+          local files = vim.tbl_filter(function(f) return vim.fn.filereadable(f) == 1 end, vim.v.oldfiles or {})
+
+          if #files == 0 then
+            return { { name = 'There are no recent files (`v:oldfiles` is empty)', action = '', section = section } }
+          end
+
+          -- Possibly filter files from current directory
+          if current_dir then
+            ---@diagnostic disable-next-line: undefined-field
+            local sep = vim.loop.os_uname().sysname == 'Windows_NT' and [[%\]] or '%/'
+            local cwd_pattern = '^' .. vim.pesc(vim.fn.getcwd()) .. sep
+            -- Use only files from current directory and its subdirectories
+            files = vim.tbl_filter(function(f) return f:find(cwd_pattern) ~= nil end, files)
+          end
+
+          if #files == 0 then
+            return { { name = 'There are no recent files in current directory', action = '', section = section } }
+          end
+
+          -- Create items
+          local i = index or ''
+          local items = {}
+          for _, f in ipairs(vim.list_slice(files, 1, n)) do
+            local file_name = vim.fn.fnamemodify(f, ':t')
+            local name = the_char_before_index .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. show_icons(file_name) .. file_name .. show_path(f)
+            i = i == '' and '' or i + 1
+            items[#items + 1] = { action = 'edit ' .. f, name = name, section = section }
+          end
+
+          return items
+        end
+      end
+
+      starter.setup({
+        evaluate_single = true,
+        items = {
+          -- Recent files (Current directory)
+          recent_files(5, '', 1, vim.fn.getcwd()),
+
+          -- Recent files
+          recent_files(5, '`', 1),
+
+          -- Builtin actions
+          { name = 'n New buffer', action = ':ene', section = 'Builtin actions' },
+          { name = 'q Quit neovim', action = ':q', section = 'Builtin actions' },
+          { name = 'o Configuration file', action = ':e ' .. vim.fn.stdpath('config') .. '/init.lua', section = 'Builtin actions' },
+
+          -- Plugins actions
+          { name = 'u Sync plugins', action = ':Lazy sync', section = 'Plugins actions' },
+          { name = 'p Plugins', action = ':Lazy', section = 'Plugins actions' },
+          { name = 's Smart picker', action = ':lua Snacks.picker.smart()', section = 'Plugins actions' },
+          { name = 'e File browser', action = ':lua require("mini.files").open()', section = 'Plugins actions' },
+          { name = 'r File browser (config)', action = ':lua require("mini.files").open("' .. vim.fn.stdpath('config') .. '")', section = 'Plugins actions' },
+          { name = 'f Find files', action = ':lua Snacks.picker.files()', section = 'Plugins actions' },
+          { name = 'c Find config', action = ':lua Snacks.picker.files({ cwd = vim.fn.stdpath("config") })', section = 'Plugins actions' },
+          { name = 'g Live grep', action = ':lua Snacks.picker.grep()', section = 'Plugins actions' },
+          { name = 'k Keymaps', action = ':lua Snacks.picker.keymaps()', section = 'Plugins actions' },
+          { name = 'm Man page', action = ':lua Snacks.picker.man()', section = 'Plugins actions' },
+          { name = 'h Help', action = ':lua Snacks.picker.man()', section = 'Plugins actions' },
+          { name = 'w Colorscheme', action = ':lua Snacks.picker.colorscheme()', section = 'Plugins actions' },
+          { name = 'z Zoxide', action = ':lua Snacks.picker.zoxide()', section = 'Plugins actions' },
+
+          -- Snacks.Picker
+        },
+        content_hooks = {
+          starter.gen_hook.padding(7, 3),
+          -- starter.gen_hook.adding_bullet('▏ '),
+          starter.gen_hook.adding_bullet('░ '),
+        },
+        header = header(),
+        footer = footer(),
+        query_updaters = 'abcdefghijklmnopqrstuvwxyz0123456789_-.`',
+        silent = true,
+      })
+
+      create_user_command('MiniStarterToggle', function()
+        if vim.o.filetype == 'ministarter' then
+          require('mini.starter').close()
+        else
+          require('mini.starter').open()
+        end
+      end, {})
+
+      create_autocmd('User', {
+        pattern = 'LazyVimStarted',
+        callback = function(ev)
+          local stats = require('lazy').stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          starter.config.footer = 'loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms\n' .. footer()
+          if vim.bo[ev.buf].filetype == 'ministarter' then
+            pcall(starter.refresh)
+          end
+        end
+      })
+    end,
   },
 
   -- MINI.FILES, FILES_MANAGER
@@ -1274,9 +1447,9 @@ local plugins = global_config.enabled_plugins and {
         },
       },
       modes = {
-        char = {
-          enabled = false,
-        },
+        -- char = {
+        --   enabled = false,
+        -- },
       },
       -- labels = 'asdfghjklqwertyuiopzxcvbnm', -- Qwerty
       labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
@@ -1467,6 +1640,7 @@ let g:mkdp_preview_options = {
       { '<leader>rN', '<cmd>lua Snacks.rename.rename_file()<CR>' },
 
       { '<leader>ff', '<cmd>lua Snacks.picker.files()<CR>' },
+      { '<leader>fc', '<cmd>lua Snacks.picker.files({ cwd = vim.fn.stdpath("config") })<CR>' },
       { '<leader>fr', '<cmd>lua Snacks.picker.recent()<CR>' },
       { '<leader>fg', '<cmd>lua Snacks.picker.grep()<CR>' },
       { '<leader>fk', '<cmd>lua Snacks.picker.keymaps()<CR>' },
@@ -1477,7 +1651,7 @@ let g:mkdp_preview_options = {
       { '<leader>fz', '<cmd>lua Snacks.picker.zoxide()<CR>' },
       { '<leader>fw', '<cmd>lua Snacks.picker.colorschemes()<CR>' },
       { '<leader>fs', '<cmd>lua Snacks.picker.smart()<CR>' },
-      { '<leader>fn', '<cmd>lua Snacks.picker.notifications()<CR>' },
+      -- { '<leader>fn', '<cmd>lua Snacks.picker.notifications()<CR>' },
 
       -- Lsp
       { 'grr', '<cmd>lua Snacks.picker.lsp_references()<CR>' , desc = 'Show LSP References' },
@@ -1565,6 +1739,8 @@ let g:mkdp_preview_options = {
           },
         },
         indent = {
+          indent = { char = '▏' },
+          scope = { char = '▏' },
           animate = { enabled = false },
         },
         quickfile = {},
