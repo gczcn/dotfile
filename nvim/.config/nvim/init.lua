@@ -1080,6 +1080,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           end
 
           -- Create items
+          ---@type string|integer
           local i = index or ''
           local items = {}
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
