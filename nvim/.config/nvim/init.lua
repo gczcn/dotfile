@@ -41,7 +41,7 @@
 -- I hope I can read the code later :)
 -- =============================================================================
 -- TODO: Remove more useless plugins
--- TODO: main branch of nvim-treesitter and nvim-treesitter-textobjects.
+-- TODO: main branch of nvim-treesitter and nvim-treesitter-textobjects. (doing)
 
 -- =============================================================================
 -- Globar vars
@@ -256,10 +256,18 @@ keymap.set('n', '<M-left>', '<cmd>vertical resize -10<CR>', keymaps_opts)
 keymap.set('n', '<M-right>', '<cmd>vertical resize +10<CR>', keymaps_opts)
 
 -- Commenting
-keymap.set('n', 'gcO', function() Utils.commenting.newline('O') end, { desc = 'Add comment on the line above', silent = true })
-keymap.set('n', 'gco', function() Utils.commenting.newline('o') end, { desc = 'Add comment on the line below', silent = true })
-keymap.set('n', 'gcA', function() Utils.commenting.line_end() end, { desc = 'Add comment at the end of line', silent = true })
-keymap.set('n', 'gcc', function() Utils.commenting.toggle_line() end, { desc = 'Toggle comment line', silent = true })
+keymap.set('n', 'gcO', function()
+  Utils.commenting.newline('O')
+end, { desc = 'Add comment on the line above', silent = true })
+keymap.set('n', 'gco', function()
+  Utils.commenting.newline('o')
+end, { desc = 'Add comment on the line below', silent = true })
+keymap.set('n', 'gcA', function()
+  Utils.commenting.line_end()
+end, { desc = 'Add comment at the end of line', silent = true })
+keymap.set('n', 'gcc', function()
+  Utils.commenting.toggle_line()
+end, { desc = 'Toggle comment line', silent = true })
 
 -- Copy and Paste
 keymap.set({ 'n', 'v' }, '<M-y>', '"+y', keymaps_opts)
@@ -277,12 +285,18 @@ keymap.set('o', '<M-D>', 'D', keymaps_opts)
 keymap.set('n', '<leader>bd', '<cmd>bd<CR>', keymaps_opts)
 
 -- Other
-keymap.set({ 'n', 'v' }, '<F5>', function() opt.background = vim.o.background == 'dark' and 'light' or 'dark' end, keymaps_opts)
-keymap.set('n', '<leader>tc', function() opt.cursorcolumn = not vim.o.cursorcolumn end, keymaps_opts)
+keymap.set({ 'n', 'v' }, '<F5>', function()
+  opt.background = vim.o.background == 'dark' and 'light' or 'dark'
+end, keymaps_opts)
+keymap.set('n', '<leader>tc', function()
+  opt.cursorcolumn = not vim.o.cursorcolumn
+end, keymaps_opts)
 keymap.set('n', '<leader>l', '<cmd>noh<CR>', keymaps_opts)
 keymap.set('n', '<leader>fn', '<cmd>messages<CR>', keymaps_opts)
 keymap.set('n', '<leader>oo', '<cmd>e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>')
-keymap.set('n', 'gX', function() Utils.goto_github(vim.fn.expand('<cfile>')) end)
+keymap.set('n', 'gX', function()
+  Utils.goto_github(vim.fn.expand('<cfile>'))
+end)
 
 -- =============================================================================
 -- Language Server Configuration
@@ -374,14 +388,26 @@ end, { desc = 'Show Cursor Diagnostics (focus on the floating window)' })
 
 keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'Goto Definition' })
 keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = 'Goto Declaration' })
+
 keymap.set({ 'n', 'v' }, '<leader>cc', vim.lsp.codelens.run, { desc = 'Run Codelens' })
 keymap.set('n', '<leader>cC', vim.lsp.codelens.refresh, { desc = 'Refresh & Display Codelens' })
-keymap.set('n', '<M-[>', function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = 'Goto Prev Diagnostic' })
-keymap.set('n', '<M-]>', function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = 'Goto Next Diagnostic' })
+
+keymap.set('n', '<M-[>', function()
+  vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = 'Goto Prev Diagnostic' })
+keymap.set('n', '<M-]>', function()
+  vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = 'Goto Next Diagnostic' })
+
 keymap.set('n', 'U', vim.lsp.buf.hover, { desc = 'Show documentation for what is under cursor' })
+
 keymap.set('n', '<leader>rs', '<cmd>LspRestart<CR>', { desc = 'Restart LSP' })
-keymap.set('n', '<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = 'Toggle Inlay Hint' })
-keymap.set('x', 'kn', function() vim.lsp.buf.selection_range(-vim.v.count1) end, keymaps_opts)
+keymap.set('n', '<leader>th', function()
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = 'Toggle Inlay Hint' })
+keymap.set('x', 'kn', function()
+  vim.lsp.buf.selection_range(-vim.v.count1)
+end, keymaps_opts)
 
 -- =============================================================================
 -- Options
@@ -405,8 +431,10 @@ opt.foldcolumn = '0'
 opt.foldenable = true
 opt.foldlevel = 99
 opt.foldlevelstart = 99
+opt.grepformat = '%f:%l:%c:%m'
+opt.grepprg = 'rg --vimgrep'
 opt.guicursor = vim.fn.has('nvim-0.11') == 1
-  and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
+    and 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20,t:block-blinkon500-blinkoff500-TermCursor'
   or 'n-v-sm:block,i-c-ci-ve:ver25,r-cr-o:hor20'
 opt.ignorecase = true -- Ignore case
 -- opt.laststatus = 2
@@ -506,7 +534,7 @@ _G.GetStatusLine = function()
 
   ---@return string
   local get_mode = function()
-    return table.concat({' %#CustomStatusLineMode#', mode_map[vim.fn.mode()], '%*'})
+    return table.concat({ ' %#CustomStatusLineMode#', mode_map[vim.fn.mode()], '%*' })
   end
 
   -- Need the gitsigns plugin
@@ -539,10 +567,18 @@ _G.GetStatusLine = function()
     local hints = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT }))
     local infos = tostring(#vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO }))
     local diagnostic = {}
-    diagnostic[#diagnostic + 1] = errors ~= '0' and ((color and '%#CustomStatusLineDiagnosticError#' or '') .. 'E' .. errors) or nil
-    diagnostic[#diagnostic + 1] = warns ~= '0' and ((color and '%#CustomStatusLineDiagnosticWarn#' or '') .. 'W' .. warns) or nil
-    diagnostic[#diagnostic + 1] = hints ~= '0' and ((color and '%#CustomStatusLineDiagnosticHint#' or '') .. 'H' .. hints) or nil
-    diagnostic[#diagnostic + 1] = infos ~= '0' and ((color and '%#CustomStatusLineDiagnosticInfo#' or '') .. 'I' .. infos) or nil
+    diagnostic[#diagnostic + 1] = errors ~= '0'
+        and ((color and '%#CustomStatusLineDiagnosticError#' or '') .. 'E' .. errors)
+      or nil
+    diagnostic[#diagnostic + 1] = warns ~= '0'
+        and ((color and '%#CustomStatusLineDiagnosticWarn#' or '') .. 'W' .. warns)
+      or nil
+    diagnostic[#diagnostic + 1] = hints ~= '0'
+        and ((color and '%#CustomStatusLineDiagnosticHint#' or '') .. 'H' .. hints)
+      or nil
+    diagnostic[#diagnostic + 1] = infos ~= '0'
+        and ((color and '%#CustomStatusLineDiagnosticInfo#' or '') .. 'I' .. infos)
+      or nil
     return table.concat(diagnostic, ' ') .. '%*'
   end
 
@@ -575,9 +611,13 @@ if global_config.enabled_custom_statusline then
   -- auto refresh
   local timer = vim.loop.new_timer()
   ---@diagnostic disable-next-line
-  timer:start(0, 1000, vim.schedule_wrap(function()
-    vim.cmd('redrawstatus')
-  end))
+  timer:start(
+    0,
+    1000,
+    vim.schedule_wrap(function()
+      vim.cmd('redrawstatus')
+    end)
+  )
 end
 
 -- =============================================================================
@@ -642,6 +682,17 @@ create_autocmd('TextYankPost', {
   end,
 })
 
+-- Go to last loc when opening a buffer
+create_autocmd('BufReadPost', {
+  callback = function()
+    local mark = api.nvim_buf_get_mark(0, '"')
+    local lcount = api.nvim_buf_line_count(0)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(api.nvim_win_set_cursor, 0, mark)
+    end
+  end,
+})
+
 create_autocmd('FileType', {
   pattern = { 'kotlin', 'java' },
   callback = function()
@@ -693,7 +744,7 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 -- =============================================================================
 
 -- LAZYNVIM
-local lazy_config = global_config.enabled_plugins and {
+local lazy_config = {
   install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
   checker = { enabled = true, notify = false },
   change_detection = { notify = false },
@@ -709,9 +760,9 @@ local lazy_config = global_config.enabled_plugins and {
       },
     },
   },
-} or nil
+}
 
-local plugins = global_config.enabled_plugins and {
+local plugins = {
 
   -- CATPPUCCIN, COLORSCHEME
   {
@@ -751,14 +802,25 @@ local plugins = global_config.enabled_plugins and {
         custom_highlights = function(colors)
           local U = require('catppuccin.utils.colors')
           return {
-            CursorLineFold = { fg = colors.overlay0, bg =
-              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            CursorLineFold = {
+              fg = colors.overlay0,
+              bg = U.vary_color(
+                { latte = U.lighten(colors.mantle, 0.70, colors.base) },
+                U.darken(colors.surface0, 0.64, colors.base)
+              ),
             },
-            CursorLineSign = { bg =
-              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            CursorLineSign = {
+              bg = U.vary_color(
+                { latte = U.lighten(colors.mantle, 0.70, colors.base) },
+                U.darken(colors.surface0, 0.64, colors.base)
+              ),
             },
-            CursorLineNr = { fg = colors.lavender, bg =
-              U.vary_color({ latte = U.lighten(colors.mantle, 0.70, colors.base) }, U.darken(colors.surface0, 0.64, colors.base))
+            CursorLineNr = {
+              fg = colors.lavender,
+              bg = U.vary_color(
+                { latte = U.lighten(colors.mantle, 0.70, colors.base) },
+                U.darken(colors.surface0, 0.64, colors.base)
+              ),
             },
 
             DiagnosticNumHlError = { fg = colors.red, bold = true },
@@ -802,7 +864,11 @@ local plugins = global_config.enabled_plugins and {
           local set_hl = vim.api.nvim_set_hl
           local bg = vim.o.background
 
-          set_hl(0, 'Title', { fg = bg == 'dark' and '#b8bb26' or '#79740e', bg = bg == 'dark' and '#3c3836' or '#ebdbb2', bold = true })
+          set_hl(0, 'Title', {
+            fg = bg == 'dark' and '#b8bb26' or '#79740e',
+            bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
+            bold = true,
+          })
 
           set_hl(0, 'FoldColumn', { fg = '#928374', bg = bg == 'dark' and '#282828' or '#fbf1c7' })
           set_hl(0, 'CursorLineFold', { fg = '#928374', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
@@ -825,7 +891,11 @@ local plugins = global_config.enabled_plugins and {
           set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
           set_hl(0, 'GitsignsCurrentLineBlame', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
-          set_hl(0, 'MiniFilesTitleFocused', { fg = bg == 'dark' and '#fe8019' or '#af3a03', bg = bg == 'dark' and '#3c3836' or '#ebdbb2', bold = true })
+          set_hl(0, 'MiniFilesTitleFocused', {
+            fg = bg == 'dark' and '#fe8019' or '#af3a03',
+            bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
+            bold = true,
+          })
         end,
       })
 
@@ -880,7 +950,12 @@ local plugins = global_config.enabled_plugins and {
           search_down = { kind = 'search', pattern = '^/', icon = ' Search Down', lang = 'regex' },
           search_up = { kind = 'search', pattern = '^%?', icon = ' Search Up', lang = 'regex' },
           filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash', view = 'cmdline' },
-          lua = { pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' }, icon = ' > lua', lang = 'lua', view = 'cmdline' },
+          lua = {
+            pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' },
+            icon = ' > lua',
+            lang = 'lua',
+            view = 'cmdline',
+          },
           help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?', view = 'cmdline' },
           input = { view = 'cmdline', icon = ' Input' }, -- Used by input()
           -- lua = false, -- to disable a format, set to `false`
@@ -945,7 +1020,9 @@ local plugins = global_config.enabled_plugins and {
               use_mode_colors = true,
             },
           },
-          lualine_c = { 'branch', 'diff',
+          lualine_c = {
+            'branch',
+            'diff',
             {
               'diagnostics',
               symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' },
@@ -953,29 +1030,56 @@ local plugins = global_config.enabled_plugins and {
           },
           lualine_x = {
             {
-              function() return require('noice').api.status.command.get() end,
-              cond = function() return package.loaded['noice'] and require('noice').api.status.command.has() end,
-              color = function() return { fg = Utils.get_hl('Statement') } end,
+              function()
+                return require('noice').api.status.command.get()
+              end,
+              cond = function()
+                return package.loaded['noice'] and require('noice').api.status.command.has()
+              end,
+              color = function()
+                return { fg = Utils.get_hl('Statement') }
+              end,
             },
             {
-              function() return require('noice').api.status.mode.get() end,
-              cond = function() return package.loaded['noice'] and require('noice').api.status.mode.has() end,
-              color = function() return { fg = Utils.get_hl('Constant') } end,
+              function()
+                return require('noice').api.status.mode.get()
+              end,
+              cond = function()
+                return package.loaded['noice'] and require('noice').api.status.mode.has()
+              end,
+              color = function()
+                return { fg = Utils.get_hl('Constant') }
+              end,
             },
             {
-              function() return '  ' .. require('dap').status() end,
-              cond = function() return package.loaded['dap'] and require('dap').status() ~= '' end,
-              color = function() return { fg = Utils.get_hl('Debug') } end,
+              function()
+                return '  ' .. require('dap').status()
+              end,
+              cond = function()
+                return package.loaded['dap'] and require('dap').status() ~= ''
+              end,
+              color = function()
+                return { fg = Utils.get_hl('Debug') }
+              end,
             },
             {
               require('lazy.status').updates,
               cond = require('lazy.status').has_updates,
-              color = function() return { fg = Utils.get_hl('Special') } end,
+              color = function()
+                return { fg = Utils.get_hl('Special') }
+              end,
             },
-            'searchcount', 'encoding', 'fileformat', 'filetype'
+            'searchcount',
+            'encoding',
+            'fileformat',
+            'filetype',
           },
           lualine_y = { 'progress', 'location' },
-          lualine_z = { function() return os.date('%R') end },
+          lualine_z = {
+            function()
+              return os.date('%R')
+            end,
+          },
         },
       })
     end,
@@ -1018,7 +1122,9 @@ local plugins = global_config.enabled_plugins and {
       end
 
       local header = function()
-        return version() .. '\n\n' .. [[
+        return version()
+          .. '\n\n'
+          .. [[
 Nvim is open source and freely distributable
 https://neovim.io/#chat
 
@@ -1036,6 +1142,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       ---@param current_dir string|boolean|nil
       ---@param show_path boolean|function|nil
       ---@param show_icons boolean|function|nil
+      -- stylua: ignore start
       local recent_files = function(n, the_char_before_index, index, current_dir, show_path, show_icons)
         n = n or 5
         if current_dir == nil then current_dir = false end
@@ -1085,7 +1192,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           local items = {}
           for _, f in ipairs(vim.list_slice(files, 1, n)) do
             local file_name = vim.fn.fnamemodify(f, ':t')
-            local name = the_char_before_index .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '') .. show_icons(file_name) .. file_name .. show_path(f)
+            local name = the_char_before_index
+              .. (i ~= '' and (i ~= 10 and i .. ' ' or '0 ') or '')
+              .. show_icons(file_name)
+              .. file_name
+              .. show_path(f)
             i = i == '' and '' or i + 1
             items[#items + 1] = { action = 'edit ' .. f, name = name, section = section }
           end
@@ -1093,6 +1204,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           return items
         end
       end
+      -- stylua: ignore end
 
       starter.setup({
         evaluate_single = true,
@@ -1104,6 +1216,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           recent_files(5, '`', 1),
 
           -- Builtin actions
+          -- stylua: ignore start
           { name = 'n New buffer', action = ':ene', section = 'Builtin actions' },
           { name = 'q Quit neovim', action = ':q', section = 'Builtin actions' },
           { name = 'o Configuration file', action = ':e ' .. vim.fn.stdpath('config') .. '/init.lua', section = 'Builtin actions' },
@@ -1122,8 +1235,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
           { name = 'h Help', action = ':lua Snacks.picker.man()', section = 'Plugins actions' },
           { name = 'w Colorscheme', action = ':lua Snacks.picker.colorscheme()', section = 'Plugins actions' },
           { name = 'z Zoxide', action = ':lua Snacks.picker.zoxide()', section = 'Plugins actions' },
-
-          -- Snacks.Picker
+          -- stylua: ignore end
         },
         content_hooks = {
           starter.gen_hook.padding(7, 3),
@@ -1149,11 +1261,18 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
         callback = function(ev)
           local stats = require('lazy').stats()
           local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          starter.config.footer = 'loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms\n' .. footer()
+          starter.config.footer = 'loaded '
+            .. stats.loaded
+            .. '/'
+            .. stats.count
+            .. ' plugins in '
+            .. ms
+            .. 'ms\n'
+            .. footer()
           if vim.bo[ev.buf].filetype == 'ministarter' then
             pcall(starter.refresh)
           end
-        end
+        end,
       })
     end,
   },
@@ -1165,13 +1284,17 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       'nvim-mini/mini.icons',
     },
     keys = {
+      -- stylua: ignore start
       ---@diagnostic disable-next-line: undefined-global
       { '<leader>e', function() MiniFiles.open() end },
       ---@diagnostic disable-next-line: undefined-global
       { '<leader>E', function() MiniFiles.open(api.nvim_buf_get_name(0)) end },
+      -- stylua: ignore end
     },
     init = function()
-      local mini_files_open_folder = function(path) require('mini.files').open(path) end
+      local mini_files_open_folder = function(path)
+        require('mini.files').open(path)
+      end
       Utils.autocmd_attach_file_browser('mini.files', mini_files_open_folder)
     end,
     config = function()
@@ -1185,19 +1308,19 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       })
       require('mini.files').setup({
         mappings = {
-          close       = 'q',
-          go_in       = '<S-CR>',
-          go_in_plus  = '<CR>',
-          go_out      = '<BS>',
+          close = 'q',
+          go_in = '<S-CR>',
+          go_in_plus = '<CR>',
+          go_out = '<BS>',
           go_out_plus = '<S-BS>',
-          mark_goto   = "'",
-          mark_set    = 'm',
-          reset       = '-',
-          reveal_cwd  = '@',
-          show_help   = 'g?',
+          mark_goto = "'",
+          mark_set = 'm',
+          reset = '-',
+          reveal_cwd = '@',
+          show_help = 'g?',
           synchronize = '=',
-          trim_left   = '<',
-          trim_right  = '>',
+          trim_left = '<',
+          trim_right = '>',
         },
         options = {
           permanent_delete = true,
@@ -1234,7 +1357,13 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
   {
     'nvim-mini/mini.surround',
     keys = {
-      { 'sa', mode = { 'n', 'v' } }, 'sd', 'sf', 'sF', 'sh', 'sr', 'sn',
+      { 'sa', mode = { 'n', 'v' } },
+      'sd',
+      'sf',
+      'sF',
+      'sh',
+      'sr',
+      'sn',
     },
     config = function()
       require('mini.surround').setup({
@@ -1251,110 +1380,228 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
     end,
   },
 
-  -- TREESITTER
+  -- NVIM_TREESITTER
   {
     'nvim-treesitter/nvim-treesitter',
-    enabled = true,
+    branch = 'main',
     version = false,
-    event = { 'User FileOpened', 'BufAdd', 'VeryLazy' },
-    cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
-    keys = {
-      -- context
-      { '[c', function() require('treesitter-context').go_to_context() end, mode = 'n' },
-    },
     build = ':TSUpdate',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-      -- 'nvim-treesitter/nvim-treesitter-context',
-      -- { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
+    event = { 'User FileOpened', 'VeryLazy' },
+    cmd = { 'TSUpdate', 'TSInstall', 'TSLog', 'TSUninstall' },
+    keys = {
+      {
+        'af',
+        function()
+          require('nvim-treesitter-textobjects.select').select_textobject('@function.outer', 'textobjects')
+        end,
+        mode = { 'x', 'o' },
+      },
+      {
+        'kf',
+        function()
+          require('nvim-treesitter-textobjects.select').select_textobject('@function.inner', 'textobjects')
+        end,
+        mode = { 'x', 'o' },
+      },
+      {
+        'ac',
+        function()
+          require('nvim-treesitter-textobjects.select').select_textobject('@class.outer', 'textobjects')
+        end,
+        mode = { 'x', 'o' },
+      },
+      {
+        'kc',
+        function()
+          require('nvim-treesitter-textobjects.select').select_textobject('@class.inner', 'textobjects')
+        end,
+        mode = { 'x', 'o' },
+      },
+      {
+        'as',
+        function()
+          require('nvim-treesitter-textobjects.select').select_textobject('@local.scope', 'locals')
+        end,
+        mode = { 'x', 'o' },
+      },
     },
-    init = function(plugin)
-      require('lazy.core.loader').add_to_rtp(plugin)
-      require('nvim-treesitter.query_predicates')
-    end,
+    dependencies = {
+      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'main' },
+    },
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup({
-        ensure_installed = {
-          'lua',
-          'luadoc',
-          'luap',
-          'python',
-          'c',
-          'dart',
-          'html',
-          'vim',
-          'vimdoc',
-          'javascript',
-          'typescript',
-          'bash',
-          'diff',
-          'jsdoc',
-          'json',
-          'jsonc',
-          'toml',
-          'yaml',
-          'tsx',
-          'markdown',
-          'markdown_inline',
-          'regex',
-          'c_sharp',
-          'go',
-          'kotlin',
-        },
-        -- auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = {
-          enable = true,
-        },
-        incremental_selection = {
-          enable = false,
-          keymaps = {
-            init_selection = '<CR>',
-            node_incremental = '<CR>',
-            node_decremental = '<BS>',
-            -- scope_incremental = '<TAB>',
-          },
-        },
-        textobjects = {
-          select = {
-            disable = { 'dart' },
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ['af'] = '@function.outer',
-              ['kf'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              ['kc'] = '@class.inner',
-            }
-          },
-        },
-      })
+      local treesitter = require('nvim-treesitter')
 
-      -- HACK: temporary fix to ensure rainbow delimiters are highlighted in real-time
-      create_autocmd('BufRead', {
-        desc = 'Ensure treesitter is initialized???',
-        callback = function()
-          pcall(vim.treesitter.start)
+      -- Install parsers without showing the 'x/x parsers installed' message
+      local ensureInstalled = {
+        'lua',
+        'luadoc',
+        'luap',
+        'python',
+        'c',
+        'dart',
+        'html',
+        'vim',
+        'vimdoc',
+        'javascript',
+        'typescript',
+        'bash',
+        'diff',
+        'jsdoc',
+        'json',
+        'jsonc',
+        'toml',
+        'yaml',
+        'tsx',
+        'markdown',
+        'markdown_inline',
+        'regex',
+        'c_sharp',
+        'go',
+        'kotlin',
+      }
+      local alreadyInstalled = require('nvim-treesitter.config').get_installed()
+      local parsersToInstall = vim
+        .iter(ensureInstalled)
+        :filter(function(parser)
+          return not vim.tbl_contains(alreadyInstalled, parser)
+        end)
+        :totable()
+      treesitter.install(parsersToInstall)
+
+      create_autocmd('FileType', {
+        group = create_augroup('nvim_treesitter_filetype', { clear = true }),
+        callback = function(ev)
+          ---@return table
+          local get_installed_parsers = function()
+            local installed = {}
+            for _, lang in ipairs(treesitter.get_installed('parsers')) do
+              installed[lang] = true
+            end
+            return installed
+          end
+
+          ---@param ft string
+          ---@return boolean
+          local has_parser = function(ft)
+            local lang = vim.treesitter.language.get_lang(ft)
+            return not (lang == nil or get_installed_parsers()[lang] == nil)
+          end
+
+          if has_parser(ev.match) then
+            pcall(vim.treesitter.start, ev.buf)
+            vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+            vim.wo.foldtext = 'v:lua.vim.treesitter.foldtext()'
+            -- vim.bo.indentexpr = 'v:lua.require"nvim-treesitter".indentexpr()'
+          end
         end,
       })
 
-      -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
-      --   group = create_augroup('TS_FOLD_WORKAROUND', {}),
-      --   callback = function()
-      --     if require('nvim-treesitter.parsers').has_parser() then
-      --       opt.foldmethod = 'expr'
-      --       opt.foldexpr = 'nvim_treesitter#foldexpr()'
-      --     else
-      --       opt.foldmethod = 'syntax'
-      --     end
-      --   end,
-      -- })
+      require('nvim-treesitter-textobjects').setup({})
     end,
   },
+  -- {
+  --   'nvim-treesitter/nvim-treesitter',
+  --   enabled = true,
+  --   version = false,
+  --   event = { 'User FileOpened', 'BufAdd', 'VeryLazy' },
+  --   cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
+  --   keys = {
+  --     -- context
+  --     { '[c', function() require('treesitter-context').go_to_context() end, mode = 'n' },
+  --   },
+  --   build = ':TSUpdate',
+  --   dependencies = {
+  --     'nvim-treesitter/nvim-treesitter-textobjects',
+  --     -- 'nvim-treesitter/nvim-treesitter-context',
+  --     -- { 'HiPhish/rainbow-delimiters.nvim', submodules = false },
+  --   },
+  --   init = function(plugin)
+  --     require('lazy.core.loader').add_to_rtp(plugin)
+  --     require('nvim-treesitter.query_predicates')
+  --   end,
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('nvim-treesitter.configs').setup({
+  --       ensure_installed = {
+  --         'lua',
+  --         'luadoc',
+  --         'luap',
+  --         'python',
+  --         'c',
+  --         'dart',
+  --         'html',
+  --         'vim',
+  --         'vimdoc',
+  --         'javascript',
+  --         'typescript',
+  --         'bash',
+  --         'diff',
+  --         'jsdoc',
+  --         'json',
+  --         'jsonc',
+  --         'toml',
+  --         'yaml',
+  --         'tsx',
+  --         'markdown',
+  --         'markdown_inline',
+  --         'regex',
+  --         'c_sharp',
+  --         'go',
+  --         'kotlin',
+  --       },
+  --       -- auto_install = true,
+  --       highlight = {
+  --         enable = true,
+  --         additional_vim_regex_highlighting = false,
+  --       },
+  --       indent = {
+  --         enable = true,
+  --       },
+  --       incremental_selection = {
+  --         enable = false,
+  --         keymaps = {
+  --           init_selection = '<CR>',
+  --           node_incremental = '<CR>',
+  --           node_decremental = '<BS>',
+  --           -- scope_incremental = '<TAB>',
+  --         },
+  --       },
+  --       textobjects = {
+  --         select = {
+  --           disable = { 'dart' },
+  --           enable = true,
+  --           lookahead = true,
+  --           keymaps = {
+  --             ['af'] = '@function.outer',
+  --             ['kf'] = '@function.inner',
+  --             ['ac'] = '@class.outer',
+  --             ['kc'] = '@class.inner',
+  --           }
+  --         },
+  --       },
+  --     })
+  --
+  --     -- HACK: temporary fix to ensure rainbow delimiters are highlighted in real-time
+  --     create_autocmd('BufRead', {
+  --       desc = 'Ensure treesitter is initialized???',
+  --       callback = function()
+  --         pcall(vim.treesitter.start)
+  --       end,
+  --     })
+  --
+  --     -- create_autocmd({ 'BufEnter','BufAdd','BufNew','BufNewFile','BufWinEnter' }, {
+  --     --   group = create_augroup('TS_FOLD_WORKAROUND', {}),
+  --     --   callback = function()
+  --     --     if require('nvim-treesitter.parsers').has_parser() then
+  --     --       opt.foldmethod = 'expr'
+  --     --       opt.foldexpr = 'nvim_treesitter#foldexpr()'
+  --     --     else
+  --     --       opt.foldmethod = 'syntax'
+  --     --     end
+  --     --   end,
+  --     -- })
+  --   end,
+  -- },
 
   -- ANTONYM
   {
@@ -1385,13 +1632,16 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       { '<C-n>', ':MoveHBlock(-1)<CR>', mode = 'v', noremap = true, silent = true },
       { '<C-e>', ':MoveHBlock(1)<CR>', mode = 'v', noremap = true, silent = true },
     },
-    config = function() require('move').setup({ char = { enable = true } }) end
+    config = function()
+      require('move').setup({ char = { enable = true } })
+    end,
   },
 
   -- MULTI-CURSOR
   {
     'jake-stewart/multicursor.nvim',
     keys = function()
+      -- stylua: ignore
       return {
         { '<up>', function() require('multicursor-nvim').lineAddCursor(-1) end, mode = { 'n', 'v' } },
         { '<down>', function() require('multicursor-nvim').lineAddCursor(1) end, mode = { 'n', 'v' } },
@@ -1431,11 +1681,11 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       local hl = api.nvim_set_hl
       hl(0, 'MultiCursorCursor', { link = 'Cursor' })
       hl(0, 'MultiCursorVisual', { link = 'Visual' })
-      hl(0, 'MultiCursorSign', { link = 'SignColumn'})
+      hl(0, 'MultiCursorSign', { link = 'SignColumn' })
       hl(0, 'MultiCursorDisabledCursor', { link = 'Visual' })
       hl(0, 'MultiCursorDisabledVisual', { link = 'Visual' })
-      hl(0, 'MultiCursorDisabledSign', { link = 'SignColumn'})
-    end
+      hl(0, 'MultiCursorDisabledSign', { link = 'SignColumn' })
+    end,
   },
 
   -- FLASH
@@ -1467,7 +1717,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
     -- stylua: ignore
     keys = {
       { '\\', function() require('flash').jump() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash' },
-      { '<CR>', function() require('flash').treesitter() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash Treesitter' },
+      { '<CR>', function() require('flash').treesitter() end, mode = { 'n', 'o', 'v' }, desc = 'Flash Treesitter Incremental Selection' },
       { '<leader>\\', function() require('flash').remote() end, mode = 'o', desc = 'Remote Flash' },
       { '<leader>|', function() require('flash').treesitter_search() end, mode = { 'o', 'x', 'v' }, desc = 'Treesitter Search' },
       { '<C-s>', function() require('flash').toggle() end, mode = 'c', desc = 'Toggle Flash Search' },
@@ -1520,22 +1770,28 @@ let g:mkdp_preview_options = {
       'CRProjects',
     },
     keys = {
-      { '<leader>ra', function()
-        vim.ui.input({prompt = 'Input Args: '}, function (args)
-          if args ~= nil then
-            vim.g.code_runner_run_args = args
-          end
-        end)
-      end },
-      { '<leader>R', function()
-        vim.ui.input({prompt = 'Input Args: '}, function (args)
-          if args ~= nil then
-            vim.g.code_runner_run_args = args
-            vim.cmd.RunCode()
-            vim.g.code_runner_run_args = ''
-          end
-        end)
-      end },
+      {
+        '<leader>ra',
+        function()
+          vim.ui.input({ prompt = 'Input Args: ' }, function(args)
+            if args ~= nil then
+              vim.g.code_runner_run_args = args
+            end
+          end)
+        end,
+      },
+      {
+        '<leader>R',
+        function()
+          vim.ui.input({ prompt = 'Input Args: ' }, function(args)
+            if args ~= nil then
+              vim.g.code_runner_run_args = args
+              vim.cmd.RunCode()
+              vim.g.code_runner_run_args = ''
+            end
+          end)
+        end,
+      },
       { '<leader>r', '<cmd>RunCode<CR>' },
       { '<leader>rr', '<cmd>RunCode<CR>' },
       { '<leader>rf', '<cmd>RunFile<CR>' },
@@ -1549,23 +1805,31 @@ let g:mkdp_preview_options = {
       vim.g.code_runner_run_args = ''
       require('code_runner').setup({
         term = {
-          size = 20
+          size = 20,
         },
         filetype = {
           java = {
             'cd $dir &&',
             'javac $fileName &&',
-            'java $fileNameWithoutExt'
+            'java $fileNameWithoutExt',
           },
-          python = function() return 'python3 $file ' .. vim.g.code_runner_run_args end,
-          dart = function() return 'dart run $file ' .. vim.g.code_runner_run_args end,
-          go = function() return 'go run $file ' .. vim.g.code_runner_run_args end,
-          lua = function() return 'lua $file ' .. vim.g.code_runner_run_args end,
+          python = function()
+            return 'python3 $file ' .. vim.g.code_runner_run_args
+          end,
+          dart = function()
+            return 'dart run $file ' .. vim.g.code_runner_run_args
+          end,
+          go = function()
+            return 'go run $file ' .. vim.g.code_runner_run_args
+          end,
+          lua = function()
+            return 'lua $file ' .. vim.g.code_runner_run_args
+          end,
           typescript = 'deno run',
           rust = {
             'cd $dir &&',
             'rustc $fileName &&',
-            '$dir/$fileNameWithoutExt'
+            '$dir/$fileNameWithoutExt',
           },
           c = function()
             local c_base = {
@@ -1599,14 +1863,6 @@ let g:mkdp_preview_options = {
     config = function()
       vim.cmd.cabbrev('ww SudaWrite')
       vim.cmd.cabbrev('wwr SudaRead')
-    end,
-  },
-
-  -- LASTPLACE
-  {
-    'farmergreg/vim-lastplace',
-    priority = 1000,
-    config = function()
     end,
   },
 
@@ -1661,13 +1917,13 @@ let g:mkdp_preview_options = {
       -- { '<leader>fn', '<cmd>lua Snacks.picker.notifications()<CR>' },
 
       -- Lsp
-      { 'grr', '<cmd>lua Snacks.picker.lsp_references()<CR>' , desc = 'Show LSP References' },
-      { 'gd', '<cmd>lua Snacks.picker.lsp_definitions()<CR>' , desc = 'Show LSP Definitions' },
-      { 'gD', '<cmd>lua Snacks.picker.lsp_declarations()<CR>' , desc = 'Show LSP Declarations' },
-      { 'gri', '<cmd>lua Snacks.picker.lsp_implementations()<CR>' , desc = 'Show LSP Implementations' },
-      { 'grt', '<cmd>lua Snacks.picker.lsp_type_definitions()<CR>' , desc = 'Show LSP Type Definitions' },
-      { '<leader>;', '<cmd>lua Snacks.picker.lsp_symbols()<CR>' , desc = 'Show Buffer Symbols' },
-      { '<leader>D', '<cmd>lua Snacks.picker.diagnostics_buffer()<CR>' , desc = 'Show Buffer Diagnostics' },
+      { 'grr', '<cmd>lua Snacks.picker.lsp_references()<CR>', desc = 'Show LSP References' },
+      { 'gd', '<cmd>lua Snacks.picker.lsp_definitions()<CR>', desc = 'Show LSP Definitions' },
+      { 'gD', '<cmd>lua Snacks.picker.lsp_declarations()<CR>', desc = 'Show LSP Declarations' },
+      { 'gri', '<cmd>lua Snacks.picker.lsp_implementations()<CR>', desc = 'Show LSP Implementations' },
+      { 'grt', '<cmd>lua Snacks.picker.lsp_type_definitions()<CR>', desc = 'Show LSP Type Definitions' },
+      { '<leader>;', '<cmd>lua Snacks.picker.lsp_symbols()<CR>', desc = 'Show Buffer Symbols' },
+      { '<leader>D', '<cmd>lua Snacks.picker.diagnostics_buffer()<CR>', desc = 'Show Buffer Diagnostics' },
     },
     config = function()
       local Snacks = require('snacks')
@@ -1730,7 +1986,7 @@ let g:mkdp_preview_options = {
               {
                 win = 'preview',
                 border = global_config.border,
-                width = 0.5
+                width = 0.5,
               },
             },
           },
@@ -1784,7 +2040,7 @@ let g:mkdp_preview_options = {
             condition = { true, builtin.not_empty },
             click = 'v:lua.ScLa',
           },
-        }
+        },
       })
     end,
   },
@@ -1810,7 +2066,7 @@ let g:mkdp_preview_options = {
           },
         },
       })
-    end
+    end,
   },
 
   -- CONFORM, FORMATTER
@@ -1852,20 +2108,20 @@ let g:mkdp_preview_options = {
     config = function()
       require('gitsigns').setup({
         signs = {
-          add          = { text = '▍' },
-          change       = { text = '▍' },
-          delete       = { text = '▁' },
-          topdelete    = { text = '▔' },
+          add = { text = '▍' },
+          change = { text = '▍' },
+          delete = { text = '▁' },
+          topdelete = { text = '▔' },
           changedelete = { text = '▍' },
-          untracked    = { text = '▍' },
+          untracked = { text = '▍' },
         },
         signs_staged = {
-          add          = { text = '▍' },
-          change       = { text = '▍' },
-          delete       = { text = '▁' },
-          topdelete    = { text = '▔' },
+          add = { text = '▍' },
+          change = { text = '▍' },
+          delete = { text = '▁' },
+          topdelete = { text = '▔' },
           changedelete = { text = '▍' },
-          untracked    = { text = '▍' },
+          untracked = { text = '▍' },
         },
         sign_priority = 11,
         current_line_blame = true,
@@ -1901,6 +2157,7 @@ let g:mkdp_preview_options = {
   -- DAP, DEBUG, DEBUGGER
   {
     'mfussenegger/nvim-dap',
+    -- stylua: ignore
     keys = {
       { '<leader>dB', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Breakpoint Condition' },
       { '<leader>db', function() require('dap').toggle_breakpoint() end, desc = 'Toggle Breakpoint' },
@@ -1929,10 +2186,18 @@ let g:mkdp_preview_options = {
       local dapui = require('dapui')
       dapui.setup()
 
-      dap.listeners.before.attach.dapui_config = function() dapui.open() end
-      dap.listeners.before.launch.dapui_config = function() dapui.open() end
-      dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
-      dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
 
       require('dap-go').setup()
     end,
@@ -1957,7 +2222,7 @@ let g:mkdp_preview_options = {
   -- LSPCONFIG
   {
     'neovim/nvim-lspconfig',
-    lazy = false,
+    event = 'User FileOpened',
     keys = {
       { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
@@ -2008,7 +2273,7 @@ let g:mkdp_preview_options = {
         cmd = {
           'clangd',
           '--background-index',
-        }
+        },
       })
     end,
   },
@@ -2021,11 +2286,17 @@ let g:mkdp_preview_options = {
     config = function()
       local ls = require('luasnip')
 
-      keymap.set({'i'}, '<C-k>', function() ls.expand() end, {silent = true})
-      keymap.set({'i', 's'}, '<C-l>', function() ls.jump( 1) end, {silent = true})
-      keymap.set({'i', 's'}, '<C-j>', function() ls.jump(-1) end, {silent = true})
+      keymap.set({ 'i' }, '<C-k>', function()
+        ls.expand()
+      end, { silent = true })
+      keymap.set({ 'i', 's' }, '<C-l>', function()
+        ls.jump(1)
+      end, { silent = true })
+      keymap.set({ 'i', 's' }, '<C-j>', function()
+        ls.jump(-1)
+      end, { silent = true })
 
-      keymap.set({'i', 's'}, '<C-f>', function()
+      keymap.set({ 'i', 's' }, '<C-f>', function()
         if ls.choice_active() then
           ls.change_choice(1)
         end
@@ -2128,8 +2399,8 @@ let g:mkdp_preview_options = {
               treesitter = { 'lsp', 'copilot', 'snippets' },
               columns = {
                 { 'label' },
-                -- { 'kind_icon', 'kind', gap = 1 },
-                { 'kind' },
+                { 'kind_icon', 'kind', gap = 1 },
+                -- { 'kind' },
                 { 'source_name' },
               },
               components = {
@@ -2156,7 +2427,12 @@ let g:mkdp_preview_options = {
         },
         snippets = { preset = 'luasnip' },
         sources = {
-          default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer',
+          default = {
+            'lazydev',
+            'lsp',
+            'path',
+            'snippets',
+            'buffer',
             global_config.enabled_copilot and 'copilot' or nil,
           },
           providers = {
@@ -2191,8 +2467,7 @@ let g:mkdp_preview_options = {
       require('blink.cmp').setup(opts)
     end,
   },
-
-} or nil
+}
 
 -- =============== Lazy.nvim setup ===============
 if global_config.enabled_plugins then
