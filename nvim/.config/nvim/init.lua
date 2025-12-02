@@ -5,14 +5,15 @@
 --
 -- Dependencies:
 --   Neovim >= 0.11 (Nightly version is recommended)
---   ripgrep - for fzf.lua
---   fd - for fzf.lua
---   cmake
---   make
---   node
---   npm
---   fzf - for fzf.lua
---   gcc
+--   tree-sitter-cli - for nvim-treesitter
+--   a C compiler - for nvim-treesitter
+--   curl - for nvim-treesitter
+--   tar - for nvim-treesitter
+--   make - for markdown-preview.nvim
+--
+-- Optional Dependencies:
+--   ripgrep
+--   fd
 --   Nerd Font - if you want to show some icons
 --
 --   Language Servers:
@@ -745,6 +746,9 @@ create_autocmd({ 'BufReadPost', 'BufWritePost', 'BufNewFile' }, {
 
 -- LAZYNVIM
 local lazy_config = {
+  defaults = {
+    version = false, -- always use the latest git commit
+  },
   install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
   checker = { enabled = true, notify = false },
   change_detection = { notify = false },
@@ -755,8 +759,14 @@ local lazy_config = {
   },
   performance = {
     rtp = {
+      -- disable some rtp plugins
       disabled_plugins = {
+        'gzip',
         'netrwPlugin',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
       },
     },
   },
@@ -772,7 +782,7 @@ local plugins = {
     priority = 1000,
     config = function()
       require('catppuccin').setup({
-        flavour = 'mocha',
+        flavour = 'macchiato',
         float = {
           transparent = true,
         },
@@ -1727,7 +1737,6 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
   -- MARKDOWN-PREVIEW
   {
     'iamcco/markdown-preview.nvim',
-    lazy = false,
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     keys = { { '<leader>m', '<cmd>MarkdownPreviewToggle<CR>' } },
     ft = { 'markdown' },
@@ -2015,10 +2024,14 @@ let g:mkdp_preview_options = {
   -- STATUSCOL
   {
     'luukvbaal/statuscol.nvim',
+    event = { 'VeryLazy', 'User FileOpened' },
     config = function()
       local builtin = require('statuscol.builtin')
       require('statuscol').setup({
         relculright = true,
+        ft_ignore = {
+          'ministarter',
+        },
         segments = {
           {
             text = { builtin.foldfunc },
