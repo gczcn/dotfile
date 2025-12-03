@@ -9,7 +9,7 @@
 --   a C compiler - for nvim-treesitter
 --   curl - for nvim-treesitter
 --   tar - for nvim-treesitter
---   make - for markdown-preview.nvim
+--   make
 --
 -- Optional Dependencies:
 --   ripgrep
