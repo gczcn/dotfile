@@ -6,10 +6,10 @@
 -- Dependencies:
 --   Neovim >= 0.11 (Nightly version is recommended)
 --   tree-sitter-cli - for nvim-treesitter
---   a C compiler - for nvim-treesitter
+--   a C compiler such as gcc, msvk(cl.exe) - for nvim-treesitter
 --   curl - for nvim-treesitter
 --   tar - for nvim-treesitter
---   make
+--   make - for luasnip
 --
 -- Optional Dependencies:
 --   ripgrep
