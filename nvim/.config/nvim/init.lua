@@ -782,10 +782,7 @@ local plugins = {
     priority = 1000,
     config = function()
       require('catppuccin').setup({
-        flavour = 'macchiato',
-        float = {
-          transparent = true,
-        },
+        flavour = 'mocha',
         styles = {
           comments = {},
           conditionals = { 'italic' },
@@ -853,6 +850,8 @@ local plugins = {
             SnacksIndentChunk = { fg = colors.surface2 },
 
             NoiceCmdline = { fg = colors.text, bg = colors.mantle },
+            NoiceCmdlineIcon = { fg = colors.base, bg = colors.peach, bold = true },
+            NoiceCmdlineIconSearch = { fg = colors.base, bg = colors.yellow, bold = true },
           }
         end,
       })
@@ -906,6 +905,11 @@ local plugins = {
             bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
             bold = true,
           })
+          set_hl(
+            0,
+            'NoiceCmdline',
+            { fg = bg == 'dark' and '#ebdbb2' or '#3c3836', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' }
+          )
         end,
       })
 
@@ -956,18 +960,18 @@ local plugins = {
           -- opts: any options passed to the view
           -- icon_hl_group: optional hl_group for the icon
           -- title: set to anything or empty string to hide
-          cmdline = { pattern = '^:', icon = ' >', lang = 'vim', view = 'cmdline' },
-          search_down = { kind = 'search', pattern = '^/', icon = ' Search Down', lang = 'regex' },
-          search_up = { kind = 'search', pattern = '^%?', icon = ' Search Up', lang = 'regex' },
-          filter = { pattern = '^:%s*!', icon = ' $', lang = 'bash', view = 'cmdline' },
+          cmdline = { pattern = '^:', icon = ' COMMAND ', lang = 'vim', view = 'cmdline' },
+          search_down = { kind = 'search', pattern = '^/', icon = ' SEARCH DOWN ', lang = 'regex' },
+          search_up = { kind = 'search', pattern = '^%?', icon = ' SEARCH UP ', lang = 'regex' },
+          filter = { pattern = '^:%s*!', icon = ' SHELL ', lang = 'bash', view = 'cmdline' },
           lua = {
             pattern = { '^:%s*lua%s+', '^:%s*lua%s*=%s*', '^:%s*=%s*' },
-            icon = ' > lua',
+            icon = ' LUA ',
             lang = 'lua',
             view = 'cmdline',
           },
-          help = { pattern = '^:%s*he?l?p?%s+', icon = ' ?', view = 'cmdline' },
-          input = { view = 'cmdline', icon = ' Input' }, -- Used by input()
+          help = { pattern = '^:%s*he?l?p?%s+', icon = ' HELP ', view = 'cmdline' },
+          input = { view = 'cmdline', icon = ' Input ' }, -- Used by input()
           -- lua = false, -- to disable a format, set to `false`
         },
       },
@@ -984,6 +988,9 @@ local plugins = {
             height = 'auto',
             max_height = 100,
           },
+        },
+        confirm = {
+          border = { style = global_config.border },
         },
       },
       routes = {
@@ -1013,6 +1020,7 @@ local plugins = {
     config = function()
       require('lualine').setup({
         options = {
+          theme = 'auto',
           component_separators = { left = '', right = '' },
           section_separators = { left = '', right = '' },
           disabled_filetypes = {
