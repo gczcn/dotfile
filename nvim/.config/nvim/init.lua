@@ -852,6 +852,8 @@ local plugins = {
             NoiceCmdline = { fg = colors.text, bg = colors.mantle },
             NoiceCmdlineIcon = { fg = colors.base, bg = colors.peach, bold = true },
             NoiceCmdlineIconSearch = { fg = colors.base, bg = colors.yellow, bold = true },
+
+            FlashPromptIcon = { fg = colors.base, bg = colors.pink, bold = true }
           }
         end,
       })
@@ -1729,7 +1731,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       -- labels = 'asdfghjklqwertyuiopzxcvbnm', -- Qwerty
       labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
       prompt = {
-        prefix = { { ' Jump ', 'FlashPromptIcon' } },
+        prefix = { { ' JUMP ', 'FlashPromptIcon' }, { ' ', 'StatusLine' } },
       },
     },
     -- stylua: ignore
