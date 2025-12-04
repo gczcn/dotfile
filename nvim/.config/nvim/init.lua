@@ -853,7 +853,7 @@ local plugins = {
             NoiceCmdlineIcon = { fg = colors.base, bg = colors.peach, bold = true },
             NoiceCmdlineIconSearch = { fg = colors.base, bg = colors.yellow, bold = true },
 
-            FlashPromptIcon = { fg = colors.base, bg = colors.pink, bold = true }
+            FlashPromptIcon = { fg = colors.base, bg = colors.pink, bold = true },
           }
         end,
       })
