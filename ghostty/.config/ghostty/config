@@ -26,10 +26,10 @@
 # font-size = 13.3
 
 # IBM Plex
-font-family = BlexMono Nerd Font Mono
-adjust-font-baseline = 1
-font-size = 13.5
-font-feature = onum
+# font-family = BlexMono Nerd Font Mono
+# adjust-font-baseline = 1
+# font-size = 13.5
+# font-feature = onum
 
 # Source Code Pro
 # font-family = SauceCodePro Nerd Font Mono
@@ -37,9 +37,9 @@ font-feature = onum
 # window-title-font-family = SauceCodePro Nerd Font Mono
 
 # JetBrains Mono
-# font-family = JetBrainsMono Nerd Font Mono
-# font-feature = ss01
-# font-size = 13.3
+font-family = JetBrainsMono Nerd Font Mono
+font-feature = ss01
+font-size = 13.3
 
 # Fira Code
 # font-family = FiraCode Nerd Font Mono
