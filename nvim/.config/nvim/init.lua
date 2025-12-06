@@ -1063,6 +1063,7 @@ local plugins = {
         config = function()
           require('nvim-navic').setup({
             highlight = true,
+            click = false,
             lsp = {
               auto_attach = true,
             },

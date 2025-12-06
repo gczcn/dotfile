@@ -57,6 +57,6 @@ nvim
 All done.
 
 ## Todos
-- [ ] Fix: highlight of nvim-navic
+- [x] Fix: highlight of nvim-navic.
 - [ ] Remove more useless plugins.
 - [ ] The main branch of nvim-treesitter and nvim-treesitter-textobjects.
