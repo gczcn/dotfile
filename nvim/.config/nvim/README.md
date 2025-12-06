@@ -1,10 +1,13 @@
 ## A [Colemak](https://colemak.com/) User's [Neovim](https://neovim.io/) Config
-> A clean, single-file configuration for [Neovim](https://neovim.io/) with key bindings for the [Colemak](https://colemak.com/) keyboard layout.
+> A **clean**, **single-file** configuration for **[Neovim](https://neovim.io/)** with key bindings for the **[Colemak](https://colemak.com/)** keyboard layout.
+
+> **Note:** This README.md only considers UNIX-like systems.
 
 ![ScreenShot](resources/screenshot.png)
 
 ### Table of Contents
 - [Dependencies](#dependencies)
+- [Installation](#installation)
 - [Todos](#todos)
 
 ### Dependencies
@@ -36,6 +39,22 @@
     - [black](https://github.com/psf/black/)
     - [stylua](https://github.com/JohnnyMorganz/StyLua/)
     - [shfmt](https://github.com/patrickvane/shfmt/)
+
+### Installation
+First, clone this repo:
+```bash
+git clone https://github.com/gczcn/dotfile
+```
+Then, use [`stow`](https://www.gnu.org/software/stow/) to create a symbolic link pointing to the Neovim config:
+```bash
+cd dotfile
+stow nvim
+```
+Last, open Neovim:
+```bash
+nvim
+```
+All done.
 
 ### Todos
 - [ ] Remove more useless plugins.
