@@ -1109,7 +1109,7 @@ local plugins = {
             },
             {
               'navic',
-              color_correction = 'static',
+              color_correction = 'dynamic',
             },
           },
           lualine_x = {
