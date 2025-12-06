@@ -710,7 +710,7 @@ local lazy_config = {
   defaults = {
     version = false, -- always use the latest git commit
   },
-  install = { colorscheme = { 'catppuccin', 'gruvbox', 'habamax' } },
+  install = { colorscheme = { 'gruvbox', 'catppuccin', 'everforest', 'habamax' } },
   checker = { enabled = true, notify = false },
   change_detection = { notify = false },
   ui = {
@@ -765,6 +765,11 @@ local plugins = {
             warnings = {},
             information = {},
             ok = {},
+          },
+        },
+        integrations = {
+          navic = {
+            enabled = true,
           },
         },
         custom_highlights = function(colors)
@@ -987,6 +992,7 @@ local plugins = {
       },
       presets = {
         bottom_search = true, -- use a classic bottom cmdline for search
+        long_message_to_split = true,
       },
       cmdline = {
         enabled = true, -- enables the Noice cmdline UI
@@ -1051,6 +1057,19 @@ local plugins = {
   {
     'nvim-lualine/lualine.nvim',
     event = { 'VeryLazy', 'User FileOpened' },
+    dependencies = {
+      {
+        'SmiteshP/nvim-navic',
+        config = function()
+          require('nvim-navic').setup({
+            highlight = true,
+            lsp = {
+              auto_attach = true,
+            },
+          })
+        end,
+      },
+    },
     init = function()
       opt.laststatus = 0
       opt.showtabline = 0
@@ -1087,6 +1106,10 @@ local plugins = {
             {
               'diagnostics',
               symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' },
+            },
+            {
+              'navic',
+              color_correction = 'static',
             },
           },
           lualine_x = {
@@ -1779,7 +1802,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
     -- stylua: ignore
     keys = {
       { '\\', function() require('flash').jump() end, mode = { 'n', 'x', 'o', 'v' }, desc = 'Flash' },
-      { '<CR>', function() require('flash').treesitter() end, mode = { 'n', 'o', 'v' }, desc = 'Flash Treesitter Incremental Selection' },
+      { '|', function() require('flash').treesitter() end, mode = { 'n', 'o', 'v' }, desc = 'Flash Treesitter Incremental Selection' },
       { '<leader>\\', function() require('flash').remote() end, mode = 'o', desc = 'Remote Flash' },
       { '<leader>|', function() require('flash').treesitter_search() end, mode = { 'o', 'x', 'v' }, desc = 'Treesitter Search' },
       { '<C-s>', function() require('flash').toggle() end, mode = 'c', desc = 'Toggle Flash Search' },
@@ -2288,6 +2311,7 @@ let g:mkdp_preview_options = {
   {
     'neovim/nvim-lspconfig',
     event = 'User FileOpened',
+    lazy = false,
     keys = {
       { '<leader>cl', '<cmd>LspInfo<CR>', desc = 'Lsp Info' },
     },
