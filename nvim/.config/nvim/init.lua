@@ -754,8 +754,8 @@ local lazy_config = {
   change_detection = { notify = false },
   ui = {
     icons = {},
-    border = global_config.border,
-    backdrop = 100,
+    -- border = global_config.border,
+    -- backdrop = 80,
   },
   performance = {
     rtp = {
@@ -778,7 +778,7 @@ local plugins = {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    lazy = false,
+    lazy = true,
     priority = 1000,
     config = function()
       require('catppuccin').setup({
@@ -862,10 +862,66 @@ local plugins = {
     end,
   },
 
+  -- EVERFOREST, COLORSCHEME
+  {
+    'sainnhe/everforest',
+    lazy = true,
+    priority = 1000,
+    config = function()
+      vim.g.everforest_background = 'hard'
+      vim.g.everforest_enable_italic = 0
+      vim.g.everforest_disable_italic_comment = 1
+      vim.g.everforest_show_eob = 0
+      vim.g.everforest_diagnostic_text_highlight = 0
+      vim.g.everforest_diagnostic_virtual_text = 'highlighted'
+      vim.g.everforest_current_word = 'underline'
+      vim.g.everforest_inlay_hints_background = 'dimmed'
+      vim.g.everforest_better_performance = 1
+
+      create_autocmd('ColorScheme', {
+        group = create_augroup('custom_highlights_everforest', {}),
+        pattern = 'everforest',
+        callback = function()
+          local config = vim.fn['everforest#get_configuration']()
+          local palette = vim.fn['everforest#get_palette'](config.background, config.colors_override)
+          local set_hl = vim.fn['everforest#highlight']
+
+          set_hl('CursorLineFold', palette.bg5, palette.bg1)
+          set_hl('CursorLineSign', palette.none, palette.bg1)
+          set_hl('CursorLineNr', palette.grey1, palette.bg1)
+
+          set_hl('DiagnosticNumHlError', palette.red, palette.none, 'bold')
+          set_hl('DiagnosticNumHlWarn', palette.yellow, palette.none, 'bold')
+          set_hl('DiagnosticNumHlHint', palette.purple, palette.none, 'bold')
+          set_hl('DiagnosticNumHlInfo', palette.blue, palette.none, 'bold')
+          set_hl('CustomStatusLineMode', palette.none, palette.none, 'bold')
+          set_hl('CustomStatusLineGitHead', palette.green, palette.none, 'bold')
+          set_hl('CustomStatusLineGitAdded', palette.green, palette.none)
+          set_hl('CustomStatusLineGitChanged', palette.blue, palette.none)
+          set_hl('CustomStatusLineGitRemoved', palette.red, palette.none)
+          set_hl('CustomStatusLineDiagnosticError', palette.red, palette.none)
+          set_hl('CustomStatusLineDiagnosticWarn', palette.yellow, palette.none)
+          set_hl('CustomStatusLineDiagnosticHint', palette.purple, palette.none)
+          set_hl('CustomStatusLineDiagnosticInfo', palette.blue, palette.none)
+
+          set_hl('SnacksIndentScope', palette.grey0, palette.none)
+          set_hl('SnacksIndentChunk', palette.grey0, palette.none)
+          set_hl('NoiceCmdline', palette.fg, palette.bg1)
+          set_hl('NoiceCmdlineIcon', palette.bg0, palette.aqua, 'bold')
+          set_hl('NoiceCmdlineIconSearch', palette.bg0, palette.yellow, 'bold')
+          set_hl('FlashPrompt', palette.fg, palette.bg1)
+          set_hl('FlashPromptIcon', palette.bg0, palette.yellow, 'bold')
+        end,
+      })
+
+      vim.cmd.colorscheme('everforest')
+    end,
+  },
+
   -- GRUVBOX, COLORSCHEME
   {
-    'ellisonleao/gruvbox.nvim',
-    lazy = true,
+    'gczcn/gruvbox.nvim',
+    lazy = false,
     priority = 1000,
     config = function()
       create_autocmd('ColorScheme', {
@@ -875,16 +931,11 @@ local plugins = {
           local set_hl = vim.api.nvim_set_hl
           local bg = vim.o.background
 
-          set_hl(0, 'Title', {
-            fg = bg == 'dark' and '#b8bb26' or '#79740e',
-            bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
-            bold = true,
-          })
-
           set_hl(0, 'FoldColumn', { fg = '#928374', bg = bg == 'dark' and '#282828' or '#fbf1c7' })
           set_hl(0, 'CursorLineFold', { fg = '#928374', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
           set_hl(0, 'SignColumn', { bg = bg == 'dark' and '#282828' or '#fbf1c7' })
           set_hl(0, 'CursorLineSign', { bg = bg == 'dark' and '#3c3836' or '#ebdbb2' })
+          set_hl(0, 'EndOfBuffer', { fg = bg == 'dark' and '#282828' or '#fbf1c7' })
 
           set_hl(0, 'DiagnosticNumHlError', { fg = bg == 'dark' and '#fb4934' or '#9d0006', bold = true })
           set_hl(0, 'DiagnosticNumHlWarn', { fg = bg == 'dark' and '#fabd2f' or '#b57614', bold = true })
@@ -902,16 +953,40 @@ local plugins = {
           set_hl(0, 'CustomStatusLineDiagnosticInfo', { fg = bg == 'dark' and '#83a598' or '#076678', bold = true })
 
           set_hl(0, 'GitsignsCurrentLineBlame', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
+
+          set_hl(0, 'MiniFilesTitle', {
+            fg = bg == 'dark' and '#b8bb26' or '#79740e',
+            bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
+            bold = true,
+          })
           set_hl(0, 'MiniFilesTitleFocused', {
             fg = bg == 'dark' and '#fe8019' or '#af3a03',
             bg = bg == 'dark' and '#3c3836' or '#ebdbb2',
             bold = true,
           })
-          set_hl(
-            0,
-            'NoiceCmdline',
-            { fg = bg == 'dark' and '#ebdbb2' or '#3c3836', bg = bg == 'dark' and '#3c3836' or '#ebdbb2' }
-          )
+          set_hl(0, 'MiniStarterFooter', { link = 'GruvboxYellow' })
+
+          set_hl(0, 'SnacksIndentScope', { link = 'GruvboxBg4' })
+          set_hl(0, 'SnacksIndentChunk', { link = 'SnacksIndentScope' })
+
+          set_hl(0, 'NoiceCmdline', { fg = bg == 'dark' and '#7c6f64' or '#a89984' })
+          -- stylua: ignore start
+          set_hl(0, 'NoiceCmdline', {
+            fg = bg == 'dark' and '#ebdbb2' or '#3c3836', bg = bg == 'dark' and '#3c3836' or '#ebdbb2'
+          })
+          set_hl(0, 'NoiceCmdlineIcon', {
+            fg = bg == 'dark' and '#282828' or '#fbf1c7', bg = bg == 'dark' and '#b8bb26' or '#79740e', bold = true
+          })
+          set_hl(0, 'NoiceCmdlineIconSearch', {
+            fg = bg == 'dark' and '#282828' or '#fbf1c7', bg = bg == 'dark' and '#fabd2f' or '#b57614', bold = true
+          })
+          set_hl(0, 'FlashPrompt', {
+            fg = bg == 'dark' and '#ebdbb2' or '#3c3836', bg = bg == 'dark' and '#3c3836' or '#ebdbb2'
+          })
+          set_hl(0, 'FlashPromptIcon', {
+            fg = bg == 'dark' and '#282828' or '#fbf1c7', bg = bg == 'dark' and '#fe8019' or '#af3a03', bold = true
+          })
+          -- stylua: ignore end
         end,
       })
 
@@ -1022,7 +1097,12 @@ local plugins = {
     config = function()
       require('lualine').setup({
         options = {
-          theme = 'auto',
+          theme = function()
+            if vim.g.colors_name == 'gruvbox' then
+              return 'gruvbox_custom'
+            end
+            return 'auto'
+          end,
           component_separators = { left = '', right = '' },
           section_separators = { left = '', right = '' },
           disabled_filetypes = {
@@ -1714,6 +1794,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
     event = 'VeryLazy',
     opts = {
       search = {
+        multi_window = true,
         exclude = {
           'flash_prompt',
           'bigfile',
@@ -1731,7 +1812,7 @@ https://github.com/gczcn/dotfile/blob/main/nvim/.config/nvim/init.lua]]
       -- labels = 'asdfghjklqwertyuiopzxcvbnm', -- Qwerty
       labels = 'arstdhneiqwfpgjluy;zxcvbkm', -- Colemak
       prompt = {
-        prefix = { { ' JUMP ', 'FlashPromptIcon' }, { ' ', 'StatusLine' } },
+        prefix = { { ' JUMP ', 'FlashPromptIcon' }, { ' ', 'NonText' } },
       },
     },
     -- stylua: ignore
