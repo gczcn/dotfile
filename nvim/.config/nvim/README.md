@@ -5,12 +5,12 @@
 
 ![ScreenShot](resources/screenshot.png)
 
-### Table of Contents
+## Table of Contents
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Todos](#todos)
 
-### Dependencies
+## Dependencies
 - [Neovim](https://neovim.io/) ≥ 0.11.0 or Nightly version
 - For [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter/tree/main/)
   - [`tree-sitter-cli`](https://github.com/tree-sitter/tree-sitter/blob/master/crates/cli/README.md/)
@@ -40,7 +40,7 @@
     - [stylua](https://github.com/JohnnyMorganz/StyLua/)
     - [shfmt](https://github.com/patrickvane/shfmt/)
 
-### Installation
+## Installation
 First, clone this repo:
 ```bash
 git clone https://github.com/gczcn/dotfile
@@ -56,6 +56,6 @@ nvim
 ```
 All done.
 
-### Todos
+## Todos
 - [ ] Remove more useless plugins.
 - [ ] The main branch of nvim-treesitter and nvim-treesitter-textobjects.
