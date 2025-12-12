@@ -1,10 +1,13 @@
 ## A [Colemak](https://colemak.com/) User's [Neovim](https://neovim.io/) Config
+<u>English</u>
+[简体中文](README_zh_CN.md)
+
 > A **clean**, **single-file** configuration for **[Neovim](https://neovim.io/)** with key bindings for the **[Colemak](https://colemak.com/)** keyboard layout.
 
-> **Note:** This README.md only considers UNIX-like systems.
+> **Note**: This README.md only considers UNIX-like systems.
 
-![ScreenShot](resources/screenshot.png)
-
+<!-- ![ScreenShot](resources/screenshot.png) -->
+<!---->
 ## Table of Contents
 - [Dependencies](#dependencies)
 - [Installation](#installation)
